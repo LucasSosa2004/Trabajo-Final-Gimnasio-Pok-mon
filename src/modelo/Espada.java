@@ -2,16 +2,24 @@ package modelo;
 
 public class Espada extends Arma {
 
+	public Espada() {
+		this.costo=50;
+	}
+	
 	@Override
 	public void atacar(Pokemon adversario) {
-		// TODO Auto-generated method stub
+		adversario.recibeDano(100);
 
 	}
 
 	@Override
-	protected String getNombre() {
-		// TODO Auto-generated method stub
-		return null;
+	public Object clone()  {
+		Espada nArma=null;
+		try {
+			nArma = (Espada)super.clone();
+		} catch (CloneNotSupportedException e) {
+			
+		}
+		return nArma;
 	}
-
 }

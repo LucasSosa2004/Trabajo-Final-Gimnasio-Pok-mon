@@ -2,16 +2,29 @@ package modelo;
 
 public abstract class Pokemon implements Cloneable,IHostil, IValuable, IHechizable,IClasificable{
 	protected String nombre;
-	protected int vitalidad;
-	protected int escudo;
-	protected int fuerza;
-	protected int costo;
+	protected double vitalidad;
+	protected double escudo;
+	protected double fuerza;
+	protected double costo;
 	protected int experiencia;
 	
 	
 	
-	protected abstract void recibeDano(int danoRecibido); 
 	
+	protected abstract void recibeDano(double danoRecibido);
+	protected abstract void recargar();  
+
+	public int getCategoria() {
+		return this.experiencia;
+	}
+	
+	public void recibeExp() {
+		this.experiencia++;
+	}
+	
+	public double getCosto() {
+		return this.costo;
+	}
 	
 
 } 

@@ -2,8 +2,8 @@ package modelo;
 
 public interface IHechizable {
 	
-	double recibeTormenta();
-	double recibeViento();
-	double recibeNiebla();
+	void recibeTormenta();
+	void recibeViento();
+	void recibeNiebla();
 
 }

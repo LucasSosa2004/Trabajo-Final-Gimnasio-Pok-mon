@@ -1,17 +1,21 @@
 package modelo;
 
+import java.util.Random;
+
 public class Hacha extends Arma {
 
+	public Hacha() {
+		this.costo=80;
+	}
+	
 	@Override
 	public void atacar(Pokemon adversario) {
-		// TODO Auto-generated method stub
-
+		Random random = new Random();
+		adversario.recibeDano(random.nextDouble(50,150));
 	}
-
 	@Override
-	protected String getNombre() {
-		// TODO Auto-generated method stub
-		return null;
+	public Object clone() throws CloneNotSupportedException {
+		throw new InternalError("uwunocloneanalble");
 	}
 
 }
