@@ -1,33 +1,35 @@
 package prueba;
 
+import modelo.*;
 
 
-import modelo.PokemonAgua;
-import modelo.PokemonFactory;
-import modelo.PokemonFuego;
 
 public class Prueba {
 
 	public static void main(String[] args) {
+		Gimnasio gimnasio = new Gimnasio();
 		PokemonFactory factoria= new PokemonFactory();
+		Entrenador e1,e2;
+		Arena arena;
 		
-		PokemonAgua p1=(PokemonAgua)factoria.getPokemon("aGua", "Magikarp");
-		PokemonFuego p2=(PokemonFuego)factoria.getPokemon("fuEgo", "Charizard");
-	
 		
-		System.out.println(p1.toString());
-		System.out.println(p2.toString());
+
+
+		e1=gimnasio.getEntrenador("ASH");
+		e2=gimnasio.getEntrenador("JESUS");
+				
+		
+		e1.setEquipo("pikachu","magikarp","charizard");
+		e2.setEquipo("vaporeon","magikarp2","charizard3");
 
 		
 		
-		p1.atacar(p2);
-		p2.atacar(p1);
+		arena=gimnasio.IniciaArena(e1,e2);
 		
-		p1.toString();
-		p2.toString();
+		arena.iniciarDuelo();
 		
-		System.out.println(p1.toString());
-		System.out.println(p2.toString());
+
+		
 
 		
 	}
