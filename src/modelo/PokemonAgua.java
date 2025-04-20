@@ -70,9 +70,14 @@ public class PokemonAgua extends Pokemon {
 		return nPok;
 	}
 
+	@Override
+	public String toString() {
+		return "PokemonAgua []"+super.toString();
+	}
+
 
 	
-
+	
 
 
 

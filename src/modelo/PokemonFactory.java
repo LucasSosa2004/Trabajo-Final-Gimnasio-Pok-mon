@@ -4,7 +4,7 @@ public class PokemonFactory {
 	
 	
 	public Pokemon getPokemon(String tipo, String nombre){
-		tipo.toUpperCase();
+		tipo=tipo.toUpperCase();
 		switch (tipo) {
 			case "AGUA":
 				return new PokemonAgua(nombre);
@@ -14,13 +14,21 @@ public class PokemonFactory {
 				return new PokemonHielo(nombre);
 			case "PIEDRA":
 				return new PokemonPiedra(nombre);
-			default:
+			default:{
+				System.out.println("devuelve null");
 				return null;
+			}
 				
 			
 		
 		}
 		
 	}
+
+	@Override
+	public String toString() {
+		return "PokemonFactory []";
+	}
+	
 
 }

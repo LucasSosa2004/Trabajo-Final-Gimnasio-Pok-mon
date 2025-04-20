@@ -22,4 +22,10 @@ public class Espada extends Arma {
 		}
 		return nArma;
 	}
+
+	@Override
+	public String toString() {
+		return "Espada []"+super.toString();
+	}
+	
 }

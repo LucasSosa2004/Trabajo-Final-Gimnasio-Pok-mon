@@ -64,6 +64,11 @@ public class PokemonFuego extends Pokemon {
 	public Object clone() throws CloneNotSupportedException {
 		throw new InternalError("uwunocloneanalble");
 	}
-	
+
+	@Override
+	public String toString() {
+		return "PokemonFuego []"+super.toString();
+	}
+
 
 }

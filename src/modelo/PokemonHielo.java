@@ -65,6 +65,11 @@ public class PokemonHielo extends Pokemon {
 		}
 		return nPok;
 	}
-	
+	@Override
+	public String toString() {
+		return "PokemonHielo []"+super.toString();
+	}
+
+
 	
 }

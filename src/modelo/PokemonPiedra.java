@@ -83,6 +83,10 @@ public class PokemonPiedra extends Pokemon {
 		}
 		return nPok;
 	}
+	@Override
+	public String toString() {
+		return "PokemonPiedra []"+super.toString();
+	}
 
 
 }

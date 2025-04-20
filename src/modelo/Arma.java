@@ -14,6 +14,11 @@ public abstract class Arma implements IHostil, Cloneable{
 	public Object clone() throws CloneNotSupportedException {
 		 throw new InternalError();
 	}
+
+	@Override
+	public String toString() {
+		return " [costo=" + costo + "]";
+	}
 	
 	
 }

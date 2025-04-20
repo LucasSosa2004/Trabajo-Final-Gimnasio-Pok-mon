@@ -18,5 +18,11 @@ public class Hacha extends Arma {
 		throw new InternalError("uwunocloneanalble");
 	}
 
+	@Override
+	public String toString() {
+		return "Hacha []"+super.toString();
+	}
+	
+	
 }
  
