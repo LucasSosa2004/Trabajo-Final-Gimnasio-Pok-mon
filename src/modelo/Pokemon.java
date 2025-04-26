@@ -25,6 +25,12 @@ public abstract class Pokemon implements Cloneable,IHostil, IValuable, IHechizab
 	public double getCosto() {
 		return this.costo;
 	}
+	public double getVitalidad() {
+		return this.vitalidad;
+	}
+	public String getNombre() {
+		return this.nombre;
+	}
 	@Override
 	public String toString() {
 		return " [nombre=" + nombre + ", vitalidad=" + vitalidad + ", escudo=" + escudo + ", fuerza=" + fuerza

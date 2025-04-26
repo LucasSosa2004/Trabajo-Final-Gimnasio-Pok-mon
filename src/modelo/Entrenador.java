@@ -12,7 +12,7 @@ public class Entrenador implements Cloneable, IClasificable {
     private List<Pokemon> pokemones = new ArrayList<>();
     private Queue<Pokemon> equipoActivo = new LinkedList<>();
 
-    public Entrenador(String nombre, double creditosIniciales) {
+    public Entrenador(String nombre, int creditosIniciales) {
         if (nombre == null || nombre.isBlank())
             throw new IllegalArgumentException("El nombre no puede ser vacío");
         this.nombre = nombre;
@@ -29,8 +29,26 @@ public class Entrenador implements Cloneable, IClasificable {
     public double getCreditos() {
     	return this.creditos;
     }
+    public Queue<Pokemon> getEquipoActivo(){
+    	return this.equipoActivo;
+    }
+    public List<Pokemon> getPokemones(){
+    	return this.pokemones;
+    }
+    public void addCreditos(int cant) {
+    	this.creditos += cant;
+    }
    
     @Override
+	public String toString() {
+		return "Entrenador [nombre=" + nombre + ", creditos=" + creditos + ", pokemones=" + pokemones
+				+ ", equipoActivo=" + equipoActivo + "]";
+	}
+
+
+
+
+	@Override
     public int getCategoria() { //Calcula y devuelve la “categoría” del entrenador, que es la suma de las categorías de todos sus Pokémones.
         int suma = 0;
         for (int i = 0; i < pokemones.size(); i++) {
@@ -58,14 +76,37 @@ public class Entrenador implements Cloneable, IClasificable {
     }
 
     // ——— Selección y gestión de equipo activo ———
-    public void seleccionarEquipo(String seleccion)  {
+    public void agregarPokemonEquipo(String seleccion)  {
     	if(equipoActivo.size()!=3) {
 	        if (seleccion == null)
 	            throw new IllegalArgumentException("Debe seleccionar al menos un pokémon");
 
-	        equipoActivo.addAll(seleccion); //añado a la cola de donde la arena sacara los pokemones para pelear
+	        equipoActivo.add(buscaPokemon(seleccion)); //añado a la cola de donde la arena sacara los pokemones para pelear
     	}
     }
+    
+    public void setEquipo(String p1, String p2, String p3) {
+    	try {
+    		agregarPokemonEquipo(p1);
+    		agregarPokemonEquipo(p2);
+    		agregarPokemonEquipo(p3);
+    	}
+    	catch(IllegalArgumentException e) {
+    		throw new IllegalArgumentException();
+    	}
+    }
+    
+    
+    public Pokemon buscaPokemon(String nombre) {
+    	int i = 0;
+    	while(nombre != this.pokemones.get(i).nombre)
+    		i++;
+    	if (nombre == this.pokemones.get(i).getNombre())
+    		return this.pokemones.get(i);
+    	else
+    		throw new IllegalArgumentException("Pokemon "+ nombre +"no encontrado");
+    }
+    
     public boolean tienePokemonesActivos() { 
         return !equipoActivo.isEmpty(); 
     }
@@ -80,7 +121,7 @@ public class Entrenador implements Cloneable, IClasificable {
     public void lanzarHechizo(IHechizo hechizo, Entrenador rival) {
         if (hechizo == null) return;
         // aplicamos al equipo completo (podrías cambiar a solo activos)
-        for (Pokemon p : rival.pokemones) {
+        for (Pokemon p : rival.getEquipoActivo()) {
             hechizo.hechizar(p);
         }
     }
@@ -113,4 +154,7 @@ public class Entrenador implements Cloneable, IClasificable {
         }
         return copia;
     }
+
+
+
 }

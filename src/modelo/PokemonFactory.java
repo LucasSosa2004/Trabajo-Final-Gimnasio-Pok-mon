@@ -18,9 +18,7 @@ public class PokemonFactory {
 				System.out.println("devuelve null");
 				return null;
 			}
-				
-			
-		
+						
 		}
 		
 	}
