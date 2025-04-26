@@ -87,6 +87,12 @@ public class PokemonPiedra extends Pokemon {
 	public String toString() {
 		return "PokemonPiedra []"+super.toString();
 	}
+	
+	public Arma getArma() {
+		return this.arma;
+	}
+
+
 
 
 }

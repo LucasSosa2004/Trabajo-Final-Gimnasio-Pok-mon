@@ -1,6 +1,6 @@
 package modelo;
 
-public abstract class Arma implements IHostil, Cloneable{
+public abstract class Arma implements IHostil, IValuable,Cloneable{
 	
 	protected int costo;
 
