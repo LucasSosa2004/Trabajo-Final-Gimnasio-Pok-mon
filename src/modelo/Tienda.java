@@ -8,7 +8,7 @@ public class Tienda {
 	
 	public Arma comprarArma(String nombre,Entrenador e, Pokemon p) throws CompraImposibleException{
 		Arma arma = armas.get(nombre);
-		if(e.getCreditos() > arma.getCosto())
+		if(e.getCreditos() < arma.getCosto())
 			throw new CompraImposibleException(e.getCreditos(),arma.getCosto());
 		return arma;
 	}
