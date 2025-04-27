@@ -30,16 +30,19 @@ public class Prueba {
 			e1.getPokemones().add(new PokemonAgua("charis"));
 
 
-			e1.setEquipo("pikachu","magikarp","charizard");
-			e2.setEquipo("vaporeon","magikarp2","charizard3");
-	
+			e1.setEquipo("magikarp", "pikachu", "charizard");
+			//e1.setEquipo("pikax");
+			e2.setEquipo("vaporeon");
+
+			
 			Arena arena = new Arena(e1,e2);
 
 			gimnasio.addArena(arena);
 			
 			//arena=gimnasio.getArenas().getFirst();
 			Entrenador ganador = arena.iniciarDuelo();
-			System.out.println(ganador.toString());
+			//System.out.println(ganador.toString());
+			System.out.println("GANADOR: " + ganador.getEquipoActivo());
 		}
 		catch(IllegalArgumentException e) {
 			System.out.println(e);

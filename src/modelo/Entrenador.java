@@ -77,7 +77,7 @@ public class Entrenador implements Cloneable, IClasificable {
 
     // ——— Selección y gestión de equipo activo ———
     public void agregarPokemonEquipo(String seleccion)  {
-    	if(equipoActivo.size()!=3) {
+    	if(equipoActivo.size()<3) {
 	        if (seleccion == null)
 	            throw new IllegalArgumentException("Debe seleccionar al menos un pokémon");
 
@@ -96,6 +96,25 @@ public class Entrenador implements Cloneable, IClasificable {
     	}
     }
     
+    public void setEquipo(String p) {
+    	try {
+    		agregarPokemonEquipo(p);
+    	}
+    	catch(IllegalArgumentException e) {
+    		throw new IllegalArgumentException();
+    	}
+    }
+    
+    public void setEquipo(String p1, String p2) {
+    	try {
+    		agregarPokemonEquipo(p1);
+    		agregarPokemonEquipo(p2);
+
+    	}
+    	catch(IllegalArgumentException e) {
+    		throw new IllegalArgumentException();
+    	}
+    }
     
     public Pokemon buscaPokemon(String nombre) {
     	int i = 0;

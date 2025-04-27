@@ -92,7 +92,9 @@ public class PokemonPiedra extends Pokemon {
 		return this.arma;
 	}
 
-
+	public void setArma(Arma a) {
+		this.arma = a;
+	}
 
 
 }

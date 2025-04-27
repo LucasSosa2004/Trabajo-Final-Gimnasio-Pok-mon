@@ -43,9 +43,10 @@ public class Arena {
 
         Queue<Pokemon> equipo1 = e1.getEquipoActivo();
         Queue<Pokemon> equipo2 = e2.getEquipoActivo();
-        
+
         //solo van a ser null si no quedan mas en la cola        
         while(p1!=null && p2!=null) {
+        	System.out.println("TURNO: " + turno);
 			if (turno) {
 			    if (p1.getVitalidad() > 0 && p2.getVitalidad() > 0)
 			        p1.atacar(p2);
@@ -57,21 +58,27 @@ public class Arena {
 			turno = !turno;
 
     		if(p1 != null && p1.getVitalidad() <= 0) {
+           	    System.out.println(p1);
+           	    System.out.println(p2);
 				p2.recibeExp();
     			p1 = e1.proximoPokemon(); //devuelve null cuando no hay mas en la cola
             }
-    		if(p2 != null && p2.getVitalidad() > 0) {
+    		if(p2 != null && p2.getVitalidad() <= 0) {
+    			System.out.println(p1);
+            	System.out.println(p2);
 				p1.recibeExp();
     			p2 = e2.proximoPokemon();
             }
-      	   //System.out.println(equipo1);
-      	   //System.out.println(equipo2);
+
         }
 
-        if (p1 == null) //cola 1 vacia
+        if (p1 == null) { //cola 1 vacia
         	ganador = e2;
-        else 
+        }
+        else {
         	ganador = e1;
+        }
+    	ganador.addCreditos(PREMIO_GANADOR);
         return ganador;
     }
 

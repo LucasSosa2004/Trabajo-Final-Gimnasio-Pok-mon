@@ -62,7 +62,7 @@ public class PokemonFuego extends Pokemon {
 	}
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-		throw new InternalError("uwunocloneanalble");
+		throw new CloneNotSupportedException();
 	}
 
 	@Override
