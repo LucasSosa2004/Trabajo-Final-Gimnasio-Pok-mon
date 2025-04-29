@@ -13,7 +13,13 @@ public abstract class Pokemon implements Cloneable,IHostil, IValuable, IHechizab
 	
 	protected abstract void recibeDano(double danoRecibido);
 	protected abstract void recargar();  
+	
+	public boolean puedeTenerArma() {
+		return false;
+	}
 
+	public void setArma(Arma arma) {}
+	
 	public int getCategoria() {
 		return this.experiencia;
 	}
