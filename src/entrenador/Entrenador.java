@@ -1,5 +1,16 @@
-package modelo;
-import java.util.*;
+package entrenador;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+import armas.Arma;
+import interfaces.IClasificable;
+import interfaces.IHechizable;
+import interfaces.IHechizo;
+import modelo.Tienda;
+import pokemones.Pokemon;
+import pokemones.PokemonPiedra;
 
 
 /**
@@ -11,10 +22,9 @@ public class Entrenador implements Cloneable, IClasificable {
     private int creditos = 0;
     private List<Pokemon> pokemones = new ArrayList<>();
     private Queue<Pokemon> equipoActivo = new LinkedList<>();
+    private IHechizo hechizo;
 
     public Entrenador(String nombre, int creditosIniciales) {
-        if (nombre == null || nombre.isBlank())
-            throw new IllegalArgumentException("El nombre no puede ser vacío");
         this.nombre = nombre;
         this.creditos = creditosIniciales;
     }
@@ -137,12 +147,9 @@ public class Entrenador implements Cloneable, IClasificable {
     }
 
     // ——— Lanzamiento de hechizos (Double Dispatch) ———
-    public void lanzarHechizo(IHechizo hechizo, Entrenador rival) {
-        if (hechizo == null) return;
-        // aplicamos al equipo completo (podrías cambiar a solo activos)
-        for (Pokemon p : rival.getEquipoActivo()) {
-            hechizo.hechizar(p);
-        }
+    public void hechizar(IHechizable hechizable) {
+    	if(this.hechizo != null)
+    		hechizo.hechizar(hechizable);
     }
 
     // ——— Clonación profunda según reglas ———

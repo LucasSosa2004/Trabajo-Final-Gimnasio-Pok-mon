@@ -1,8 +1,8 @@
-package modelo;
+package armas;
 
 public class ArmaFactory {
 	
-	  public static Arma crearArma(String tipo) {
+	  public Arma crearArma(String tipo) {
 	        switch (tipo.toUpperCase()) {
 	            case "ESPADA":
 	                return new Espada();

@@ -5,6 +5,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import entrenador.Entrenador;
+import entrenador.EntrenadorSinPokemonesException;
+import pokemones.Pokemon;
+
 /**
  * La Arena recibe dos entrenadores, opcionalmente cada uno lanza un hechizo,
  * luego selecciona automaticamente sus primeros 3 pokemons y resuelve
@@ -33,14 +37,14 @@ public class Arena {
     	 boolean turno=true,vacias=true;
         // 1) Lanzan sus hechizos
     	
-        //e1.lanzarHechizo(Niebla,e2);
-        //e2.lanzarHechizo(Tormenta, e1);
+
         
         Entrenador ganador = null;
         
         Pokemon p1 = e1.proximoPokemon();
         Pokemon p2 = e2.proximoPokemon();
-
+        e1.hechizar(p2);
+        e2.hechizar(p1);
         Queue<Pokemon> equipo1 = e1.getEquipoActivo();
         Queue<Pokemon> equipo2 = e2.getEquipoActivo();
 

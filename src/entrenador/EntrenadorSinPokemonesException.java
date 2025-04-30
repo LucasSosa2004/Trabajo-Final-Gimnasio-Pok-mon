@@ -1,4 +1,4 @@
-package modelo;
+package entrenador;
 
 public class EntrenadorSinPokemonesException extends Exception {
 	private Entrenador e;

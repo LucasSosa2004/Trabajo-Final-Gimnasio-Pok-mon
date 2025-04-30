@@ -1,6 +1,12 @@
 package prueba;
 
+import entrenador.Entrenador;
+import entrenador.EntrenadorSinPokemonesException;
 import modelo.*;
+import pokemones.PokemonAgua;
+import pokemones.PokemonFactory;
+import pokemones.PokemonFuego;
+import pokemones.PokemonHielo;
 
 
 
@@ -15,8 +21,8 @@ public class Prueba {
 			PokemonFactory factory = new PokemonFactory();
 			Entrenador e1 = new Entrenador("ASH", 0);
 			Entrenador e2 = new Entrenador("JJJ", 10);
-
-
+			
+			
 			gimnasio.addEntrenador(e1);
 			gimnasio.addEntrenador(e2);
 			

@@ -1,4 +1,6 @@
-package modelo;
+package pokemones;
+
+import armas.Arma;
 
 public class PokemonFuego extends Pokemon {
 
@@ -22,7 +24,7 @@ public class PokemonFuego extends Pokemon {
 	
 	}
 	
-	protected void recibeDano(double danoRecibido) {
+	public void recibeDano(double danoRecibido) {
 		if(this.escudo!=0) {
 			if(danoRecibido*.75>this.escudo) {
 				danoRecibido-=this.escudo;
@@ -37,7 +39,7 @@ public class PokemonFuego extends Pokemon {
 	}
 	
 	@Override
-	protected void recargar() {
+	public void recargar() {
 		this.vitalidad=500*(.8+0.05*this.experiencia);
 		this.escudo=300*(.8+0.05*this.experiencia);
 		this.fuerza=150*(.8+0.05*this.experiencia);
@@ -69,6 +71,8 @@ public class PokemonFuego extends Pokemon {
 	public String toString() {
 		return "PokemonFuego []"+super.toString();
 	}
-
-
+	
+	public void setArma(Arma a) throws PokemonNoPuedeUsarArmaE{
+		throw new PokemonNoPuedeUsarArmaE(this.nombre); 
+	}
 }

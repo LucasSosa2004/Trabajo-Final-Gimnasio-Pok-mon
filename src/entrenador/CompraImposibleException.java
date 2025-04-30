@@ -1,4 +1,4 @@
-package modelo;
+package entrenador;
 
 public class CompraImposibleException extends Exception{
 	private double creditos, costo;

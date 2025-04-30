@@ -1,4 +1,6 @@
-package modelo;
+package pokemones;
+
+import armas.Arma;
 
 public class PokemonHielo extends Pokemon {
 
@@ -18,7 +20,7 @@ public class PokemonHielo extends Pokemon {
 		this.fuerza*=.95;
 	
 	}
-	protected void recibeDano(double danoRecibido) {
+	public void recibeDano(double danoRecibido) {
 		if(this.escudo-danoRecibido<0) {
 			danoRecibido-=this.escudo;
 			this.escudo=0;
@@ -31,7 +33,7 @@ public class PokemonHielo extends Pokemon {
 	}
 	
 	@Override
-	protected void recargar() {
+	public void recargar() {
 		this.vitalidad+=200;
 		this.escudo+=100;
 		this.fuerza+=100;
@@ -57,19 +59,21 @@ public class PokemonHielo extends Pokemon {
 
 	@Override
 	public Object clone()  {
-		PokemonHielo nPok=null;
 		try {
+			PokemonHielo nPok=null;
 			nPok = (PokemonHielo)super.clone();
+			return nPok;
 		} catch (CloneNotSupportedException e) {
-			
+			return null;
 		}
-		return nPok;
 	}
 	@Override
 	public String toString() {
 		return "PokemonHielo []"+super.toString();
 	}
 
-
+	public void setArma(Arma a) throws PokemonNoPuedeUsarArmaE{
+		throw new PokemonNoPuedeUsarArmaE(this.nombre); 
+	}
 	
 }

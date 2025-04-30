@@ -1,4 +1,8 @@
-package modelo;
+package armas;
+
+import interfaces.IHostil;
+import interfaces.IValuable;
+import pokemones.Pokemon;
 
 public abstract class Arma implements IHostil, IValuable,Cloneable{
 	
@@ -18,6 +22,14 @@ public abstract class Arma implements IHostil, IValuable,Cloneable{
 	@Override
 	public String toString() {
 		return " [costo=" + costo + "]";
+	}
+
+	public double getCosto() {
+		return costo;
+	}
+
+	public void setCosto(int costo) {
+		this.costo = costo;
 	}
 	
 	

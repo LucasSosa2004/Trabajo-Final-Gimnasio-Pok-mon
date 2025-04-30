@@ -1,4 +1,6 @@
-package modelo;
+package armas;
+
+import pokemones.Pokemon;
 
 public class Espada extends Arma {
 

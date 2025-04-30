@@ -1,19 +1,26 @@
-package modelo;
+package pokemones;
+
+import armas.Arma;
+import interfaces.IClasificable;
+import interfaces.IHechizable;
+import interfaces.IHostil;
+import interfaces.IValuable;
 
 public abstract class Pokemon implements Cloneable,IHostil, IValuable, IHechizable,IClasificable{
-	protected String nombre;
-	protected double vitalidad;
-	protected double escudo;
-	protected double fuerza;
-	protected double costo;
-	protected int experiencia;
+	public String nombre;
+	public double vitalidad;
+	public double escudo;
+	public double fuerza;
+	public double costo;
+	public int experiencia;
 	
 	
 	
 	
-	protected abstract void recibeDano(double danoRecibido);
-	protected abstract void recargar();  
-
+	public abstract void recibeDano(double danoRecibido);
+	public abstract void recargar();  
+	public abstract void setArma(Arma a) throws PokemonNoPuedeUsarArmaE;
+	
 	public int getCategoria() {
 		return this.experiencia;
 	}
@@ -37,7 +44,9 @@ public abstract class Pokemon implements Cloneable,IHostil, IValuable, IHechizab
 				+ ", costo=" + costo + ", experiencia=" + experiencia + "]";
 	}
 	
-	
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
 
 } 
   

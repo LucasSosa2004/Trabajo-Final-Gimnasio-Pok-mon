@@ -1,6 +1,8 @@
-package modelo;
+package armas;
 
 import java.util.Random;
+
+import pokemones.Pokemon;
 
 public class Hacha extends Arma {
 
@@ -15,7 +17,7 @@ public class Hacha extends Arma {
 	}
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-		throw new InternalError("uwunocloneanalble");
+		throw new CloneNotSupportedException();
 	}
 
 	@Override

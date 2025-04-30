@@ -1,4 +1,4 @@
-package modelo;
+package interfaces;
 
 public interface IHechizable {
 	

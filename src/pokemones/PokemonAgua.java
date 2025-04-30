@@ -1,4 +1,6 @@
-package modelo;
+package pokemones;
+
+import armas.Arma;
 
 public class PokemonAgua extends Pokemon {
 	
@@ -21,7 +23,7 @@ public class PokemonAgua extends Pokemon {
 
 	}
 	@Override
-	protected void recibeDano(double danoRecibido) {
+	public void recibeDano(double danoRecibido) {
 		if(this.escudo!=0) {
 			if(danoRecibido*.5>this.escudo) {
 				danoRecibido-=this.escudo;
@@ -36,7 +38,7 @@ public class PokemonAgua extends Pokemon {
 	}
 
 	@Override
-	protected void recargar() {
+	public void recargar() {
 		this.vitalidad=500;
 		this.escudo=100;
 		this.fuerza=120;
@@ -61,13 +63,13 @@ public class PokemonAgua extends Pokemon {
 	}
 	@Override
 	public Object clone()  {
-		PokemonAgua nPok=null;
 		try {
+			PokemonAgua nPok=null;
 			nPok = (PokemonAgua)super.clone();
+			return nPok;
 		} catch (CloneNotSupportedException e) {
-			
+			return null;
 		}
-		return nPok;
 	}
 
 	@Override
@@ -75,7 +77,9 @@ public class PokemonAgua extends Pokemon {
 		return "PokemonAgua []"+super.toString();
 	}
 
-
+	public void setArma(Arma a) throws PokemonNoPuedeUsarArmaE{
+		throw new PokemonNoPuedeUsarArmaE(this.nombre); 
+	}
 	
 	
 

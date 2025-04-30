@@ -2,6 +2,8 @@ package modelo;
 
 import java.util.ArrayList;
 
+import entrenador.Entrenador;
+
 public class Gimnasio {
 	private ArrayList<Entrenador> entrenadores = new ArrayList<>();
 	private ArrayList<Arena> arenas = new ArrayList<>();

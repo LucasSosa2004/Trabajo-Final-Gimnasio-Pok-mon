@@ -1,4 +1,6 @@
-package modelo;
+package pokemones;
+
+import armas.Arma;
 
 public class PokemonPiedra extends Pokemon {
 
@@ -24,7 +26,7 @@ public class PokemonPiedra extends Pokemon {
 		}
 
 	}
-	protected void recibeDano(double danoRecibido) {
+	public void recibeDano(double danoRecibido) {
 		if(this.escudo!=0) {
 			if(danoRecibido*.75>this.escudo) {
 				danoRecibido-=this.escudo;
@@ -39,7 +41,7 @@ public class PokemonPiedra extends Pokemon {
 	}
 
 	@Override
-	protected void recargar() {
+	public void recargar() {
 		this.vitalidad=500*(.8+0.1*this.experiencia);
 		this.escudo=300*(.8+0.1*this.experiencia);
 		this.fuerza=150*(.8+0.1*this.experiencia);
@@ -74,14 +76,15 @@ public class PokemonPiedra extends Pokemon {
 	
 	@Override
 	public Object clone()  {
-		PokemonPiedra nPok=null;
 		try {
+			PokemonPiedra nPok=null;
 			nPok = (PokemonPiedra)super.clone();
-			nPok.arma= (Arma) arma.clone();
+			if(nPok.arma != null)
+				nPok.arma= (Arma) arma.clone();
+			return nPok;
 		} catch (CloneNotSupportedException e) {
-			
+			return null;
 		}
-		return nPok;
 	}
 	@Override
 	public String toString() {
@@ -95,6 +98,5 @@ public class PokemonPiedra extends Pokemon {
 	public void setArma(Arma a) {
 		this.arma = a;
 	}
-
-
+	
 }

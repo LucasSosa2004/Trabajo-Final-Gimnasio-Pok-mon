@@ -1,4 +1,6 @@
-package modelo;
+package interfaces;
+
+import pokemones.Pokemon;
 
 public interface IHostil {
 	

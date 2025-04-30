@@ -1,4 +1,4 @@
-package modelo;
+package pokemones;
 
 public class PokemonFactory {
 	
@@ -14,10 +14,9 @@ public class PokemonFactory {
 				return new PokemonHielo(nombre);
 			case "PIEDRA":
 				return new PokemonPiedra(nombre);
-			default:{
-				System.out.println("devuelve null");
-				return null;
-			}
+			default://crear excepcion
+                throw new IllegalArgumentException("Tipo de pokemon desconocido: " + tipo);
+			
 						
 		}
 		
