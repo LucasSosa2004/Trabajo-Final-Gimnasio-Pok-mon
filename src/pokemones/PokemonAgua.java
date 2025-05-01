@@ -48,13 +48,13 @@ public class PokemonAgua extends Pokemon {
 
 	@Override
 	public void recibeTormenta() {
-		this.escudo*=.9;
+		this.escudo*=.1;
 	}
 
 	@Override
 	public void recibeViento() {
-		this.fuerza*=.1;
-		this.vitalidad*=.1;
+		this.fuerza*=.9;
+		this.vitalidad*=.9;
 	}
 
 	@Override

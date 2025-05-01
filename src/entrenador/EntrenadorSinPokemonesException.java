@@ -1,14 +1,14 @@
 package entrenador;
 
 public class EntrenadorSinPokemonesException extends Exception {
-	private Entrenador e;
+	private String nombre;
 	
-	public EntrenadorSinPokemonesException(Entrenador e) {
+	public EntrenadorSinPokemonesException(String nombre) {
 		super("Entrenador sin pokemones");
-		this.e = e;
+		this.nombre = nombre;
 	}
 	
-	public Entrenador getEntrenador() {
-		return this.e;
+	public String getNombre() {
+		return this.nombre;
 	}
 }

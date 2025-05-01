@@ -43,7 +43,7 @@ public class PokemonHielo extends Pokemon {
 	
 	@Override
 	public void recibeTormenta() {
-		this.escudo*=.8;
+		this.escudo*=.2;
 	}
 	
 	@Override

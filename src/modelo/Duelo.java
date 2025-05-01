@@ -10,47 +10,53 @@ import entrenador.EntrenadorSinPokemonesException;
 import pokemones.Pokemon;
 
 /**
- * La Arena recibe dos entrenadores, opcionalmente cada uno lanza un hechizo,
+ * El duelo recibe dos entrenadores, opcionalmente cada uno lanza un hechizo,
  * luego selecciona automaticamente sus primeros 3 pokemons y resuelve
  * el duelo hasta que uno se queda sin equipos activos.
  */
-public class Arena {
-    private Entrenador e1, e2;
+public class Duelo {
+    private Entrenador e1, e2,ganador;
+    private int clave;
+    private boolean dueloTerminado;
+    
 
     
     private static final int PREMIO_GANADOR = 500;
 
-    public Arena(Entrenador e1, Entrenador e2) throws EntrenadorSinPokemonesException {
+    public Duelo(Entrenador e1, Entrenador e2, int numArena) throws EntrenadorSinPokemonesException {
         if (e1.getPokemones().isEmpty())
-            throw new EntrenadorSinPokemonesException(e1);
+            throw new EntrenadorSinPokemonesException(e1.getNombre());
         if (e2.getPokemones().isEmpty())
-            throw new EntrenadorSinPokemonesException(e2);
+            throw new EntrenadorSinPokemonesException(e2.getNombre());
         this.e1 = e1;
         this.e2 = e2;
+        this.ganador=null;
+        this.clave=numArena;
+        this.dueloTerminado=false;
+        
     }
 
 
-    /** Pre: las colas no tienen que estar vacias 
+    public int getClave() {
+		return clave;
+	}
+
+
+	/** Pre: las colas no tienen que estar vacias 
      * return: entrenador ganador del duelo;
      * */
-    public Entrenador iniciarDuelo(){
-    	 boolean turno=true,vacias=true;
-        // 1) Lanzan sus hechizos
-    	
-
-        
-        Entrenador ganador = null;
-        
+    public void iniciarDuelo(){
+    	 boolean turno=true;
+          
         Pokemon p1 = e1.proximoPokemon();
         Pokemon p2 = e2.proximoPokemon();
+
         e1.hechizar(p2);
         e2.hechizar(p1);
-        Queue<Pokemon> equipo1 = e1.getEquipoActivo();
-        Queue<Pokemon> equipo2 = e2.getEquipoActivo();
 
         //solo van a ser null si no quedan mas en la cola        
         while(p1!=null && p2!=null) {
-        	System.out.println("TURNO: " + turno);
+        	//System.out.println("TURNO: " + turno);
 			if (turno) {
 			    if (p1.getVitalidad() > 0 && p2.getVitalidad() > 0)
 			        p1.atacar(p2);
@@ -77,30 +83,29 @@ public class Arena {
         }
 
         if (p1 == null) { //cola 1 vacia
-        	ganador = e2;
+        	this.ganador = e2;
         }
         else {
-        	ganador = e1;
+        	this.ganador = e1;
         }
-    	ganador.addCreditos(PREMIO_GANADOR);
-        return ganador;
+    	this.ganador.addCreditos(PREMIO_GANADOR);
+    	this.dueloTerminado=true;
     }
 
-
-    public boolean entrenadorPerdio(Entrenador e, Pokemon p) {
-    	return e.getEquipoActivo().isEmpty() && p == null;
-    }
-/*
-    public Pokemon chequearVitalidad(Pokemon atacado, Pokemon atacante, Entrenador e) {
-    	if(atacado.getVitalidad()<0) {
-			atacante.recibeExp();
-			e.getEquipoActivo().remove(atacado);
-			return e.proximoPokemon();
-        }
-    	else 
-    		return atacado;
-    }
     
-*/
+
+    public boolean isDueloTerminado() {
+		return dueloTerminado;
+	}
+
+    
+    
+	public Entrenador getGanador() {
+		return ganador;
+	}
+
+
+
+
 
 }
