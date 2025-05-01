@@ -1,6 +1,9 @@
 package prueba;
 
 import entrenador.*;
+import excepciones.ArenaOcupadaException;
+import excepciones.CompraImposibleException;
+import excepciones.NombreUtilizadoException;
 import interfaces.*;
 import modelo.*;
 import pokemones.*;

@@ -1,6 +1,7 @@
 package pokemones;
 
 import armas.Arma;
+import excepciones.PokemonNoPuedeUsarArmaE;
 import interfaces.IClasificable;
 import interfaces.IHechizable;
 import interfaces.IHostil;

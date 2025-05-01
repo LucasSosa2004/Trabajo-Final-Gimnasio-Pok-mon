@@ -1,4 +1,4 @@
-package pokemones;
+package excepciones;
 
 public class PokemonException extends Exception{
 	protected String nombre;

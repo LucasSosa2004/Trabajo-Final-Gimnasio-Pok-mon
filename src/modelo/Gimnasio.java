@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import entrenador.Entrenador;
-import entrenador.EntrenadorNoExisteException;
-import entrenador.EntrenadorSinPokemonesException;
-import entrenador.NombreUtilizadoException;
+import excepciones.EntrenadorNoExisteException;
+import excepciones.EntrenadorSinPokemonesException;
+import excepciones.NombreUtilizadoException;
 
 /**
  * Clase Gimnasio que implementa el patrón de diseño Singleton.

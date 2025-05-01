@@ -1,4 +1,4 @@
-package modelo;
+package excepciones;
 
 public class ArenaOcupadaException extends Exception {
 	protected int numArena;

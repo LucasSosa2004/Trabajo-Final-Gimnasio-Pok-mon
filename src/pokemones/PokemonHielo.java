@@ -1,6 +1,7 @@
 package pokemones;
 
 import armas.Arma;
+import excepciones.PokemonNoPuedeUsarArmaE;
 
 public class PokemonHielo extends Pokemon {
 

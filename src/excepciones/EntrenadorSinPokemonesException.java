@@ -1,4 +1,4 @@
-package entrenador;
+package excepciones;
 
 public class EntrenadorSinPokemonesException extends Exception {
 	private String nombre;

@@ -2,6 +2,8 @@ package modelo;
 
 import java.util.HashMap;
 
+import excepciones.ArenaOcupadaException;
+
 public class SistemaPelea {
     /** Lista de arenas disponibles en el gimnasio */
 	private static SistemaPelea instancia;

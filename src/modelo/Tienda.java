@@ -4,12 +4,12 @@ import java.util.*;
 
 import armas.Arma;
 import armas.ArmaFactory;
-import entrenador.CompraImposibleException;
 import entrenador.Entrenador;
-import entrenador.NombreUtilizadoException;
+import excepciones.CompraImposibleException;
+import excepciones.NombreUtilizadoException;
+import excepciones.PokemonNoPuedeUsarArmaE;
 import pokemones.Pokemon;
 import pokemones.PokemonFactory;
-import pokemones.PokemonNoPuedeUsarArmaE;
 
 public class Tienda {
 	public ArmaFactory armaFactory;

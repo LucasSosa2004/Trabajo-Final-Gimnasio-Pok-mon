@@ -1,4 +1,4 @@
-package entrenador;
+package excepciones;
 
 public class NombreUtilizadoException extends Exception {
 	protected String nombre;

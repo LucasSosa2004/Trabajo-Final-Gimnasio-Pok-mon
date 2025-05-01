@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Queue;
 
 import armas.Arma;
+import excepciones.NombreUtilizadoException;
 import interfaces.IClasificable;
 import interfaces.IHechizable;
 import interfaces.IHechizo;
@@ -15,7 +16,7 @@ import pokemones.PokemonPiedra;
 
 
 /**
- * Cada Entrenador tiene un nombre, créditos, una lista de pokémons
+ * Cada Entrenador tiene un nombre, crÃ©ditos, una lista de pokÃ©mons
  * y un "equipo activo" de hasta 3 para duelos.
  */
 public class Entrenador implements Cloneable, IClasificable {
@@ -40,7 +41,7 @@ public class Entrenador implements Cloneable, IClasificable {
 
 
 
-	// ——— Getters / Setters ———
+	// â€”â€”â€” Getters / Setters â€”â€”â€”
     public String getNombre() {
     	return this.nombre; 
     }
@@ -72,7 +73,7 @@ public class Entrenador implements Cloneable, IClasificable {
 
    
 	@Override
-    public int getCategoria() { //Calcula y devuelve la “categoría” del entrenador, que es la suma de las categorías de todos sus Pokémones.
+    public int getCategoria() { //Calcula y devuelve la â€œcategorÃ­aâ€� del entrenador, que es la suma de las categorÃ­as de todos sus PokÃ©mones.
         int suma = 0;
         for (Pokemon p : this.pokemones.values()) {
             suma += p.getCategoria();
@@ -88,13 +89,13 @@ public class Entrenador implements Cloneable, IClasificable {
 	}
 	
 	
-    // ——— Selección y gestión de equipo activo ———
+    // â€”â€”â€” SelecciÃ³n y gestiÃ³n de equipo activo â€”â€”â€”
     public void agregarPokemonEquipo(String seleccion)  {
     	if(equipoActivo.size()<3) {
 	        if (seleccion == null)
-	            throw new IllegalArgumentException("Debe seleccionar al menos un pokémon");
+	            throw new IllegalArgumentException("Debe seleccionar al menos un pokÃ©mon");
 
-	        equipoActivo.add(buscaPokemon(seleccion)); //añado a la cola de donde la arena sacara los pokemones para pelear
+	        equipoActivo.add(buscaPokemon(seleccion)); //aÃ±ado a la cola de donde la arena sacara los pokemones para pelear
     	}
     }
     
@@ -148,13 +149,13 @@ public class Entrenador implements Cloneable, IClasificable {
         equipoActivo.add(p);
     }
 
-    // ——— Lanzamiento de hechizos (Double Dispatch) ———
+    // â€”â€”â€” Lanzamiento de hechizos (Double Dispatch) â€”â€”â€”
     public void hechizar(IHechizable hechizable)  {
     	if(this.hechizo != null)
     		hechizo.hechizar(hechizable);
     }
 
-    // ——— Clonación profunda según reglas ———
+    // â€”â€”â€” ClonaciÃ³n profunda segÃºn reglas â€”â€”â€”
     @Override
     public Entrenador clone() throws CloneNotSupportedException {
         Entrenador copia = (Entrenador) super.clone();
@@ -163,11 +164,11 @@ public class Entrenador implements Cloneable, IClasificable {
             try {
                 copia.pokemones.put(p.getNombre(),(Pokemon) p.clone());
             } catch (CloneNotSupportedException ex) {
-                // Si algún Pokémon no es clonable, abortamos toda la clonación
-                throw new CloneNotSupportedException("No se pudo clonar al Pokémon " + p.getNombre());
+                // Si algÃºn PokÃ©mon no es clonable, abortamos toda la clonaciÃ³n
+                throw new CloneNotSupportedException("No se pudo clonar al PokÃ©mon " + p.getNombre());
             }
         }
-        // clonamos también el equipo activo (en base a la nueva lista)
+        // clonamos tambiÃ©n el equipo activo (en base a la nueva lista)
         copia.equipoActivo = new LinkedList<>();
         for (Pokemon p : this.equipoActivo) {
         	copia.equipoActivo.add((Pokemon)p.clone());

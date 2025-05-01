@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Queue;
 
 import entrenador.Entrenador;
-import entrenador.EntrenadorSinPokemonesException;
+import excepciones.EntrenadorSinPokemonesException;
 import pokemones.Pokemon;
 
 /**
