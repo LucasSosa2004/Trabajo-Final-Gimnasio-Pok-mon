@@ -4,8 +4,9 @@ import excepciones.TipoDesconocidoException;
 
 public class ArmaFactory {
 	
-	  public Arma crearArma(String tipo)throws TipoDesconocidoException{
-	        switch (tipo.toUpperCase()) {
+	  public Arma getArma(String tipo)throws TipoDesconocidoException{
+		  tipo=tipo.toUpperCase();
+	        switch (tipo) {
 	            case "ESPADA":
 	                return new Espada();
 	            case "HACHA":

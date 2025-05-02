@@ -15,6 +15,15 @@ public class PokemonPiedra extends Pokemon {
 		this.fuerza=150;
 		this.experiencia=0;
 	}
+	public PokemonPiedra(String nombre, Arma arma) {
+		this.nombre=nombre;
+		this.costo=200;
+		this.vitalidad=600;
+		this.escudo=300;
+		this.fuerza=150;
+		this.experiencia=0;
+		this.arma=arma;
+	}
 	public void setArma(Arma a) {
 		this.arma = a;
 	}

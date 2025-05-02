@@ -15,10 +15,12 @@ public class Tienda {
 	}
 	
 	
-    public void comprarArma(String tipo,Entrenador e, Pokemon p) throws CompraImposibleException, PokemonNoPuedeUsarArmaE{
+    public void comprarArma(String tipo,Entrenador e, String nombre) throws CompraImposibleException, PokemonNoPuedeUsarArmaE{
         Arma a;
+        Pokemon p;
 		try {
-			a = armaFactory.crearArma(tipo);
+			p=e.buscaPokemon(nombre);
+			a = armaFactory.getArma(tipo);
 	        if(e.getCreditos() < a.getCosto())
 	        	throw new CompraImposibleException(e.getCreditos(),a.getCosto());
 			else {
@@ -28,7 +30,9 @@ public class Tienda {
 		} catch (TipoDesconocidoException e1) {
 			System.out.println("El tipo de arma "+e1.getTipo()+" es desconocido");
 		} catch (PokemonNoPuedeUsarArmaE e1) {
-			System.out.println("El pokemon" + e1.getNombre() + " no puede usar arma");
+			System.out.println("El pokemon " + e1.getNombre() + " no puede usar arma");
+		} catch (PokemonNoExisteException e1) {
+			System.out.println("El pokemon "+e1.getNombre()+" no existe");
 		}
 
     }

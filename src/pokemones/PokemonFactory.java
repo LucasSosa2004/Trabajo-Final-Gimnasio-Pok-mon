@@ -1,5 +1,7 @@
 package pokemones;
 
+import armas.Arma;
+import excepciones.PokemonNoPuedeUsarArmaE;
 import excepciones.TipoDesconocidoException;
 
 public class PokemonFactory {
@@ -18,7 +20,22 @@ public class PokemonFactory {
 			case "PIEDRA":
 				return new PokemonPiedra(nombre);
 			default://crear excepcion
-                throw new TipoDesconocidoException(tipo);
+                throw new TipoDesconocidoException(tipo);			
+		}
+		
+	}
+	public Pokemon getPokemon(String tipo, String nombre, Arma arma) throws TipoDesconocidoException,PokemonNoPuedeUsarArmaE{
+		tipo=tipo.toUpperCase();
+		nombre=nombre.toUpperCase();
+		switch (tipo) {
+			case "PIEDRA":
+				return new PokemonPiedra(nombre,arma);
+			default:{
+				if(tipo!="FUEGO" && tipo!="AGUA" && tipo!="HIELO")
+                	throw new TipoDesconocidoException(tipo);
+				else
+					throw new PokemonNoPuedeUsarArmaE(nombre); 
+			}
 			
 						
 		}

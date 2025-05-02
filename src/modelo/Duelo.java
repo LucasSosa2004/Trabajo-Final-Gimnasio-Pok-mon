@@ -60,6 +60,7 @@ public class Duelo {
      * */
     public void iniciarDuelo(){
     	 boolean turno=true;
+    	 double va,vd;
           
         Pokemon p1 = e1.proximoPokemon();
         Pokemon p2 = e2.proximoPokemon();
@@ -73,12 +74,20 @@ public class Duelo {
         while(p1!=null && p2!=null) {
         	//System.out.println("TURNO: " + turno);
 			if (turno) {
-			    if (p1.getVitalidad() > 0 && p2.getVitalidad() > 0)
+			    if (p1.getVitalidad() > 0 && p2.getVitalidad() > 0) {
+			    	va=p2.getVitalidad();
 			        p1.atacar(p2);
+			        vd=p2.getVitalidad();
+			        //System.out.println(p1.getNombre()+" ataco a "+p2.getNombre()+" y le infligio "+(va-vd));
+			    }
 			} 
 			else {
-			    if (p2.getVitalidad() > 0 && p1.getVitalidad() > 0)
+			    if (p2.getVitalidad() > 0 && p1.getVitalidad() > 0) {
+			    	va=p1.getVitalidad();
 			        p2.atacar(p1);
+			    	vd=p1.getVitalidad();
+			    	//System.out.println(p2.getNombre()+" ataco a "+p1.getNombre()+" y le infligio "+(va-vd));
+			    }
 			}
 			turno = !turno;
 
