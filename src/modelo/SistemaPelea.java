@@ -54,11 +54,9 @@ public class SistemaPelea {
     
     public void iniciarCombate(int numArena) {
     	Duelo duelo=this.getDuelo(numArena);
-    	
     	duelo.iniciarDuelo();
-    	System.out.println("El entrenador "+duelo.getGanador().getNombre()+" gano el duelo.");
-    	System.out.println();
-	
+    	duelo.getEntrenador1().vaciarEquipoActivo();
+    	duelo.getEntrenador2().vaciarEquipoActivo();
     	this.removeDuelo(numArena);
     }
 

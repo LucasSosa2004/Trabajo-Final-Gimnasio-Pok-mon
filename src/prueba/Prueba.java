@@ -124,9 +124,12 @@ public class Prueba {
 				knekro.setEquipo("Magmar","Ninetales");				
 				// Se le asigna un duelo a ash y knekro en la arena 1
 				Duelo d1=gimnasio.crearDuelo("ASH","knekro",1);
+				System.out.println("Duelo: " + d1.getEntrenador1().getNombre() + " VS " + d1.getEntrenador2().getNombre() );
 				sistemaPelea.addDuelo(d1);
 				// Comienza el duelo asignado a la arena 1
 				sistemaPelea.iniciarCombate(1);
+				System.out.println("El ganador/a es: " + d1.getGanador().getNombre());
+				
 				
 				//ash y knekro recargan sus pokemones y vuelven a elegir su equipo
 				ash.buscaPokemon("Charizard").recargar();
@@ -138,19 +141,21 @@ public class Prueba {
 				knekro.setEquipo("Magmar","Ninetales","Quilava");		
 				Duelo d4=gimnasio.crearDuelo("ASH","knekro",3);
 
-				
 				//COMBATE ENTRE MISTY Y DAWN 1V1
 				//Los entrenadores misty y dawn que van a pelear "eligen" su equipo
 				misty.setEquipo("Probopass");
 				dawn.setEquipo("Aerodactyl");			
 				// Se le asigna un duelo a misty y dawn en la arena 3
 				Duelo d3=gimnasio.crearDuelo("misty","dawn",3);
+				System.out.println("Duelo: " + d3.getEntrenador1().getNombre() + " VS " + d3.getEntrenador2().getNombre() );
+
 				sistemaPelea.addDuelo(d3);
 				//**ERROR** Se intenta asignar otro duelo a la misma arena (3) antes de que el duelo anterior comience y finalice
 				//sistemaPelea.addDuelo(d4);
 				// Comienza el duelo asignado a la arena 3
 				sistemaPelea.iniciarCombate(3);
-				
+				System.out.println("El ganador/a es: " + d3.getGanador().getNombre());
+
 				
 				//**ERROR** dawn intenta comprar en la tienda sin tener creditos
 				//gimnasio.getTienda().compraPokemon(dawn, "Hielo", "Rice");

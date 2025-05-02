@@ -13,7 +13,7 @@ import pokemones.Pokemon;
 
 
 /**
- * Cada Entrenador tiene un nombre, crÃ©ditos, una lista de pokÃ©mons
+ * Cada Entrenador tiene un nombre, creditos, una lista de pokemones
  * y un "equipo activo" de hasta 3 para duelos.
  */
 public class Entrenador implements Cloneable, IClasificable {
@@ -23,11 +23,32 @@ public class Entrenador implements Cloneable, IClasificable {
     private Queue<Pokemon> equipoActivo = new LinkedList<>();
     private IHechizo hechizo;
 
+    
+    /**
+     * Constructor que inicializa un entrenador con nombre y creditos iniciales.
+     * El nombre se almacena en mayusculas y el hechizo se inicializa como nulo.
+     * 
+     * @param nombre Nombre del entrenador
+     * @param creditosIniciales Cantidad inicial de creditos
+     */
+    
     public Entrenador(String nombre, int creditosIniciales) {
         this.nombre = nombre.toUpperCase();
         this.creditos = creditosIniciales;
         this.hechizo=null;
     }
+    
+    
+    /**
+     * Constructor que inicializa un entrenador con nombre, creditos iniciales y un hechizo.
+     * El nombre se almacena en mayusculas.
+     * 
+     * @param nombre Nombre del entrenador
+     * @param creditosIniciales Cantidad inicial de creditos
+     * @param hechizo Hechizo inicial del entrenador
+     */
+    
+    
     public Entrenador(String nombre, int creditosIniciales,IHechizo hechizo) {
         this.nombre = nombre.toUpperCase();
         this.creditos = creditosIniciales;
@@ -60,6 +81,15 @@ public class Entrenador implements Cloneable, IClasificable {
     	return this.pokemones;
     }
    
+   
+    /**
+     * Implementacion del metodo getCategoria de la interfaz IClasificable.
+     * Calcula y devuelve la categoria del entrenador, que es la suma de las categorias
+     * de todos sus Pokemones.
+     * 
+     * @return La suma de las categorias de todos los Pokemones del entrenador
+     */
+    
    
 	@Override
     public int getCategoria() { //Calcula y devuelve la categoria del entrenador, que es la suma de las categorias de todos sus Pokemones.
@@ -136,6 +166,10 @@ public class Entrenador implements Cloneable, IClasificable {
         return equipoActivo.poll();
     }
     
+    public void vaciarEquipoActivo() {
+    	this.equipoActivo.clear();
+    }
+    
     // â€”â€”â€” Lanzamiento de hechizos (Double Dispatch) â€”â€”â€”
     public void hechizar(IHechizable hechizable)  {
     	if(this.hechizo != null)
@@ -164,6 +198,8 @@ public class Entrenador implements Cloneable, IClasificable {
     }
 
      
+    
+    
     @Override
 	public String toString() {
 		return "Entrenador [nombre=" + nombre + ", creditos=" + creditos + ", pokemones=" + pokemones

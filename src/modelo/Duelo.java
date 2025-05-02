@@ -52,7 +52,13 @@ public class Duelo {
 		return ganador;
 	}
 
-
+	public Entrenador getEntrenador1() {
+		return e1;
+	}
+	
+	public Entrenador getEntrenador2() {
+		return e2;
+	}
 
 
 	/** Pre: las colas no tienen que estar vacias 
@@ -60,7 +66,7 @@ public class Duelo {
      * */
     public void iniciarDuelo(){
     	 boolean turno=true;
-    	 double va,vd;
+
           
         Pokemon p1 = e1.proximoPokemon();
         Pokemon p2 = e2.proximoPokemon();
@@ -75,30 +81,22 @@ public class Duelo {
         	//System.out.println("TURNO: " + turno);
 			if (turno) {
 			    if (p1.getVitalidad() > 0 && p2.getVitalidad() > 0) {
-			    	va=p2.getVitalidad();
 			        p1.atacar(p2);
-			        vd=p2.getVitalidad();
-			        //System.out.println(p1.getNombre()+" ataco a "+p2.getNombre()+" y le infligio "+(va-vd));
 			    }
 			} 
 			else {
 			    if (p2.getVitalidad() > 0 && p1.getVitalidad() > 0) {
-			    	va=p1.getVitalidad();
 			        p2.atacar(p1);
-			    	vd=p1.getVitalidad();
-			    	//System.out.println(p2.getNombre()+" ataco a "+p1.getNombre()+" y le infligio "+(va-vd));
 			    }
 			}
 			turno = !turno;
 
     		if(p1 != null && p1.getVitalidad() <= 0) {
 				p2.recibeExp();
-		    	System.out.println("Pokemon "+p1.getNombre()+" ha sido debilitado");
     			p1 = e1.proximoPokemon(); //devuelve null cuando no hay mas en la cola
             }
     		if(p2 != null && p2.getVitalidad() <= 0) {
 				p1.recibeExp();
-				System.out.println("Pokemon "+p2.getNombre()+" ha sido debilitado");
     			p2 = e2.proximoPokemon();
             }
 
