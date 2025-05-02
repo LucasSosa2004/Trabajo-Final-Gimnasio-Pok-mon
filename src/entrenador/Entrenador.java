@@ -1,18 +1,15 @@
 package entrenador;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
-import armas.Arma;
+import excepciones.EquipoLlenoException;
 import excepciones.NombreUtilizadoException;
+import excepciones.PokemonNoExisteException;
 import interfaces.IClasificable;
 import interfaces.IHechizable;
 import interfaces.IHechizo;
-import modelo.Tienda;
 import pokemones.Pokemon;
-import pokemones.PokemonPiedra;
 
 
 /**
@@ -27,34 +24,27 @@ public class Entrenador implements Cloneable, IClasificable {
     private IHechizo hechizo;
 
     public Entrenador(String nombre, int creditosIniciales) {
-        this.nombre = nombre;
+        this.nombre = nombre.toUpperCase();
         this.creditos = creditosIniciales;
         this.hechizo=null;
     }
-    
+    public Entrenador(String nombre, int creditosIniciales,IHechizo hechizo) {
+        this.nombre = nombre.toUpperCase();
+        this.creditos = creditosIniciales;
+        this.hechizo=hechizo;
+    }
     
 
 	public void setHechizo(IHechizo hechizo) {
 		this.hechizo = hechizo;
 	}
-
-
-
-
-	// â€”â€”â€” Getters / Setters â€”â€”â€”
+	
     public String getNombre() {
     	return this.nombre; 
     }
+    
     public double getCreditos() {
     	return this.creditos;
-    }
-    
-    
-    public Queue<Pokemon> getEquipoActivo(){
-    	return this.equipoActivo;
-    }
-    public HashMap<String,Pokemon> getPokemones(){
-    	return this.pokemones;
     }
     public void addCreditos(double cant) {
     	this.creditos += cant;
@@ -62,18 +52,17 @@ public class Entrenador implements Cloneable, IClasificable {
     public void subCreditos(double cant) {
     	this.creditos-=cant;
     }
+    
+    public Queue<Pokemon> getEquipoActivo(){
+    	return this.equipoActivo;
+    }    
+    public HashMap<String,Pokemon> getPokemones(){
+    	return this.pokemones;
+    }
    
-    @Override
-	public String toString() {
-		return "Entrenador [nombre=" + nombre + ", creditos=" + creditos + ", pokemones=" + pokemones
-				+ ", equipoActivo=" + equipoActivo + "]";
-	}
-
-
-
    
 	@Override
-    public int getCategoria() { //Calcula y devuelve la â€œcategorÃ­aâ€� del entrenador, que es la suma de las categorÃ­as de todos sus PokÃ©mones.
+    public int getCategoria() { //Calcula y devuelve la categoria del entrenador, que es la suma de las categorias de todos sus Pokemones.
         int suma = 0;
         for (Pokemon p : this.pokemones.values()) {
             suma += p.getCategoria();
@@ -81,22 +70,25 @@ public class Entrenador implements Cloneable, IClasificable {
         return suma;
     }
 	
-	public void addPokemon(Pokemon p) throws NombreUtilizadoException {
+	public void putPokemon(Pokemon p) throws NombreUtilizadoException {
 		if (this.pokemones.containsKey(p.getNombre()))
 			throw new NombreUtilizadoException(p.getNombre());
 		else	
 			this.pokemones.put(p.getNombre(), p);
 	}
 	
-	
-    // â€”â€”â€” SelecciÃ³n y gestiÃ³n de equipo activo â€”â€”â€”
-    public void agregarPokemonEquipo(String seleccion)  {
+	// Precondicion seleccion nunca puede ser null
+    public void agregarPokemonEquipo(String seleccion)throws EquipoLlenoException  {
+    	seleccion=seleccion.toUpperCase();
     	if(equipoActivo.size()<3) {
-	        if (seleccion == null)
-	            throw new IllegalArgumentException("Debe seleccionar al menos un pokÃ©mon");
-
-	        equipoActivo.add(buscaPokemon(seleccion)); //aÃ±ado a la cola de donde la arena sacara los pokemones para pelear
+	        try {
+				equipoActivo.add(buscaPokemon(seleccion));
+			} catch (PokemonNoExisteException e) {
+				System.out.println("El pokemon "+e.getNombre()+" no existe");
+			} //aniado a la cola de donde la arena sacara los pokemones para pelear
     	}
+    	else
+    		throw new EquipoLlenoException();
     }
     
     public void setEquipo(String p1, String p2, String p3) {
@@ -104,19 +96,17 @@ public class Entrenador implements Cloneable, IClasificable {
     		agregarPokemonEquipo(p1);
     		agregarPokemonEquipo(p2);
     		agregarPokemonEquipo(p3);
-    	}
-    	catch(IllegalArgumentException e) {
-    		throw new IllegalArgumentException();
-    	}
+    	} catch (EquipoLlenoException e) {
+			System.out.println("El equipo actual esta lleno, no se pueden mas pokemones");
+		}
     }
     
     public void setEquipo(String p) {
     	try {
     		agregarPokemonEquipo(p);
-    	}
-    	catch(IllegalArgumentException e) {
-    		throw new IllegalArgumentException();
-    	}
+    	}catch (EquipoLlenoException e) {
+			System.out.println("El equipo actual esta lleno, no se pueden mas pokemones");
+		}
     }
     
     public void setEquipo(String p1, String p2) {
@@ -124,18 +114,18 @@ public class Entrenador implements Cloneable, IClasificable {
     		agregarPokemonEquipo(p1);
     		agregarPokemonEquipo(p2);
 
-    	}
-    	catch(IllegalArgumentException e) {
-    		throw new IllegalArgumentException();
-    	}
+    	}catch (EquipoLlenoException e) {
+			System.out.println("El equipo actual esta lleno, no se pueden mas pokemones");
+		}
     }
     
-    public Pokemon buscaPokemon(String nombre) {
+    public Pokemon buscaPokemon(String nombre) throws PokemonNoExisteException {
     	Pokemon p = null;
+    	nombre=nombre.toUpperCase();
     	if (this.pokemones.containsKey(nombre))
     		p =this.pokemones.get(nombre);
     	else
-    		throw new IllegalArgumentException("Pokemon "+ nombre +" no encontrado");
+    		throw new PokemonNoExisteException(nombre);
     	return p;
     }
     
@@ -145,10 +135,7 @@ public class Entrenador implements Cloneable, IClasificable {
     public Pokemon proximoPokemon() {
         return equipoActivo.poll();
     }
-    public void regresarAlFinal(Pokemon p) {
-        equipoActivo.add(p);
-    }
-
+    
     // â€”â€”â€” Lanzamiento de hechizos (Double Dispatch) â€”â€”â€”
     public void hechizar(IHechizable hechizable)  {
     	if(this.hechizo != null)
@@ -177,7 +164,11 @@ public class Entrenador implements Cloneable, IClasificable {
     }
 
      
-    
+    @Override
+	public String toString() {
+		return "Entrenador [nombre=" + nombre + ", creditos=" + creditos + ", pokemones=" + pokemones
+				+ ", equipoActivo=" + equipoActivo + "]";
+	}
 
 
 }

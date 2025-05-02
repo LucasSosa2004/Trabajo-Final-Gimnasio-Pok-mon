@@ -9,12 +9,12 @@ import excepciones.EntrenadorSinPokemonesException;
 import excepciones.NombreUtilizadoException;
 
 /**
- * Clase Gimnasio que implementa el patrón de diseño Singleton.
+ * Clase Gimnasio que implementa el patron de disenio Singleton.
  * Representa un gimnasio con entrenadores, arenas y una tienda.
- * Solo puede existir una instancia de esta clase en toda la aplicación.
+ * Solo puede existir una instancia de esta clase en toda la aplicacion.
  */
 public class Gimnasio {
-    /** Instancia única de la clase */
+    /** Instancia unica de la clase */
     private static Gimnasio instancia;
     
     /** HashMap de entrenadores registrados en el gimnasio */
@@ -24,17 +24,17 @@ public class Gimnasio {
     private Tienda tienda;
     
     /**
-     * Constructor privado que evita la instanciación desde fuera de la clase.
+     * Constructor privado que evita la instanciacion desde fuera de la clase.
      */
     private Gimnasio() {
     	this.tienda=new Tienda();
     }
     
     /**
-     * Método estático que devuelve la única instancia de la clase Gimnasio.
+     * Metodo estatico que devuelve la unica instancia de la clase Gimnasio.
      * Si la instancia no existe, la crea.
      * 
-     * @return La única instancia de Gimnasio
+     * @return La unica instancia de Gimnasio
      */
     public static Gimnasio getInstancia() {
         if (instancia == null) {
@@ -44,6 +44,7 @@ public class Gimnasio {
     }
     
     public Entrenador getEntrenador(String nombre) throws EntrenadorNoExisteException{
+    	nombre=nombre.toUpperCase();
     	Entrenador e= this.entrenadores.get(nombre);
     	if (e==null) {
     		throw new EntrenadorNoExisteException(nombre);
@@ -53,11 +54,11 @@ public class Gimnasio {
     }
     
     /**
-     * Añade un entrenador al HashMap de entrenadores del gimnasio.
+     * Aniade un entrenador al HashMap de entrenadores del gimnasio.
      * 
-     * @param e El entrenador a añadir
+     * @param e El entrenador a aniadir
      */
-    public void addEntrenador(Entrenador e) throws NombreUtilizadoException {
+    public void putEntrenador(Entrenador e) throws NombreUtilizadoException {
 		if (this.entrenadores.containsKey(e.getNombre()))
 			throw new NombreUtilizadoException(e.getNombre());
 		else	
@@ -67,7 +68,7 @@ public class Gimnasio {
     /**
      * Devuelve el HashMap de todos los entrenadores registrados en el gimnasio.
      * 
-     * @return ArrayList con los entrenadores del gimnasio
+     * @return HashMap con los entrenadores del gimnasio
      */
     public HashMap<String,Entrenador> getEntrenadores() {
         return this.entrenadores;
@@ -105,10 +106,16 @@ public class Gimnasio {
     	} catch (EntrenadorSinPokemonesException e) {
     		System.out.println("El entrenador "+e.getNombre()+" no tiene pokemones para iniciar un duelo.");
     		return null;
-
     	}
     	
     	
     }
+
+	@Override
+	public String toString() {
+		return "Gimnasio [entrenadores=" + entrenadores + ", tienda=" + tienda + "]";
+	}
+    
+    
 
 }

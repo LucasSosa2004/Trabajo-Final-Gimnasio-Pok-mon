@@ -4,6 +4,7 @@ import entrenador.*;
 import excepciones.ArenaOcupadaException;
 import excepciones.CompraImposibleException;
 import excepciones.NombreUtilizadoException;
+import excepciones.TipoDesconocidoException;
 import interfaces.*;
 import modelo.*;
 import pokemones.*;
@@ -26,62 +27,41 @@ public class Prueba {
 			
 			e1.setHechizo(hN);
 			e2.setHechizo(hV);
-			
-			
-
-			
-			try {
-				gimnasio.addEntrenador(e1);
-				gimnasio.addEntrenador(e2);
-				e1.addPokemon(pokFac.getPokemon("Agua","magikarp"));
-				e1.addPokemon(pokFac.getPokemon("Agua","pikachu"));
-				e1.addPokemon(pokFac.getPokemon("Agua","charizard"));
-				e2.addPokemon(pokFac.getPokemon("Agua","vaporeon"));
-				e2.addPokemon(pokFac.getPokemon("Agua","magikarp2"));
-				e2.addPokemon(pokFac.getPokemon("Agua","charizard3"));
-				e1.addPokemon(pokFac.getPokemon("Agua","pikax"));
-				e1.addPokemon(pokFac.getPokemon("Agua","charis"));
-			} catch (NombreUtilizadoException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	
-
-
-			e1.setEquipo("magikarp", "pikachu", "charizard");
-			//e1.setEquipo("pikax");
-			e2.setEquipo("vaporeon");
 
 			 try {
+				 
+				gimnasio.putEntrenador(e1);
+				gimnasio.putEntrenador(e2);
+				e1.putPokemon(pokFac.getPokemon("Agua","magikarp"));
+				e1.putPokemon(pokFac.getPokemon("Piedra","OinIX"));
+				e1.putPokemon(pokFac.getPokemon("Agua","charizard"));
+				e2.putPokemon(pokFac.getPokemon("Agua","vaporeon"));
+				e2.putPokemon(pokFac.getPokemon("Agua","magikarp2"));
+				e2.putPokemon(pokFac.getPokemon("Agua","charizard3"));
+				e1.putPokemon(pokFac.getPokemon("Agua","pikax"));
+				e1.putPokemon(pokFac.getPokemon("Agua","charis")); 
+				e1.setEquipo("magikarp", "pikachu", "charizard");
+				e2.setEquipo("vaporeon");
+				
 				gimnasio.getTienda().compraPokemon(e1, "AGUA", "BULBASUR");
-			} catch (CompraImposibleException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			
-			try {
 				sistemaPelea.addDuelo(gimnasio.crearDuelo("ASH","JJJ",1));
+				
 				sistemaPelea.iniciarCombate(1);
+				
 				System.out.println(e1);
 				System.out.println(e2);
-
+			} catch (CompraImposibleException e) {
+				System.out.println("Creditos insuficientes, en posesion "+e.getCreditos()+", necesarios "+e.getCosto());
+			}catch (NombreUtilizadoException e) {
+				System.out.println("El nombre "+e.getNombre()+" ya esta en uso");
+			} catch (TipoDesconocidoException e) {
+				System.out.println("El tipo "+e.getTipo()+" es desconocido");
 			} catch (ArenaOcupadaException e) {
 				System.out.println("La arena "+e.getNumArena()+" esta ocupada");
 			}
-			//sistemaPelea.addDuelo(gimnasio.crearDuelo("z","u",1));
 			
-			//sistemaPelea.iniciarTorneo();
-			
-			
-			
-			//arena=gimnasio.getArenas().getFirst();
-			//Entrenador ganador = arena.iniciarDuelo();
-			//System.out.println(ganador.toString());
-			//System.out.println("GANADOR: " + ganador.getEquipoActivo());
-
-
 		
+	}	
 	
-	}
+	
 }

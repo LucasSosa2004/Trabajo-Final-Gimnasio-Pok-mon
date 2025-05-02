@@ -7,6 +7,7 @@ import pokemones.Pokemon;
 public class Hacha extends Arma {
 
 	public Hacha() {
+		super();
 		this.costo=80;
 	}
 	

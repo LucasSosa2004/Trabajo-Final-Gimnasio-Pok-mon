@@ -17,16 +17,16 @@ import pokemones.Pokemon;
 public class Duelo {
     private Entrenador e1, e2,ganador;
     private int clave;
-    private boolean dueloTerminado;
+    private boolean dueloTerminado; //Puede llegar a ser util cuando se implemente la concurrencia a la hora del torneo
     
 
     
     private static final int PREMIO_GANADOR = 500;
 
     public Duelo(Entrenador e1, Entrenador e2, int numArena) throws EntrenadorSinPokemonesException {
-        if (e1.getPokemones().isEmpty())
+        if (e1.getEquipoActivo().isEmpty())
             throw new EntrenadorSinPokemonesException(e1.getNombre());
-        if (e2.getPokemones().isEmpty())
+        if (e2.getEquipoActivo().isEmpty())
             throw new EntrenadorSinPokemonesException(e2.getNombre());
         this.e1 = e1;
         this.e2 = e2;
@@ -40,6 +40,19 @@ public class Duelo {
     public int getClave() {
 		return clave;
 	}
+    
+
+    public boolean isDueloTerminado() {
+		return dueloTerminado;
+	}
+
+    
+    
+	public Entrenador getGanador() {
+		return ganador;
+	}
+
+
 
 
 	/** Pre: las colas no tienen que estar vacias 
@@ -51,6 +64,8 @@ public class Duelo {
         Pokemon p1 = e1.proximoPokemon();
         Pokemon p2 = e2.proximoPokemon();
 
+        
+        //en nuestro modelo el hechizo se puede lanzar una sola vez por combate y siempre se lanza al primer pokemon invocado por el rival
         e1.hechizar(p2);
         e2.hechizar(p1);
 
@@ -68,15 +83,13 @@ public class Duelo {
 			turno = !turno;
 
     		if(p1 != null && p1.getVitalidad() <= 0) {
-           	    System.out.println(p1);
-           	    System.out.println(p2);
 				p2.recibeExp();
+		    	System.out.println("Pokemon "+p1.getNombre()+" ha sido debilitado");
     			p1 = e1.proximoPokemon(); //devuelve null cuando no hay mas en la cola
             }
     		if(p2 != null && p2.getVitalidad() <= 0) {
-    			System.out.println(p1);
-            	System.out.println(p2);
 				p1.recibeExp();
+				System.out.println("Pokemon "+p2.getNombre()+" ha sido debilitado");
     			p2 = e2.proximoPokemon();
             }
 
@@ -92,20 +105,15 @@ public class Duelo {
     	this.dueloTerminado=true;
     }
 
-    
 
-    public boolean isDueloTerminado() {
-		return dueloTerminado;
-	}
-
-    
-    
-	public Entrenador getGanador() {
-		return ganador;
+	@Override
+	public String toString() {
+		return "Duelo [e1=" + e1 + ", e2=" + e2 + ", ganador=" + ganador + ", clave=" + clave + ", dueloTerminado="
+				+ dueloTerminado + "]";
 	}
 
 
-
+    
 
 
 }

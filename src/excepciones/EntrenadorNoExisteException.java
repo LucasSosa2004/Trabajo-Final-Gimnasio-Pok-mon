@@ -1,6 +1,6 @@
 package excepciones;
 
-public class EntrenadorNoExisteException extends Exception {
+public class EntrenadorNoExisteException extends EntrenadorException {
 	protected String nombre;
 
 	public EntrenadorNoExisteException(String nombre) {

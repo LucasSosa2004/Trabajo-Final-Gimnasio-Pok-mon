@@ -17,6 +17,11 @@ public class PokemonAgua extends Pokemon {
 		this.experiencia=0;
 		
 	}
+	
+	
+	public void setArma(Arma a) throws PokemonNoPuedeUsarArmaE{
+		throw new PokemonNoPuedeUsarArmaE(this.nombre); 
+	}
 
 	@Override
 	public void atacar(Pokemon adversario) {
@@ -25,7 +30,7 @@ public class PokemonAgua extends Pokemon {
 	}
 	@Override
 	public void recibeDano(double danoRecibido) {
-		if(this.escudo!=0) {
+		if(this.escudo>0) {
 			if(danoRecibido*.5>this.escudo) {
 				danoRecibido-=this.escudo;
 				this.escudo=0;
@@ -69,6 +74,7 @@ public class PokemonAgua extends Pokemon {
 			nPok = (PokemonAgua)super.clone();
 			return nPok;
 		} catch (CloneNotSupportedException e) {
+			//NUNCA ENTRA
 			return null;
 		}
 	}
@@ -77,12 +83,6 @@ public class PokemonAgua extends Pokemon {
 	public String toString() {
 		return "PokemonAgua []"+super.toString();
 	}
-
-	public void setArma(Arma a) throws PokemonNoPuedeUsarArmaE{
-		throw new PokemonNoPuedeUsarArmaE(this.nombre); 
-	}
-	
-	
 
 
 

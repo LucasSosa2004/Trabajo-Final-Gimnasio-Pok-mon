@@ -22,6 +22,8 @@ public abstract class Pokemon implements Cloneable,IHostil, IValuable, IHechizab
 	public abstract void recargar();  
 	public abstract void setArma(Arma a) throws PokemonNoPuedeUsarArmaE;
 	
+	
+	
 	public int getCategoria() {
 		return this.experiencia;
 	}
@@ -39,15 +41,15 @@ public abstract class Pokemon implements Cloneable,IHostil, IValuable, IHechizab
 	public String getNombre() {
 		return this.nombre;
 	}
+
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
 	@Override
 	public String toString() {
 		return " [nombre=" + nombre + ", vitalidad=" + vitalidad + ", escudo=" + escudo + ", fuerza=" + fuerza
 				+ ", costo=" + costo + ", experiencia=" + experiencia + "]";
 	}
 	
-	public Object clone() throws CloneNotSupportedException {
-		return super.clone();
-	}
-
 } 
   

@@ -1,7 +1,7 @@
 package excepciones;
 
-public class EntrenadorSinPokemonesException extends Exception {
-	private String nombre;
+public class EntrenadorSinPokemonesException extends EntrenadorException {
+	protected String nombre;
 	
 	public EntrenadorSinPokemonesException(String nombre) {
 		super("Entrenador sin pokemones");

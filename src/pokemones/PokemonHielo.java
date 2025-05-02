@@ -15,6 +15,10 @@ public class PokemonHielo extends Pokemon {
 		this.experiencia=0;
 	}
 	
+	public void setArma(Arma a) throws PokemonNoPuedeUsarArmaE{
+		throw new PokemonNoPuedeUsarArmaE(this.nombre); 
+	}
+	
 	@Override
 	public void atacar(Pokemon adversario) {
 		adversario.recibeDano(this.fuerza*.15);
@@ -73,8 +77,6 @@ public class PokemonHielo extends Pokemon {
 		return "PokemonHielo []"+super.toString();
 	}
 
-	public void setArma(Arma a) throws PokemonNoPuedeUsarArmaE{
-		throw new PokemonNoPuedeUsarArmaE(this.nombre); 
-	}
+
 	
 }

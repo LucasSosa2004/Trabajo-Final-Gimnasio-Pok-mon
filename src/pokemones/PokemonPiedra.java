@@ -15,6 +15,9 @@ public class PokemonPiedra extends Pokemon {
 		this.fuerza=150;
 		this.experiencia=0;
 	}
+	public void setArma(Arma a) {
+		this.arma = a;
+	}
 
 	@Override
 	public void atacar(Pokemon adversario) {
@@ -95,8 +98,6 @@ public class PokemonPiedra extends Pokemon {
 		return this.arma;
 	}
 
-	public void setArma(Arma a) {
-		this.arma = a;
-	}
+
 	
 }

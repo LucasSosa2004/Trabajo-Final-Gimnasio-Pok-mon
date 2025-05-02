@@ -1,10 +1,13 @@
 package pokemones;
 
+import excepciones.TipoDesconocidoException;
+
 public class PokemonFactory {
 	
 	
-	public Pokemon getPokemon(String tipo, String nombre){
+	public Pokemon getPokemon(String tipo, String nombre) throws TipoDesconocidoException{
 		tipo=tipo.toUpperCase();
+		nombre=nombre.toUpperCase();
 		switch (tipo) {
 			case "AGUA":
 				return new PokemonAgua(nombre);
@@ -15,7 +18,7 @@ public class PokemonFactory {
 			case "PIEDRA":
 				return new PokemonPiedra(nombre);
 			default://crear excepcion
-                throw new IllegalArgumentException("Tipo de pokemon desconocido: " + tipo);
+                throw new TipoDesconocidoException(tipo);
 			
 						
 		}

@@ -14,6 +14,10 @@ public class PokemonFuego extends Pokemon {
 		this.experiencia=0;
 	}
 	
+	public void setArma(Arma a) throws PokemonNoPuedeUsarArmaE{
+		throw new PokemonNoPuedeUsarArmaE(this.nombre); 
+	}
+	
 	@Override
 	public void atacar(Pokemon adversario) {
 		adversario.recibeDano(this.fuerza*.2);
@@ -73,7 +77,5 @@ public class PokemonFuego extends Pokemon {
 		return "PokemonFuego []"+super.toString();
 	}
 	
-	public void setArma(Arma a) throws PokemonNoPuedeUsarArmaE{
-		throw new PokemonNoPuedeUsarArmaE(this.nombre); 
-	}
+
 }
