@@ -16,6 +16,11 @@ public class Hacha extends Arma {
 		Random random = new Random();
 		adversario.recibeDano(random.nextDouble(50,150));
 	}
+	/**
+     * Lanza una excepción, ya que el hacha no soporta clonacion.
+     * 
+     * @throws CloneNotSupportedException Siempre que se intente clonar
+     */
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		throw new CloneNotSupportedException();

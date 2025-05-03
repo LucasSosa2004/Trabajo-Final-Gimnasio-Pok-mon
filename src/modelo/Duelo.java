@@ -23,6 +23,14 @@ public class Duelo {
     
     private static final int PREMIO_GANADOR = 500;
 
+	/**
+	 * Constructor que inicializa un duelo entre dos entrenadores.
+	 * 
+	 * @param e1 Entrenador 1
+	 * @param e2 Entrenador 2
+	 * @param numArena Numero de arena donde se lleva a cabo el duelo
+	 * @throws EntrenadorSinPokemonesException Si alguno de los entrenadores no tiene pokemones activos
+	 */
     public Duelo(Entrenador e1, Entrenador e2, int numArena) throws EntrenadorSinPokemonesException {
         if (e1.getEquipoActivo().isEmpty())
             throw new EntrenadorSinPokemonesException(e1.getNombre());
@@ -62,7 +70,9 @@ public class Duelo {
 
 
 	/** Pre: las colas no tienen que estar vacias 
-     * return: entrenador ganador del duelo;
+	 *  El hechizo se lanza una sola vez por combate y siempre se lanza al primer pokemon invocado por el rival
+	 *  Post: el duelo se resuelve hasta que uno de los dos entrenadores se queda sin pokemones activos.
+	 *  @return entrenador ganador del duelo;
      * */
     public void iniciarDuelo(){
     	 boolean turno=true;
