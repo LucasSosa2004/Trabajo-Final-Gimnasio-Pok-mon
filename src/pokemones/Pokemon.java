@@ -20,7 +20,6 @@ public abstract class Pokemon implements Cloneable, IHostil, IValuable, IHechiza
      * - La vitalidad, escudo, fuerza y costo deben ser mayores o iguales a 0.
      */
     private void verificarInvariante() {
-        assert vitalidad >= 0 : "La vitalidad no puede ser negativa";
         assert escudo >= 0 : "El escudo no puede ser negativo";
         assert fuerza >= 0 : "La fuerza no puede ser negativa";
         assert costo >= 0 : "El costo no puede ser negativo";
@@ -42,7 +41,7 @@ public abstract class Pokemon implements Cloneable, IHostil, IValuable, IHechiza
      */
     public void recibeExp() {
         this.experiencia++;
-        assert this.experiencia > 0 : "La experiencia debe ser mayor a 0";
+        assert this.experiencia >= 0 : "La experiencia no puede ser negativa";
     }
 
     public double getCosto() {

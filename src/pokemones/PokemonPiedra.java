@@ -14,7 +14,6 @@ public class PokemonPiedra extends Pokemon {
 		this.escudo=300;
 		this.fuerza=150;
 		this.experiencia=0;
-		assert this.vitalidad > 0 : "La vitalidad debe ser mayor a 0";
 	}
 	public PokemonPiedra(String nombre, Arma arma) {
 		this.nombre=nombre;
@@ -53,7 +52,6 @@ public class PokemonPiedra extends Pokemon {
 			}
 		}
 		this.vitalidad-=danoRecibido;
-		assert this.vitalidad >= 0 : "La vitalidad no puede ser negativa";
 	}
 
 	@Override

@@ -25,8 +25,7 @@ public class PokemonFactory {
         }
     }
 
-    public Pokemon getPokemon(String tipo, String nombre, Arma arma)
-            throws TipoDesconocidoException, PokemonNoPuedeUsarArmaE {
+    public Pokemon getPokemon(String tipo, String nombre, Arma arma) throws TipoDesconocidoException, PokemonNoPuedeUsarArmaE {
         assert tipo != null && !tipo.isEmpty() : "El tipo no puede ser nulo o vacio";
         assert nombre != null && !nombre.isEmpty() : "El nombre no puede ser nulo o vacio";
         assert arma != null : "El arma no puede ser nula";
