@@ -103,7 +103,7 @@ public class Entrenador implements Cloneable, IClasificable {
     
    
 	@Override
-    public int getCategoria() { //Calcula y devuelve la categoria del entrenador, que es la suma de las categorias de todos sus Pokemones.
+    public int getCategoria() {
         int suma = 0;
         for (Pokemon p : this.pokemones.values()) {
             suma += p.getCategoria();
@@ -112,14 +112,14 @@ public class Entrenador implements Cloneable, IClasificable {
     }
 	
     /**
-     * Añade un Pokemon a la lista de pokemones del entrenador.
+     * Aniade un Pokemon a la lista de pokemones del entrenador.
      * 
      * Pre: El Pokemon no puede ser nulo.
      * 
      * Postcondicion:
      * - El Pokemon se agrega a la lista si su nombre no esta en uso.
      * 
-     * @param p El Pokemon a añadir
+     * @param p El Pokemon a aniadir
      * @throws NombreUtilizadoException Si ya existe un Pokemon con el mismo nombre
      */
 	public void putPokemon(Pokemon p) throws NombreUtilizadoException {
@@ -131,14 +131,14 @@ public class Entrenador implements Cloneable, IClasificable {
 	}
 	
     /**
-     * Añade un Pokémon al equipo activo del entrenador.
+     * Aniade un Pokemon al equipo activo del entrenador.
      * 
      * Pre: seleccion no puede ser null.
      * 
      * Postcondicion:
-     * - El Pokemon se añade al equipo activo si hay espacio disponible.
+     * - El Pokemon se aniade al equipo activo si hay espacio disponible.
      * 
-     * @param seleccion Nombre del Pokémon a añadir
+     * @param seleccion Nombre del Pokemon a aniadir
      * @throws EquipoLlenoException Si el equipo activo ya tiene 3 Pokemones
      */
     public void agregarPokemonEquipo(String seleccion)throws EquipoLlenoException  {
@@ -149,11 +149,23 @@ public class Entrenador implements Cloneable, IClasificable {
 				equipoActivo.add(buscaPokemon(seleccion));
 			} catch (PokemonNoExisteException e) {
 				System.out.println("El pokemon "+e.getNombre()+" no existe");
-			} //aniado a la cola de donde la arena sacara los pokemones para pelear
+			} 
     	}
     	else
     		throw new EquipoLlenoException();
     }
+    /**
+     * Setea el equipo activo del entrenador.
+     * 
+     * Pre: p1,p2,p3 no pueden ser null.
+     * 
+     * Postcondicion:
+     * - Los pokemones se aniaden al equipo activo si hay espacio disponible.
+     * 
+     * @param p1 Nombre del Pokemon a aniadir
+     * @param p2 Nombre del Pokemon a aniadir
+     * @param p3 Nombre del Pokemon a aniadir
+     */
     
     public void setEquipo(String p1, String p2, String p3) {
     	try {
@@ -164,14 +176,17 @@ public class Entrenador implements Cloneable, IClasificable {
 			System.out.println("El equipo actual esta lleno, no se pueden mas pokemones");
 		}
     }
-    
-    public void setEquipo(String p) {
-    	try {
-    		agregarPokemonEquipo(p);
-    	}catch (EquipoLlenoException e) {
-			System.out.println("El equipo actual esta lleno, no se pueden mas pokemones");
-		}
-    }
+    /**
+     * Setea el equipo activo del entrenador.
+     * 
+     * Pre: p1 y p2 no pueden ser null.
+     * 
+     * Postcondicion:
+     * - Los pokemones se aniaden al equipo activo si hay espacio disponible.
+     * 
+     * @param p1 Nombre del Pokemon a aniadir
+     * @param p2 Nombre del Pokemon a aniadir
+     */
     
     public void setEquipo(String p1, String p2) {
     	try {
@@ -182,18 +197,37 @@ public class Entrenador implements Cloneable, IClasificable {
 			System.out.println("El equipo actual esta lleno, no se pueden mas pokemones");
 		}
     }
+    /**
+     * Setea el equipo activo del entrenador.
+     * 
+     * Pre: p1 no puede ser null.
+     * 
+     * Postcondicion:
+     * - El pokemon se aniade al equipo activo si hay espacio disponible.
+     * 
+     * @param p1 Nombre del Pokemon a aniadir
+     */
+    
+    public void setEquipo(String p) {
+    	try {
+    		agregarPokemonEquipo(p);
+    	}catch (EquipoLlenoException e) {
+			System.out.println("El equipo actual esta lleno, no se pueden mas pokemones");
+		}
+    }
+
     
     /**
-     * Busca un Pokémon por su nombre en la lista de Pokemones del entrenador.
+     * Busca un Pokemon por su nombre en la lista de Pokemones del entrenador.
      * 
      * Pre: El nombre no puede ser nulo ni vacio.
      * 
      * Postcondicion:
      * - Devuelve el Pokemon si existe en la lista.
      * 
-     * @param nombre Nombre del Pokémon a buscar
-     * @return El Pokémon encontrado
-     * @throws PokemonNoExisteException Si el Pokémon no existe en la lista
+     * @param nombre Nombre del Pokemon a buscar
+     * @return El Pokemon encontrado
+     * @throws PokemonNoExisteException Si el Pokemon no existe en la lista
      */
     public Pokemon buscaPokemon(String nombre) throws PokemonNoExisteException {
         assert nombre != null && !nombre.isEmpty() : "El nombre no puede ser nulo o vacio";
@@ -224,7 +258,6 @@ public class Entrenador implements Cloneable, IClasificable {
         assert this.equipoActivo.isEmpty() : "El equipo activo no se vacio correctamente";
     }
     
-    // â€”â€”â€” Lanzamiento de hechizos (Double Dispatch) â€”â€”â€”
     /**
      * Lanza un hechizo sobre un objeto hechizable.
      * 
@@ -238,7 +271,6 @@ public class Entrenador implements Cloneable, IClasificable {
     		hechizo.hechizar(hechizable);
     }
 
-    // â€”â€”â€” Clonacion profunda segÃºn reglas â€”â€”â€”
     /**
      * Realiza una clonacion profunda del entrenador.
      * 
@@ -247,7 +279,7 @@ public class Entrenador implements Cloneable, IClasificable {
      *   incluyendo copias de los Pokemones y el equipo activo.
      * 
      * @return Una copia profunda del entrenador
-     * @throws CloneNotSupportedException Si algun Pokemon no es clonable
+     * @throws CloneNotSupportedException Si algun Pokemon o arma no es clonable
      */
     @Override
     public Entrenador clone() throws CloneNotSupportedException {
@@ -257,11 +289,10 @@ public class Entrenador implements Cloneable, IClasificable {
             try {
                 copia.pokemones.put(p.getNombre(),(Pokemon) p.clone());
             } catch (CloneNotSupportedException ex) {
-                // Si algÃºn PokÃ©mon no es clonable, abortamos toda la clonaciÃ³n
                 throw new CloneNotSupportedException("No se pudo clonar al PokÃ©mon " + p.getNombre());
             }
         }
-        // clonamos tambien el equipo activo (en base a la nueva lista)
+
         copia.equipoActivo = new LinkedList<>();
         for (Pokemon p : this.equipoActivo) {
         	copia.equipoActivo.add((Pokemon)p.clone());

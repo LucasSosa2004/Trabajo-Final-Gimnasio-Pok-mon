@@ -4,7 +4,7 @@ import interfaces.IHechizable;
 import interfaces.IHechizo;
 
 /**
- * Hechizo que reduce el escudo y la fuerza del objetivo.
+ * Hechizo que reduce el escudo y/o la fuerza del objetivo.
  */
 public class HechizoTormenta implements IHechizo {
 
