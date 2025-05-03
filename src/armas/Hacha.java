@@ -6,31 +6,30 @@ import pokemones.Pokemon;
 
 public class Hacha extends Arma {
 
-	public Hacha() {
-		super();
-		this.costo=80;
-	}
-	
-	@Override
-	public void atacar(Pokemon adversario) {
-		Random random = new Random();
-		adversario.recibeDano(random.nextDouble(50,150));
-	}
-	/**
-     * Lanza una excepción, ya que el hacha no soporta clonacion.
-     * 
-     * @throws CloneNotSupportedException Siempre que se intente clonar
-     */
-	@Override
-	public Object clone() throws CloneNotSupportedException {
-		throw new CloneNotSupportedException();
-	}
+    public Hacha() {
+        super();
+        this.costo = 80;
+        assert this.costo > 0 : "El costo debe ser mayor a 0";
+    }
 
-	@Override
-	public String toString() {
-		return "Hacha []"+super.toString();
-	}
-	
-	
+    @Override
+    public void atacar(Pokemon adversario) {
+        assert adversario != null : "El adversario no puede ser nulo";
+        Random random = new Random();
+        double dano = random.nextDouble(50, 150);
+        adversario.recibeDano(dano);
+        assert dano >= 50 && dano <= 150 : "El dano debe estar entre 50 y 150";
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        throw new CloneNotSupportedException();
+    }
+
+    @Override
+    public String toString() {
+        String resultado = "Hacha []" + super.toString();
+        assert resultado != null : "El resultado de toString no puede ser nulo";
+        return resultado;
+    }
 }
- 

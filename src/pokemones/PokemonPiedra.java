@@ -14,6 +14,7 @@ public class PokemonPiedra extends Pokemon {
 		this.escudo=300;
 		this.fuerza=150;
 		this.experiencia=0;
+		assert this.vitalidad > 0 : "La vitalidad debe ser mayor a 0";
 	}
 	public PokemonPiedra(String nombre, Arma arma) {
 		this.nombre=nombre;
@@ -30,15 +31,17 @@ public class PokemonPiedra extends Pokemon {
 
 	@Override
 	public void atacar(Pokemon adversario) {
+		assert adversario != null : "El adversario no puede ser nulo";
 		if (arma!=null)
 			this.arma.atacar(adversario);
 		else {
 			adversario.recibeDano(this.fuerza*.15);
 			this.fuerza*=.95;
 		}
-
+		assert this.fuerza >= 0 : "La fuerza no puede ser negativa";
 	}
 	public void recibeDano(double danoRecibido) {
+		assert danoRecibido >= 0 : "El dano recibido no puede ser negativo";
 		if(this.escudo!=0) {
 			if(danoRecibido*.75>this.escudo) {
 				danoRecibido-=this.escudo;
@@ -50,6 +53,7 @@ public class PokemonPiedra extends Pokemon {
 			}
 		}
 		this.vitalidad-=danoRecibido;
+		assert this.vitalidad >= 0 : "La vitalidad no puede ser negativa";
 	}
 
 	@Override

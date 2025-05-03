@@ -23,6 +23,15 @@ public class Entrenador implements Cloneable, IClasificable {
     private Queue<Pokemon> equipoActivo = new LinkedList<>();
     private IHechizo hechizo;
 
+    /**
+     * Invariante de clase:
+     * - El nombre no puede ser nulo ni vacio.
+     * - Los creditos deben ser mayores o iguales a 0.
+     */
+    private void verificarInvariante() {
+        assert nombre != null && !nombre.isEmpty() : "El nombre no puede ser nulo o vacio";
+        assert creditos >= 0 : "Los creditos no pueden ser negativos";
+    }
     
     /**
      * Constructor que inicializa un entrenador con nombre y creditos iniciales.
@@ -36,6 +45,7 @@ public class Entrenador implements Cloneable, IClasificable {
         this.nombre = nombre.toUpperCase();
         this.creditos = creditosIniciales;
         this.hechizo=null;
+        verificarInvariante();
     }
     
     
@@ -53,6 +63,7 @@ public class Entrenador implements Cloneable, IClasificable {
         this.nombre = nombre.toUpperCase();
         this.creditos = creditosIniciales;
         this.hechizo=hechizo;
+        verificarInvariante();
     }
     
 
@@ -100,7 +111,19 @@ public class Entrenador implements Cloneable, IClasificable {
         return suma;
     }
 	
+    /**
+     * Añade un Pokemon a la lista de pokemones del entrenador.
+     * 
+     * Pre: El Pokemon no puede ser nulo.
+     * 
+     * Postcondicion:
+     * - El Pokemon se agrega a la lista si su nombre no esta en uso.
+     * 
+     * @param p El Pokemon a añadir
+     * @throws NombreUtilizadoException Si ya existe un Pokemon con el mismo nombre
+     */
 	public void putPokemon(Pokemon p) throws NombreUtilizadoException {
+        assert p != null : "El Pokemon no puede ser nulo";
 		if (this.pokemones.containsKey(p.getNombre()))
 			throw new NombreUtilizadoException(p.getNombre());
 		else	
@@ -112,10 +135,14 @@ public class Entrenador implements Cloneable, IClasificable {
      * 
      * Pre: seleccion no puede ser null.
      * 
+     * Postcondicion:
+     * - El Pokemon se añade al equipo activo si hay espacio disponible.
+     * 
      * @param seleccion Nombre del Pokémon a añadir
      * @throws EquipoLlenoException Si el equipo activo ya tiene 3 Pokemones
      */
     public void agregarPokemonEquipo(String seleccion)throws EquipoLlenoException  {
+        assert seleccion != null && !seleccion.isEmpty() : "El nombre del Pokemon no puede ser nulo o vacio";
     	seleccion=seleccion.toUpperCase();
     	if(equipoActivo.size()<3) {
 	        try {
@@ -159,11 +186,17 @@ public class Entrenador implements Cloneable, IClasificable {
     /**
      * Busca un Pokémon por su nombre en la lista de Pokemones del entrenador.
      * 
+     * Pre: El nombre no puede ser nulo ni vacio.
+     * 
+     * Postcondicion:
+     * - Devuelve el Pokemon si existe en la lista.
+     * 
      * @param nombre Nombre del Pokémon a buscar
      * @return El Pokémon encontrado
      * @throws PokemonNoExisteException Si el Pokémon no existe en la lista
      */
     public Pokemon buscaPokemon(String nombre) throws PokemonNoExisteException {
+        assert nombre != null && !nombre.isEmpty() : "El nombre no puede ser nulo o vacio";
     	Pokemon p = null;
     	nombre=nombre.toUpperCase();
     	if (this.pokemones.containsKey(nombre))
@@ -182,18 +215,40 @@ public class Entrenador implements Cloneable, IClasificable {
     
      /**
      * Vacia el equipo activo del entrenador.
+     * 
+     * Postcondicion:
+     * - El equipo activo queda vacio.
      */
     public void vaciarEquipoActivo() {
     	this.equipoActivo.clear();
+        assert this.equipoActivo.isEmpty() : "El equipo activo no se vacio correctamente";
     }
     
     // â€”â€”â€” Lanzamiento de hechizos (Double Dispatch) â€”â€”â€”
+    /**
+     * Lanza un hechizo sobre un objeto hechizable.
+     * 
+     * Pre: El objeto hechizable no puede ser nulo.
+     * 
+     * @param hechizable El objeto sobre el que se lanza el hechizo
+     */
     public void hechizar(IHechizable hechizable)  {
+        assert hechizable != null : "El objeto hechizable no puede ser nulo";
     	if(this.hechizo != null)
     		hechizo.hechizar(hechizable);
     }
 
     // â€”â€”â€” Clonacion profunda segÃºn reglas â€”â€”â€”
+    /**
+     * Realiza una clonacion profunda del entrenador.
+     * 
+     * Postcondicion:
+     * - Devuelve una nueva instancia de Entrenador con los mismos atributos,
+     *   incluyendo copias de los Pokemones y el equipo activo.
+     * 
+     * @return Una copia profunda del entrenador
+     * @throws CloneNotSupportedException Si algun Pokemon no es clonable
+     */
     @Override
     public Entrenador clone() throws CloneNotSupportedException {
         Entrenador copia = (Entrenador) super.clone();

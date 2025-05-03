@@ -17,13 +17,19 @@ public class Tienda {
 	/**
      * Permite a un entrenador comprar un arma para uno de sus Pokemones.
      * 
+     * Pre: El tipo de arma, el entrenador y el nombre del Pokemon no pueden ser nulos.
+     * 
      * @param tipo Tipo de arma a comprar
      * @param e Entrenador que realiza la compra
-     * @param nombre Nombre del Pokémon que usará el arma
-     * @throws CompraImposibleException Si el entrenador no tiene suficientes créditos
+     * @param nombre Nombre del Pokemon que usara el arma
+     * @throws CompraImposibleException Si el entrenador no tiene suficientes creditos
 	 * @throws PokemonNoPuedeUsarArmaE Si el Pokémon no puede usar el arma
      */
     public void comprarArma(String tipo,Entrenador e, String nombre) throws CompraImposibleException, PokemonNoPuedeUsarArmaE{
+        assert tipo != null && !tipo.isEmpty() : "El tipo de arma no puede ser nulo o vacio";
+        assert e != null : "El entrenador no puede ser nulo";
+        assert nombre != null && !nombre.isEmpty() : "El nombre del Pokemon no puede ser nulo o vacio";
+
         Arma a;
         Pokemon p;
 		try {
@@ -41,8 +47,9 @@ public class Tienda {
 			System.out.println("El pokemon " + e1.getNombre() + " no puede usar arma");
 		} catch (PokemonNoExisteException e1) {
 			System.out.println("El pokemon "+e1.getNombre()+" no existe");
-		}
+			}
 
+        assert e.getCreditos() >= 0 : "Los creditos del entrenador no pueden ser negativos";
     }
     
 

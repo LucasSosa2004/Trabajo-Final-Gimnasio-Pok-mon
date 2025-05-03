@@ -6,64 +6,57 @@ import excepciones.ArenaOcupadaException;
 
 public class SistemaPelea {
     /** Lista de arenas disponibles en el gimnasio */
-	private static SistemaPelea instancia;
-    private HashMap<Integer,Duelo> duelos = new HashMap<>();
-    
-    
-   
-    
+    private static SistemaPelea instancia;
+    private HashMap<Integer, Duelo> duelos = new HashMap<>();
+
     public static SistemaPelea getInstancia() {
-    	if(instancia==null) {
-    		instancia= new SistemaPelea();
-    	}
-    	return instancia;
+        if (instancia == null) {
+            instancia = new SistemaPelea();
+        }
+        assert instancia != null : "La instancia no puede ser nula";
+        return instancia;
     }
-    
-    /**
-     * Devuelve el hashMap de todos los duelos disponibles en el gimnasio.
-     * 
-     * @return HashMap<Duelo,Integer> con los duelos del gimnasio
-     */
-    public HashMap<Integer,Duelo> getDuelos() {
+
+    public HashMap<Integer, Duelo> getDuelos() {
+        assert this.duelos != null : "El HashMap de duelos no puede ser nulo";
         return this.duelos;
     }
-    
+
     public Duelo getDuelo(int numArena) {
-    	return this.duelos.get(numArena);
+        assert numArena >= 0 : "El numero de arena debe ser mayor o igual a 0";
+        return this.duelos.get(numArena);
     }
-    
+
     public void removeDuelo(int numArena) {
-    	this.duelos.remove(numArena);
+        assert numArena >= 0 : "El numero de arena debe ser mayor o igual a 0";
+        this.duelos.remove(numArena);
+        assert !this.duelos.containsKey(numArena) : "El duelo no fue eliminado correctamente";
     }
-     
-    /**
-     * Aniade un duelo a la lista de duelos del sistema de peleas, si el duelo se intenta iniciar en una "Arena" ya utilizada este arroja una excepcion (mas adelante se trabajara con threads y no exception).
-     * 
-     * Pre: el duelo no puede ser null
-     * 
-     * @param a El duelo a aniadir
-     */
 
     public void addDuelo(Duelo duelo) throws ArenaOcupadaException {
-    	if(this.duelos.containsKey(duelo.getClave()))
-    		throw new ArenaOcupadaException(duelo.getClave());
-    	else
-    		this.duelos.put(duelo.getClave(),duelo);      
-    }
-    
-    
-    public void iniciarCombate(int numArena) {
-    	Duelo duelo=this.getDuelo(numArena);
-    	duelo.iniciarDuelo();
-    	duelo.getEntrenador1().vaciarEquipoActivo();
-    	duelo.getEntrenador2().vaciarEquipoActivo();
-    	this.removeDuelo(numArena);
+        assert duelo != null : "El duelo no puede ser nulo";
+        if (this.duelos.containsKey(duelo.getClave())) {
+            throw new ArenaOcupadaException(duelo.getClave());
+        } else {
+            this.duelos.put(duelo.getClave(), duelo);
+        }
+        assert this.duelos.containsKey(duelo.getClave()) : "El duelo no fue agregado correctamente";
     }
 
-	@Override
-	public String toString() {
-		return "SistemaPelea [duelos=" + duelos + "]";
-	}
-    
-    
+    public void iniciarCombate(int numArena) {
+        assert this.duelos.containsKey(numArena) : "El numero de arena no corresponde a un duelo existente";
+        Duelo duelo = this.getDuelo(numArena);
+        duelo.iniciarDuelo();
+        duelo.getEntrenador1().vaciarEquipoActivo();
+        duelo.getEntrenador2().vaciarEquipoActivo();
+        this.removeDuelo(numArena);
+        assert !this.duelos.containsKey(numArena) : "El duelo no fue eliminado correctamente";
+    }
+
+    @Override
+    public String toString() {
+        String resultado = "SistemaPelea [duelos=" + duelos + "]";
+        assert resultado != null : "El resultado de toString no puede ser nulo";
+        return resultado;
+    }
 }
