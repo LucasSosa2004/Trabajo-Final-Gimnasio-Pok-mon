@@ -14,7 +14,15 @@ public class Tienda {
 		this.pokemonFactory = new PokemonFactory();
 	}
 	
-	
+	/**
+     * Permite a un entrenador comprar un arma para uno de sus Pokemones.
+     * 
+     * @param tipo Tipo de arma a comprar
+     * @param e Entrenador que realiza la compra
+     * @param nombre Nombre del Pokémon que usará el arma
+     * @throws CompraImposibleException Si el entrenador no tiene suficientes créditos
+	 * @throws PokemonNoPuedeUsarArmaE Si el Pokémon no puede usar el arma
+     */
     public void comprarArma(String tipo,Entrenador e, String nombre) throws CompraImposibleException, PokemonNoPuedeUsarArmaE{
         Arma a;
         Pokemon p;
@@ -38,7 +46,14 @@ public class Tienda {
     }
     
 
-
+	/**
+	 * Permite a un entrenador comprar un Pokemon de un tipo específico.
+	 * 
+	 * @param e Entrenador que realiza la compra
+	 * @param tipo Tipo de Pokemon a comprar
+	 * @param nombre Nombre del Pokemon a comprar
+	 * @throws CompraImposibleException Si el entrenador no tiene suficientes creditos
+	 */
 	public void compraPokemon(Entrenador e, String tipo, String nombre) throws CompraImposibleException{  	 
     	 try {
     		Pokemon p = pokemonFactory.getPokemon(tipo, nombre); 

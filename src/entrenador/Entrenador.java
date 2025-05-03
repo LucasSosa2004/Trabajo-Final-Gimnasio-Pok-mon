@@ -107,7 +107,14 @@ public class Entrenador implements Cloneable, IClasificable {
 			this.pokemones.put(p.getNombre(), p);
 	}
 	
-	// Precondicion seleccion nunca puede ser null
+    /**
+     * Añade un Pokémon al equipo activo del entrenador.
+     * 
+     * Pre: seleccion no puede ser null.
+     * 
+     * @param seleccion Nombre del Pokémon a añadir
+     * @throws EquipoLlenoException Si el equipo activo ya tiene 3 Pokemones
+     */
     public void agregarPokemonEquipo(String seleccion)throws EquipoLlenoException  {
     	seleccion=seleccion.toUpperCase();
     	if(equipoActivo.size()<3) {
@@ -149,6 +156,13 @@ public class Entrenador implements Cloneable, IClasificable {
 		}
     }
     
+    /**
+     * Busca un Pokémon por su nombre en la lista de Pokemones del entrenador.
+     * 
+     * @param nombre Nombre del Pokémon a buscar
+     * @return El Pokémon encontrado
+     * @throws PokemonNoExisteException Si el Pokémon no existe en la lista
+     */
     public Pokemon buscaPokemon(String nombre) throws PokemonNoExisteException {
     	Pokemon p = null;
     	nombre=nombre.toUpperCase();
@@ -166,6 +180,9 @@ public class Entrenador implements Cloneable, IClasificable {
         return equipoActivo.poll();
     }
     
+     /**
+     * Vacia el equipo activo del entrenador.
+     */
     public void vaciarEquipoActivo() {
     	this.equipoActivo.clear();
     }
@@ -176,7 +193,7 @@ public class Entrenador implements Cloneable, IClasificable {
     		hechizo.hechizar(hechizable);
     }
 
-    // â€”â€”â€” ClonaciÃ³n profunda segÃºn reglas â€”â€”â€”
+    // â€”â€”â€” Clonacion profunda segÃºn reglas â€”â€”â€”
     @Override
     public Entrenador clone() throws CloneNotSupportedException {
         Entrenador copia = (Entrenador) super.clone();
@@ -189,7 +206,7 @@ public class Entrenador implements Cloneable, IClasificable {
                 throw new CloneNotSupportedException("No se pudo clonar al PokÃ©mon " + p.getNombre());
             }
         }
-        // clonamos tambiÃ©n el equipo activo (en base a la nueva lista)
+        // clonamos tambien el equipo activo (en base a la nueva lista)
         copia.equipoActivo = new LinkedList<>();
         for (Pokemon p : this.equipoActivo) {
         	copia.equipoActivo.add((Pokemon)p.clone());

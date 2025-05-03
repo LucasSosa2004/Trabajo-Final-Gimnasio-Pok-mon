@@ -27,7 +27,9 @@ public abstract class Pokemon implements Cloneable,IHostil, IValuable, IHechizab
 	public int getCategoria() {
 		return this.experiencia;
 	}
-	
+	/**
+     * Incrementa la experiencia del Pokemon en 1.
+     */
 	public void recibeExp() {
 		this.experiencia++;
 	}
