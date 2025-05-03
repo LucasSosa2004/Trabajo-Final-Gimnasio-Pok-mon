@@ -29,7 +29,6 @@ public class Hacha extends Arma {
     @Override
     public String toString() {
         String resultado = "Hacha []" + super.toString();
-        assert resultado != null : "El resultado de toString no puede ser nulo";
         return resultado;
     }
 }
