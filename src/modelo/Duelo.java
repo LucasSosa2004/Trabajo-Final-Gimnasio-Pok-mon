@@ -22,7 +22,6 @@ public class Duelo {
 
     
     private static final int PREMIO_GANADOR = 500;
-
 	/**
 	 * Constructor que inicializa un duelo entre dos entrenadores.
 	 * 

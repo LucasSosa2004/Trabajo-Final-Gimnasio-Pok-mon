@@ -24,7 +24,6 @@ public class Prueba {
 
 	public static void main(String[] args) {
 			
-			
 			//Referencia al gimnasio y el sistemaPelea en el main creados mediante singleton 
 			Gimnasio gimnasio = Gimnasio.getInstancia();
 			SistemaPelea sistemaPelea = SistemaPelea.getInstancia();

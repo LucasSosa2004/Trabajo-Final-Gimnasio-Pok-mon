@@ -147,7 +147,7 @@
   </class>  
   <class id="17" language="java" name="excepciones.EntrenadorException" project="TP final" 
     file="/TP final/src/excepciones/EntrenadorException.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="319" y="2754"/>    
+    <position height="-1" width="-1" x="357" y="2742"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -436,7 +436,7 @@
     <end type="TARGET" refId="17"/>  
   </generalization>  
   <generalization id="71">    
-    <bendpoint x="590" y="2899"/>    
+    <bendpoint x="594" y="2894"/>    
     <end type="SOURCE" refId="24"/>    
     <end type="TARGET" refId="17"/>  
   </generalization>  
@@ -492,7 +492,7 @@
     <display labels="true" multiplicity="true"/>  
   </association>  
   <generalization id="87">    
-    <bendpoint x="160" y="2828"/>    
+    <bendpoint x="157" y="2816"/>    
     <end type="SOURCE" refId="2"/>    
     <end type="TARGET" refId="17"/>  
   </generalization>  
