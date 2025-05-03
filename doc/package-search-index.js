@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"armas"},{"l":"entrenador"},{"l":"excepciones"},{"l":"interfaces"},{"l":"modelo"},{"l":"pokemones"},{"l":"prueba"}];updateSearchResults();

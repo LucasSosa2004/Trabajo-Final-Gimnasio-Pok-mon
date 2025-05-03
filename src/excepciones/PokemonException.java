@@ -6,7 +6,7 @@ public class PokemonException extends Exception{
 	/**
 	 * Constructor de la excepcion PokemonException.
 	 * 
-	 * @param nombre Nombre del pokemon que lanza la excepcion.
+	 * @param arg Descripcion de la excepcion.
 	 */
 	public PokemonException (String arg) {
 		super(arg);

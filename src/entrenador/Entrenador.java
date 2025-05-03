@@ -205,7 +205,7 @@ public class Entrenador implements Cloneable, IClasificable {
      * Postcondicion:
      * - El pokemon se aniade al equipo activo si hay espacio disponible.
      * 
-     * @param p1 Nombre del Pokemon a aniadir
+     * @param p Nombre del Pokemon a aniadir
      */
     
     public void setEquipo(String p) {

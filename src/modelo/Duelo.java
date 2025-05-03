@@ -82,11 +82,11 @@ public class Duelo {
     /**
      * Inicia el duelo entre los dos entrenadores.
      * 
-     * Pre:
+     * <b><br>Pre:<br></b>
      * - Las colas de los equipos activos de ambos entrenadores no deben estar vacias.
      * - Los hechizos se lanzan una sola vez por combate y siempre al primer Pokemon invocado por el rival.
      * 
-     * Postcondicion:
+     * <b><br>Post:<br></b>
      * - El duelo se resuelve hasta que uno de los entrenadores se queda sin Pokemones activos.
      * - El ganador recibe el premio en creditos.
      */

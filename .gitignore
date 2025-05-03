@@ -6,3 +6,4 @@
 # Carpeta con binarios compilados
 /bin/
 /target/
+/doc/
