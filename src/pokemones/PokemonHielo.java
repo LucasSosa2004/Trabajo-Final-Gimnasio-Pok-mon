@@ -12,7 +12,7 @@ public class PokemonHielo extends Pokemon {
         this.escudo = 120;
         this.fuerza = 100;
         this.experiencia = 0;
-        assert this.vitalidad > 0 : "La vitalidad debe ser mayor a 0";
+
     }
 
     public void setArma(Arma a) throws PokemonNoPuedeUsarArmaE {
@@ -37,7 +37,6 @@ public class PokemonHielo extends Pokemon {
         } else {
             this.escudo -= danoRecibido;
         }
-        assert this.vitalidad >= 0 : "La vitalidad no puede ser negativa";
     }
 
     @Override

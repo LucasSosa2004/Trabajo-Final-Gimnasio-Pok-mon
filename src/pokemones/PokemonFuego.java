@@ -12,7 +12,6 @@ public class PokemonFuego extends Pokemon {
         this.escudo = 200;
         this.fuerza = 80;
         this.experiencia = 0;
-        assert this.vitalidad > 0 : "La vitalidad debe ser mayor a 0";
     }
 
     public void setArma(Arma a) throws PokemonNoPuedeUsarArmaE {
@@ -44,7 +43,7 @@ public class PokemonFuego extends Pokemon {
             }
         }
         this.vitalidad -= danoRecibido;
-        assert this.vitalidad >= 0 : "La vitalidad no puede ser negativa";
+
     }
 
     @Override

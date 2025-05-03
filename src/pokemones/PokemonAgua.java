@@ -13,7 +13,6 @@ public class PokemonAgua extends Pokemon {
         this.escudo = 100;
         this.fuerza = 120;
         this.experiencia = 0;
-        assert this.vitalidad > 0 : "La vitalidad debe ser mayor a 0";
         assert this.escudo >= 0 : "El escudo no puede ser negativo";
     }
 
@@ -40,7 +39,6 @@ public class PokemonAgua extends Pokemon {
             }
         }
         this.vitalidad -= danoRecibido;
-        assert this.vitalidad >= 0 : "La vitalidad no puede ser negativa";
     }
 
     @Override
