@@ -1,10 +1,6 @@
 package modelo;
 
 import java.util.*;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-
 import entrenador.Entrenador;
 import excepciones.EntrenadorSinPokemonesException;
 import pokemones.Pokemon;
@@ -22,28 +18,14 @@ public class Duelo {
     private static final int PREMIO_GANADOR = 500;
 
     /**
-     * Invariante de clase:
-     * - Los entrenadores no pueden ser nulos.
-     * - El numero de arena (clave) debe ser mayor o igual a 0.
-     */
-    private void verificarInvariante() {
-        assert e1 != null : "El entrenador 1 no puede ser nulo";
-        assert e2 != null : "El entrenador 2 no puede ser nulo";
-        assert clave >= 0 : "El numero de arena debe ser mayor o igual a 0";
-    }
-
-    /**
-     * Constructor que inicializa un duelo entre dos entrenadores.
-     * 
-     * Pre:
-     * - Ambos entrenadores deben tener al menos un Pokemon activo.
-     * 
-     * Postcondicion:
-     * - El duelo se inicializa con los entrenadores, el numero de arena y el estado inicial.
+     * <b>Pre:</b><br>
+     * Ambos entrenadores deben tener al menos un Pokemon activo.<br><br>
+     * <b>Post:</b><br>
+     * El duelo se inicializa con los entrenadores, el numero de arena y el estado inicial.<br>
      * 
      * @param e1 Entrenador 1
      * @param e2 Entrenador 2
-     * @param numArena Numero de arena donde se lleva a cabo el duelo
+     * @param numArena Numero de arena
      * @throws EntrenadorSinPokemonesException Si alguno de los entrenadores no tiene pokemones activos
      */
     public Duelo(Entrenador e1, Entrenador e2, int numArena) throws EntrenadorSinPokemonesException {
@@ -56,7 +38,6 @@ public class Duelo {
         this.ganador = null;
         this.clave = numArena;
         this.dueloTerminado = false;
-        verificarInvariante();
     }
 
     public int getClave() {
@@ -80,15 +61,10 @@ public class Duelo {
     }
 
     /**
-     * Inicia el duelo entre los dos entrenadores.
-     * 
-     * <b><br>Pre:<br></b>
-     * - Las colas de los equipos activos de ambos entrenadores no deben estar vacias.
-     * - Los hechizos se lanzan una sola vez por combate y siempre al primer Pokemon invocado por el rival.
-     * 
-     * <b><br>Post:<br></b>
-     * - El duelo se resuelve hasta que uno de los entrenadores se queda sin Pokemones activos.
-     * - El ganador recibe el premio en creditos.
+     * <b>Pre:</b><br>
+     * Las colas de los equipos activos de ambos entrenadores no deben estar vacias.<br><br>
+     * <b>Post:</b><br>
+     * El duelo se resuelve hasta que uno de los entrenadores se queda sin Pokemones activos.<br>
      */
     public void iniciarDuelo() {
         assert !e1.getEquipoActivo().isEmpty() : "El equipo activo del entrenador 1 no puede estar vacio";
@@ -138,6 +114,7 @@ public class Duelo {
         assert this.ganador != null : "El ganador no puede ser nulo";
         assert this.dueloTerminado : "El duelo debe estar marcado como terminado";
     }
+
 
     @Override
     public String toString() {

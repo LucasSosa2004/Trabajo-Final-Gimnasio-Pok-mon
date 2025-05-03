@@ -114,9 +114,9 @@ public class Entrenador implements Cloneable, IClasificable {
     /**
      * Aniade un Pokemon a la lista de pokemones del entrenador.
      * 
-     * Pre: El Pokemon no puede ser nulo.
+     * <br><b>Pre:</b><br> El Pokemon no puede ser nulo.
      * 
-     * Postcondicion:
+     * <br><b>Postcondicion:</b><br>
      * - El Pokemon se agrega a la lista si su nombre no esta en uso.
      * 
      * @param p El Pokemon a aniadir
@@ -133,9 +133,9 @@ public class Entrenador implements Cloneable, IClasificable {
     /**
      * Aniade un Pokemon al equipo activo del entrenador.
      * 
-     * Pre: seleccion no puede ser null.
+     * <br><b>Pre:</b><br> seleccion no puede ser null.
      * 
-     * Postcondicion:
+     * <br><b>Postcondicion:</b><br>
      * - El Pokemon se aniade al equipo activo si hay espacio disponible.
      * 
      * @param seleccion Nombre del Pokemon a aniadir

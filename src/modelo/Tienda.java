@@ -15,17 +15,21 @@ public class Tienda {
 	}
 	
 	/**
-     * Permite a un entrenador comprar un arma para uno de sus Pokemones.
+     * <br><b>Pre:</b><br>
+     * El tipo de arma, el entrenador y el nombre del Pokemon no pueden ser nulos.
      * 
-     * Pre: El tipo de arma, el entrenador y el nombre del Pokemon no pueden ser nulos.
+     * <br><b>Post:</b><br>
+     * Permite a un entrenador comprar un arma para uno de sus Pokemones.
      * 
      * @param tipo Tipo de arma a comprar
      * @param e Entrenador que realiza la compra
      * @param nombre Nombre del Pokemon que usara el arma
      * @throws CompraImposibleException Si el entrenador no tiene suficientes creditos
-	 * @throws PokemonNoPuedeUsarArmaE Si el Pokémon no puede usar el arma
+     * @throws TipoDesconocidoException Si el tipo de arma no es reconocido
+     * @throws PokemonNoPuedeUsarArmaE Si el Pokemon no puede usar el arma
      */
-    public void comprarArma(String tipo,Entrenador e, String nombre) throws CompraImposibleException, PokemonNoPuedeUsarArmaE{
+    public void comprarArma(String tipo, Entrenador e, String nombre)
+            throws CompraImposibleException, TipoDesconocidoException, PokemonNoPuedeUsarArmaE {
         assert tipo != null && !tipo.isEmpty() : "El tipo de arma no puede ser nulo o vacio";
         assert e != null : "El entrenador no puede ser nulo";
         assert nombre != null && !nombre.isEmpty() : "El nombre del Pokemon no puede ser nulo o vacio";
@@ -33,21 +37,21 @@ public class Tienda {
         Arma a;
         Pokemon p;
 		try {
-			p=e.buscaPokemon(nombre);
+			p = e.buscaPokemon(nombre);
 			a = armaFactory.getArma(tipo);
-	        if(e.getCreditos() < a.getCosto())
-	        	throw new CompraImposibleException(e.getCreditos(),a.getCosto());
+	        if (e.getCreditos() < a.getCosto())
+	        	throw new CompraImposibleException(e.getCreditos(), a.getCosto());
 			else {
 				p.setArma(a);
 				e.subCreditos(a.getCosto());
 			}
 		} catch (TipoDesconocidoException e1) {
-			System.out.println("El tipo de arma "+e1.getTipo()+" es desconocido");
+			System.out.println("El tipo de arma " + e1.getTipo() + " es desconocido");
 		} catch (PokemonNoPuedeUsarArmaE e1) {
 			System.out.println("El pokemon " + e1.getNombre() + " no puede usar arma");
 		} catch (PokemonNoExisteException e1) {
-			System.out.println("El pokemon "+e1.getNombre()+" no existe");
-			}
+			System.out.println("El pokemon " + e1.getNombre() + " no existe");
+		}
 
         assert e.getCreditos() >= 0 : "Los creditos del entrenador no pueden ser negativos";
     }

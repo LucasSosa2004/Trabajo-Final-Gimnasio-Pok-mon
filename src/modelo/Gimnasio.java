@@ -43,14 +43,23 @@ public class Gimnasio {
         return instancia;
     }
     
-    public Entrenador getEntrenador(String nombre) throws EntrenadorNoExisteException{
-    	nombre=nombre.toUpperCase();
-    	Entrenador e= this.entrenadores.get(nombre);
-    	if (e==null) {
-    		throw new EntrenadorNoExisteException(nombre);
-    	}
-    	else
-    		return e;
+    /**
+     * <b>Pre:</b><br>
+     * El nombre del entrenador no puede ser nulo ni vacio.<br><br>
+     * <b>Post:</b><br>
+     * Devuelve el entrenador asociado al nombre.<br>
+     * 
+     * @param nombre Nombre del entrenador
+     * @return El entrenador asociado
+     * @throws EntrenadorNoExisteException Si el entrenador no existe
+     */
+    public Entrenador getEntrenador(String nombre) throws EntrenadorNoExisteException {
+        nombre = nombre.toUpperCase();
+        Entrenador e = this.entrenadores.get(nombre);
+        if (e == null) {
+            throw new EntrenadorNoExisteException(nombre);
+        }
+        return e;
     }
     
     /**
@@ -64,35 +73,29 @@ public class Gimnasio {
 		else	
 			this.entrenadores.put(e.getNombre(), e);
 	}
+
     
-    /**
-     * Devuelve el HashMap de todos los entrenadores registrados en el gimnasio.
-     * 
-     * @return HashMap con los entrenadores del gimnasio
-     */
     public HashMap<String,Entrenador> getEntrenadores() {
         return this.entrenadores;
     }
     
-    
-    /**
-     * Establece la tienda asociada al gimnasio.
-     * 
-     * @param tienda La tienda a asociar con el gimnasio
-     */
+
     public void setTienda(Tienda tienda) {
         this.tienda = tienda;
     }
-    /**
-     * Devuelve la tienda asociada al gimnasio.
-     * 
-     * @return La tienda del gimnasio
-     */
+
     public Tienda getTienda() {
         return this.tienda;
     }
     
-    
+    /**
+     * Crea un duelo entre dos entrenadores en una arena específica.
+     * 
+     * @param nombre1 Nombre del primer entrenador
+     * @param nombre2 Nombre del segundo entrenador
+     * @param numArena Número de la arena
+     * @return El duelo creado, o null si ocurre un error
+     */
     public Duelo crearDuelo(String nombre1, String nombre2, int numArena) {
     	try {
 	    	Entrenador e1=this.getEntrenador(nombre1);

@@ -16,7 +16,7 @@ public abstract class Pokemon implements Cloneable, IHostil, IValuable, IHechiza
     public int experiencia;
 
     /**
-     * Invariante de clase:
+     * <br><b>Invariante de clase:</b><br>
      * - La vitalidad, escudo, fuerza y costo deben ser mayores o iguales a 0.
      */
     private void verificarInvariante() {
@@ -36,7 +36,7 @@ public abstract class Pokemon implements Cloneable, IHostil, IValuable, IHechiza
     /**
      * Incrementa la experiencia del Pokemon en 1.
      * 
-     * Postcondicion:
+     * <br><b>Postcondicion:</b><br>
      * - La experiencia del Pokemon aumenta en 1.
      */
     public void recibeExp() {
