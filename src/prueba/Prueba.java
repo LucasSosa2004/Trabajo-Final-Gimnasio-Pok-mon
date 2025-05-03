@@ -166,7 +166,7 @@ public class Prueba {
 				
 				//**ERROR** COMBATE ENTRE BROCK Y MISTY (brock fuera del gimnasio)
 				//Los entrenadores que van a pelear "eligen" su equipo
-				/*
+				
 				brock.setEquipo("Glaceon");
 				misty.setEquipo("Probopass");
 				
@@ -177,7 +177,7 @@ public class Prueba {
 				sistemaPelea.addDuelo(d2);
 				// Comienza el duelo asignado a la arena 2
 				sistemaPelea.iniciarCombate(2);
-				*/
+				
 
 			} catch (CompraImposibleException e) {
 				System.out.println("Creditos insuficientes, en posesion "+e.getCreditos()+", necesarios "+e.getCosto());

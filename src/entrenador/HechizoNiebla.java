@@ -4,7 +4,7 @@ import interfaces.IHechizable;
 import interfaces.IHechizo;
 
 /**
- * Hechizo que reduce la vitalidad del objetivo a la mitad.
+ * Hechizo que reduce la vitalidad o fuerza del objetivo.
  */
 public class HechizoNiebla implements IHechizo {
 
