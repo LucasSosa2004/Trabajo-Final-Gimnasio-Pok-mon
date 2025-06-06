@@ -1,6 +1,9 @@
 package modelo;
 
-public class ArenaSelva extends ArenaLogica {
+import java.io.Serializable;
+
+public class ArenaSelva extends ArenaLogica implements Serializable {
+	private static final long serialVersionUID = 1L;
     public String getNombre() {
     	return "Selva"; 
     }

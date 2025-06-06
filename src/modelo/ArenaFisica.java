@@ -1,6 +1,9 @@
 package modelo;
 
-public class ArenaFisica {
+import java.io.Serializable;
+
+public class ArenaFisica implements Serializable {
+	private static final long serialVersionUID = 1L;
     private boolean ocupada = false;
     private ArenaLogica arenaDecorada;
     private int id;

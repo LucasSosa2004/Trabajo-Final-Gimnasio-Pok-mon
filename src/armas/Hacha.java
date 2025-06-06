@@ -1,10 +1,11 @@
 package armas;
 
 import java.util.Random;
-
+import java.io.Serializable;
 import pokemones.Pokemon;
 
-public class Hacha extends Arma {
+public class Hacha extends Arma implements Serializable {
+	private static final long serialVersionUID = 1L;
 
     public Hacha() {
         super();

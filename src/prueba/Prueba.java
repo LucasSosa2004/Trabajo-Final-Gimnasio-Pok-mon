@@ -1,7 +1,5 @@
 package prueba;
 
-import armas.Arma;
-import armas.ArmaFactory;
 import entrenador.Entrenador;
 import entrenador.HechizoNiebla;
 import entrenador.HechizoTormenta;
@@ -9,199 +7,484 @@ import entrenador.HechizoViento;
 import excepciones.ArenaOcupadaException;
 import excepciones.CompraImposibleException;
 import excepciones.NombreUtilizadoException;
-import excepciones.PokemonNoExisteException;
-import excepciones.PokemonNoPuedeUsarArmaE;
 import excepciones.TipoDesconocidoException;
 import interfaces.IHechizo;
-import modelo.Duelo;
-import modelo.Gimnasio;
-import modelo.SistemaPelea;
-import modelo.ArenaFisica;         // Importamos la clase ArenaFisica
+import modelo.*;
 import pokemones.PokemonFactory;
+import armas.Arma;
+import armas.ArmaFactory;
+import persistencia.GimnasioManager;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
+/**
+ * Clase principal para ejecutar por consola:
+ *  Etapa 1: Registro de entrenadores, alta/mejora de Pokémon, creación de arenas.
+ *  Etapa 2: Inscripción de hasta 8 entrenadores al torneo.
+ *  Etapa 3: Desarrollo de torneo por eliminación directa (cuartos, semis, final).
+ *  Persistencia: se guarda/carga el estado (Gimnasio, SistemaPelea y EtapaTorneo).
+ *
+ *  NO incluye ninguna interfaz gráfica, todo es por consola.
+ */
 public class Prueba {
-
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
 
-        // Referencia al gimnasio y al sistemaPelea en el main creados mediante singleton 
+        // 1) Instanciar GimnasioManager y tratar de cargar estado existente
+        GimnasioManager manager = new GimnasioManager();
+        EtapaTorneo etapaTorneo = manager.cargarEstado();
+        if (etapaTorneo == null) {
+            etapaTorneo = new EtapaTorneo();
+        }
+
+        // 2) Obtener singletons (o instanciarlos si aún no existían)
         Gimnasio gimnasio = Gimnasio.getInstancia();
         SistemaPelea sistemaPelea = SistemaPelea.getInstancia();
 
-        // Inicializamos las arenas antes de crear cualquier duelo
-        sistemaPelea.inicializarArenas(3);
+        System.out.println("=== Bienvenido al sistema del Gimnasio Pokémon ===");
+        boolean salir = false;
+        while (!salir) {
+            System.out.println("\n--- Etapa actual: " + etapaTorneo.getEtapaActual() + " ---");
+            System.out.println("Menú principal:");
+            System.out.println("1. Alta de Entrenador");
+            System.out.println("2. Alta/Mejora de Pokémon para un Entrenador");
+            System.out.println("3. Configurar/Añadir Arenas (Etapa 1)");
+            System.out.println("4. Inscribir Entrenador al Torneo (Etapa 2)");
+            System.out.println("5. Iniciar Torneo (Etapa 3)");
+            System.out.println("6. Guardar Estado");
+            System.out.println("7. Cargar Estado");
+            System.out.println("8. Mostrar Estado Actual (Entrenadores, Arenas, Inscriptos)");
+            System.out.println("9. Salir");
 
-        // Factory de pokemones y armas para tener entrenadores que tengan pokemones por defecto
-        PokemonFactory pokFac = new PokemonFactory();
-        ArmaFactory armFac = new ArmaFactory();
-
-        // Hechizos usados por los entrenadores
-        IHechizo hT = new HechizoTormenta();
-        IHechizo hV = new HechizoViento();
-        IHechizo hN = new HechizoNiebla();
-        IHechizo hN2 = new HechizoNiebla();
-
-        // Entrenadores creados en el main, distintos nombres (es su c�digo de identificacion) y con distintos cr�ditos
-        Entrenador ash = new Entrenador("ASH", 100);
-        Entrenador knekro = new Entrenador("knekro", 0);
-        Entrenador brock = new Entrenador("brock", 200, null);
-        Entrenador misty = new Entrenador("Misty", 0, hT);
-        Entrenador e5 = new Entrenador("ASH", 912);
-        Entrenador dawn = new Entrenador("dawn", 570);
-        Entrenador oak = new Entrenador("oak", 0);
-
-        try {
-
-            // Armas usadas por los pokemones
-            Arma espada1 = armFac.getArma("espada");
-            Arma hacha1 = armFac.getArma("hacha");
-            Arma hacha2 = armFac.getArma("hacha");
-            // **ERROR** intento crear un tipo de arma desconocido
-            // Arma arma = armFac.getArma("lanza");
-
-            // Seteo hechizos en algunos entrenadores
-            ash.setHechizo(hN);
-            knekro.setHechizo(hV);
-            dawn.setHechizo(hN2);
-
-            // Metemos a los entrenadores al gimnasio
-            gimnasio.putEntrenador(ash);
-            gimnasio.putEntrenador(knekro);
-            gimnasio.putEntrenador(misty);
-            // **ERROR** entrenador con identificador repetido
-            // gimnasio.putEntrenador(e5);
-            gimnasio.putEntrenador(dawn);
-            gimnasio.putEntrenador(oak);
-
-            // Seteo los pokemones iniciales de algunos entrenadores
-            ash.putPokemon(pokFac.getPokemon("Agua", "Magikarp"));
-            ash.putPokemon(pokFac.getPokemon("Piedra", "Onix", hacha1));
-            ash.putPokemon(pokFac.getPokemon("Fuego", "Charizard"));
-
-            knekro.putPokemon(pokFac.getPokemon("Fuego", "Magmar"));
-            knekro.putPokemon(pokFac.getPokemon("Fuego", "Ninetales"));
-            knekro.putPokemon(pokFac.getPokemon("Fuego", "Quilava"));
-
-            brock.putPokemon(pokFac.getPokemon("Hielo", "Glaceon"));
-            brock.putPokemon(pokFac.getPokemon("Agua", "Squirtle"));
-            // **ERROR** A brock se le intenta asignar un tipo de pokemon desconocido
-            // brock.putPokemon(pokFac.getPokemon("Psiquico", "Kdravra"));
-
-            misty.putPokemon(pokFac.getPokemon("Piedra", "Probopass", hacha2));
-            // **ERROR** a Misty se le intenta asignar otro pokemon a su lista con un nombre ya utilizado (codigo de id)
-            // misty.putPokemon(pokFac.getPokemon("Piedra", "Probopass", espada1));
-
-            // termino de setear
-
-            // El entrenador dawn compra pokemones ya que no tenia
-            gimnasio.getTienda().compraPokemon(dawn, "AGUA", "PIPLUP");
-            gimnasio.getTienda().compraPokemon(dawn, "fuego", "Blaziken");
-            gimnasio.getTienda().compraPokemon(dawn, "piedRa", "Aerodactyl");
-            gimnasio.getTienda().compraPokemon(dawn, "Hielo", "Regice");
-
-            gimnasio.getTienda().comprarArma("Espada", dawn, "Aerodactyl");
-
-            // **ERROR** Brock intenta comprar una espada y asignarla a un pokemon invalido
-            // gimnasio.getTienda().comprarArma("Espada", brock,"Glaceon");
-
-            // **ERROR** ASH intenta asignarle un arma a un pokemon desconocido
-            // gimnasio.getTienda().comprarArma("Espada", ash,"Raichu");
-
-            // COMBATE ENTRE KNEKRO Y ASH 1V2
-            // Los entrenadores ash y knekro que van a pelear "eligen" su equipo
-            ash.setEquipo("Charizard");
-            knekro.setEquipo("Magmar", "Ninetales");
-
-            // Obtenemos la primera arena libre (id = 1)
-            ArenaFisica arena1 = sistemaPelea.asignarArenaLibre();
-            Duelo d1 = gimnasio.crearDuelo("ASH", "knekro", arena1);
-            System.out.println("Duelo: " + d1.getEntrenador1().getNombre() + " VS " +
-                               d1.getEntrenador2().getNombre());
-            sistemaPelea.addDuelo(d1);
-            // Comienza el duelo asignado a la arena 1
-            sistemaPelea.iniciarCombate(arena1.getId());
-            System.out.println("El ganador/a es: " + d1.getGanador().getNombre());
-
-            // ash y knekro recargan sus pokemones y vuelven a elegir su equipo
-            ash.buscaPokemon("Charizard").recargar();
-            knekro.buscaPokemon("Magmar").recargar();
-            knekro.buscaPokemon("Ninetales").recargar();
-
-            // Ash y knekro eligen su equipo y obtienen la siguiente arena libre
-            ash.setEquipo("Onix");
-            knekro.setEquipo("Magmar", "Ninetales", "Quilava");
-            ArenaFisica arena2 = sistemaPelea.asignarArenaLibre();
-            Duelo d4 = gimnasio.crearDuelo("ASH", "knekro", arena2);
-            // NOTA: no iniciamos d4 inmediatamente para simular arena ocupada
-
-            // COMBATE ENTRE MISTY Y DAWN 1V1
-            // Los entrenadores misty y dawn que van a pelear "eligen" su equipo
-            misty.setEquipo("Probopass");
-            dawn.setEquipo("Aerodactyl");
-            // Obtenemos la siguiente arena libre (ser�a la tercera)
-            ArenaFisica arena3 = sistemaPelea.asignarArenaLibre();
-            Duelo d3 = gimnasio.crearDuelo("Misty", "dawn", arena3);
-            System.out.println("Duelo: " + d3.getEntrenador1().getNombre() + " VS " +
-                               d3.getEntrenador2().getNombre());
-
-            sistemaPelea.addDuelo(d3);
-            // **ERROR** Se intentaba agregar d4 antes de iniciar d3 en la misma arena
-            // sistemaPelea.addDuelo(d4);
-
-            // Comienza el duelo asignado a la arena 3
-            sistemaPelea.iniciarCombate(arena3.getId());
-            System.out.println("El ganador/a es: " + d3.getGanador().getNombre());
-
-            // **ERROR** dawn intenta comprar en la tienda sin tener cr�ditos
-            // gimnasio.getTienda().compraPokemon(dawn, "Hielo", "Rice");
-
-            // **ERROR** ash y oak intentan comenzar un combate y oak no tiene pokemones
-            // ash.setEquipo("Onix");
-            // Duelo d5 = gimnasio.crearDuelo("ash", "oak", 7);
-
-            // **ERROR** COMBATE ENTRE BROCK Y MISTY (brock fuera del gimnasio)
-            /*
-            brock.setEquipo("Glaceon");
-            misty.setEquipo("Probopass");
-            // Al no estar inscrito brock en el gimnasio, crearDuelo devuelve null
-            Duelo d2 = gimnasio.crearDuelo("Misty", "brock", 2);
-            sistemaPelea.addDuelo(d2);
-            sistemaPelea.iniciarCombate(2);
-            */
-
-            // INICIALIZAR COMPONENTES PARA TORNEO CONCURRENTE
-            // (ya hab�amos inicializado 3 arenas al inicio)
-            List<Duelo> duelosTorneo = new ArrayList<>();
+            System.out.print("Seleccione opción: ");
+            int opcion = -1;
             try {
-                // Asignar arenas y crear duelos concurrentes
-                for (int i = 0; i < 3; i++) { // 3 duelos de ejemplo, dado que hay 3 arenas
-                    ArenaFisica arenaLibre = sistemaPelea.asignarArenaLibre();
-                    Duelo duelo = gimnasio.crearDuelo("ASH", "knekro", arenaLibre);
-                    duelosTorneo.add(duelo);
-                    sistemaPelea.addDuelo(duelo);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                opcion = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException ex) {
+                System.out.println("Opción inválida.");
+                continue;
             }
-            sistemaPelea.iniciarTorneoConcurrente(duelosTorneo);
 
-        } catch (CompraImposibleException e) {
-            System.out.println("Cr�ditos insuficientes, en posesi�n " +
-                               e.getCreditos() + ", necesarios " + e.getCosto());
-        } catch (NombreUtilizadoException e) {
-            System.out.println("El nombre " + e.getNombre() + " ya est� en uso");
-        } catch (TipoDesconocidoException e) {
-            System.out.println("El tipo " + e.getTipo() + " es desconocido");
-        } catch (ArenaOcupadaException e) {
-            System.out.println("La arena " + e.getNumArena() + " est� ocupada");
-        } catch (PokemonNoPuedeUsarArmaE e) {
-            System.out.println("El pok�mon " + e.getNombre() + " no puede usar arma");
-        } catch (PokemonNoExisteException e) {
-            System.out.println("El pok�mon " + e.getNombre() + " no existe");
+            switch (opcion) {
+                case 1:
+                    if (etapaTorneo.getEtapaActual() != EtapaTorneo.Etapa.REGISTRO_ENTRENADORES) {
+                        System.out.println("Solo puede registrar entrenadores en la etapa de REGISTRO.");
+                        break;
+                    }
+                    altaEntrenador(gimnasio, manager, etapaTorneo, scanner);
+                    break;
+
+                case 2:
+                    if (etapaTorneo.getEtapaActual() != EtapaTorneo.Etapa.REGISTRO_ENTRENADORES) {
+                        System.out.println("Solo puede dar de alta o mejorar Pokémon en la etapa de REGISTRO.");
+                        break;
+                    }
+                    altaOmejoraPokemon(gimnasio, scanner);
+                    break;
+
+                case 3:
+                    if (etapaTorneo.getEtapaActual() != EtapaTorneo.Etapa.REGISTRO_ENTRENADORES) {
+                        System.out.println("Solo puede configurar arenas en la etapa de REGISTRO.");
+                        break;
+                    }
+                    configurarArenas(sistemaPelea, manager, etapaTorneo, scanner);
+                    break;
+
+                case 4:
+                    if (etapaTorneo.getEtapaActual() != EtapaTorneo.Etapa.REGISTRO_ENTRENADORES
+                            && etapaTorneo.getEtapaActual() != EtapaTorneo.Etapa.INSCRIPCION_TORNEO) {
+                        System.out.println("No puede inscribir entrenadores en esta etapa.");
+                        break;
+                    }
+                    if (etapaTorneo.getEtapaActual() == EtapaTorneo.Etapa.REGISTRO_ENTRENADORES) {
+                        etapaTorneo.avanzarEtapa(); // pasamos a INSCRIPCION_TORNEO
+                    }
+                    inscribirEntrenador(gimnasio, etapaTorneo, scanner);
+                    break;
+
+                case 5:
+                    if (etapaTorneo.getEtapaActual() != EtapaTorneo.Etapa.INSCRIPCION_TORNEO) {
+                        System.out.println("Solo puede iniciar el torneo en la etapa de INSCRIPCION_TORNEO.");
+                        break;
+                    }
+                    if (gimnasio.getInscriptosTorneo().size() < 8) {
+                        System.out.println("Debe haber 8 entrenadores inscritos para iniciar el torneo. Actualmente hay: "
+                                + gimnasio.getInscriptosTorneo().size());
+                        break;
+                    }
+                    etapaTorneo.avanzarEtapa(); // pasamos a EN_PROGRESO
+                    iniciarTorneo(gimnasio, sistemaPelea, etapaTorneo);
+                    break;
+
+                case 6:
+                    if (!etapaTorneo.puedeGuardarEstado()) {
+                        System.out.println("No se puede guardar el estado en la etapa actual: " + etapaTorneo.getEtapaActual());
+                        break;
+                    }
+                    manager.guardarEstado(gimnasio, sistemaPelea, etapaTorneo);
+                    System.out.println("Estado guardado correctamente.");
+                    break;
+
+                case 7:
+                    EtapaTorneo nuevaEtapa = manager.cargarEstado();
+                    if (nuevaEtapa != null) {
+                        etapaTorneo = nuevaEtapa;
+                        gimnasio = Gimnasio.getInstancia();
+                        sistemaPelea = SistemaPelea.getInstancia();
+                        System.out.println("Estado cargado correctamente. Etapa: " + etapaTorneo.getEtapaActual());
+                    } else {
+                        System.out.println("No existe un estado previo para cargar.");
+                    }
+                    break;
+
+                case 8:
+                    mostrarEstadoActual(gimnasio, sistemaPelea);
+                    break;
+
+                case 9:
+                    // Antes de salir, intentamos guardar si estamos en etapa que lo permite
+                    if (etapaTorneo.puedeGuardarEstado()) {
+                        manager.guardarEstado(gimnasio, sistemaPelea, etapaTorneo);
+                        System.out.println("Estado guardado antes de salir.");
+                    } else {
+                        System.out.println("No se guardó el estado porque el torneo está en progreso.");
+                    }
+                    System.out.println("¡Hasta luego!");
+                    salir = true;
+                    break;
+
+                default:
+                    System.out.println("Opción no válida.");
+            }
         }
 
+        scanner.close();
     }
 
+    // -----------------------------------------
+    // Métodos auxiliares de cada opción del menú
+    // -----------------------------------------
+
+    private static void altaEntrenador(Gimnasio gimnasio, GimnasioManager manager, EtapaTorneo etapa, Scanner scanner) {
+        System.out.println("\n-- Alta de Entrenador --");
+        System.out.print("Nombre del entrenador: ");
+        String nombre = scanner.nextLine().trim();
+        System.out.print("Créditos iniciales (entero): ");
+        int creditos;
+        try {
+            creditos = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Créditos inválidos.");
+            return;
+        }
+
+        System.out.println("¿Quiere asignar un hechizo inicial? (S/N): ");
+        String resp = scanner.nextLine().trim();
+        IHechizo hechizo = null;
+        if (resp.equalsIgnoreCase("S")) {
+            System.out.println("Seleccione hechizo: 1. Tormenta  2. Viento  3. Niebla");
+            String h = scanner.nextLine().trim();
+            switch (h) {
+                case "1":
+                    hechizo = new HechizoTormenta();
+                    break;
+                case "2":
+                    hechizo = new HechizoViento();
+                    break;
+                case "3":
+                    hechizo = new HechizoNiebla();
+                    break;
+                default:
+                    System.out.println("Hechizo inválido. Se crea sin hechizo.");
+                    break;
+            }
+        }
+
+        try {
+            Entrenador e = (hechizo == null)
+                    ? new Entrenador(nombre, creditos)
+                    : new Entrenador(nombre, creditos, hechizo);
+            gimnasio.putEntrenador(e);
+            // Guardamos inmediatamente (en esta etapa sí está permitido)
+            manager.guardarEstado(gimnasio, SistemaPelea.getInstancia(), etapa);
+            System.out.println("Entrenador \"" + nombre + "\" registrado con éxito.");
+        } catch (NombreUtilizadoException ex) {
+            System.out.println("Error: el nombre \"" + ex.getNombre() + "\" ya está en uso.");
+        }
+    }
+
+    private static void altaOmejoraPokemon(Gimnasio gimnasio, Scanner scanner) {
+        System.out.println("\n-- Alta/Mejora de Pokémon --");
+        System.out.print("Ingrese nombre del entrenador: ");
+        String nombre = scanner.nextLine().trim();
+        try {
+            Entrenador e = gimnasio.getEntrenador(nombre);
+            System.out.println("1. Añadir Pokémon desde fábrica");
+            System.out.println("2. Comprar o mejorar Pokémon desde la tienda");
+            System.out.print("Seleccione opción: ");
+            String opt = scanner.nextLine().trim();
+            PokemonFactory pokFac = new PokemonFactory();
+            ArmaFactory armFac = new ArmaFactory();
+
+            switch (opt) {
+                case "1":
+                    System.out.println("¿Qué tipo? (Agua, Fuego, Piedra, Hielo)");
+                    String tipo = scanner.nextLine().trim();
+                    System.out.println("¿Qué nombre de Pokémon? (por ejemplo: Magikarp, Onix, Charizard...)");
+                    String nombrePoke = scanner.nextLine().trim();
+                    System.out.println("¿Quiere asignar un arma inicial? (S/N)");
+                    String resp = scanner.nextLine().trim();
+                    if (resp.equalsIgnoreCase("S")) {
+                        System.out.println("Arma: Espada o Hacha");
+                        String armaStr = scanner.nextLine().trim();
+                        Arma a = armFac.getArma(armaStr.toLowerCase());
+                        e.putPokemon(pokFac.getPokemon(tipo, nombrePoke, a));
+                    } else {
+                        e.putPokemon(pokFac.getPokemon(tipo, nombrePoke));
+                    }
+                    System.out.println("Pokémon agregado al entrenador " + nombre);
+                    break;
+
+                case "2":
+                    System.out.println("Comprando/mejorando Pokémon desde la Tienda:");
+                    System.out.println("Ingrese tipo de Pokémon (Agua, Fuego, Piedra, Hielo): ");
+                    String t2 = scanner.nextLine().trim();
+                    System.out.println("Ingrese nombre de Pokémon: ");
+                    String n2 = scanner.nextLine().trim();
+                    try {
+                        gimnasio.getTienda().compraPokemon(e, t2, n2);
+                        System.out.println("Pokémon comprado: " + n2 + " (Tipo " + t2 + ")");
+                    } catch (CompraImposibleException ex) {
+                        System.out.println("Error al comprar/mejorar Pokémon: " + ex.getMessage());
+                    } catch (TipoDesconocidoException ex) {
+                        System.out.println("Error al comprar/mejorar Pokémon: Tipo " + ex.getTipo() + " desconocido");
+                    }
+                    break;
+
+                default:
+                    System.out.println("Opción inválida.");
+            }
+
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+    }
+
+    private static void configurarArenas(SistemaPelea sistemaPelea, GimnasioManager manager, EtapaTorneo etapa, Scanner scanner) {
+        System.out.println("\n-- Configurar Arenas --");
+        System.out.print("¿Cuántas arenas desea crear? (entero): ");
+        int n;
+        try {
+            n = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Número inválido.");
+            return;
+        }
+        sistemaPelea.inicializarArenas(n);
+        // Guardamos inmediatamente la configuración de arenas (estamos en REGISTRO, así que sí se permite)
+        manager.guardarEstado(Gimnasio.getInstancia(), sistemaPelea, etapa);
+        System.out.println("Se crearon " + n + " arenas (todas Bosque + Fácil).");
+    }
+
+    private static void inscribirEntrenador(Gimnasio gimnasio, EtapaTorneo etapa, Scanner scanner) {
+        System.out.println("\n-- Inscribir Entrenador al Torneo --");
+        List<Entrenador> lista = gimnasio.getInscriptosTorneo();
+        System.out.println("Actualmente inscritos (" + lista.size() + "/8):");
+        for (Entrenador e : lista) {
+            System.out.println(" - " + e.getNombre());
+        }
+        if (lista.size() >= 8) {
+            System.out.println("Ya se alcanzó el cupo máximo de 8 inscriptos.");
+            return;
+        }
+        System.out.print("Nombre del entrenador a inscribir: ");
+        String nombre = scanner.nextLine().trim();
+        try {
+            gimnasio.inscribirAlTorneo(nombre);
+            System.out.println("Entrenador \"" + nombre + "\" inscrito correctamente.");
+        } catch (Exception ex) {
+            System.out.println("No se pudo inscribir: " + ex.getMessage());
+        }
+        if (gimnasio.getInscriptosTorneo().size() == 8) {
+            System.out.println("¡Ya hay 8 entrenadores inscritos! Listos para iniciar el torneo.");
+        }
+    }
+
+    private static void iniciarTorneo(Gimnasio gimnasio, SistemaPelea sistemaPelea, EtapaTorneo etapa) {
+        System.out.println("\n--- INICIO DEL TORNEO (Eliminación directa) ---");
+        List<Entrenador> participantes = new ArrayList<>(gimnasio.getInscriptosTorneo());
+        List<Entrenador> ganadoresCuartos = new ArrayList<>();
+
+        try {
+            // ---------- CUARTOS DE FINAL (4 duelos simultáneos) ----------
+            System.out.println("\n[CUARTOS DE FINAL]");
+            List<Duelo> duelosCuartos = new ArrayList<>();
+            for (int i = 0; i < 8; i += 2) {
+                ArenaFisica arena = sistemaPelea.asignarArenaLibre();
+                Duelo d = gimnasio.crearDuelo(
+                        participantes.get(i).getNombre(),
+                        participantes.get(i + 1).getNombre(),
+                        arena
+                );
+                if (d != null) {
+                    duelosCuartos.add(d);
+                    sistemaPelea.addDuelo(d);
+                } else {
+                    System.out.println("No se pudo crear duelo entre " +
+                                       participantes.get(i).getNombre() + " y " +
+                                       participantes.get(i + 1).getNombre());
+                    arena.liberar();
+                }
+            }
+
+            // Si no se crearon duelos, abortamos
+            if (duelosCuartos.isEmpty()) {
+                System.out.println("No hay duelos válidos en cuartos. Torneo finalizado.");
+                return;
+            }
+
+            // Ejecutar los duelos de cuartos en paralelo y esperar
+            List<Thread> hilosCuartos = new ArrayList<>();
+            for (Duelo d : duelosCuartos) {
+                Thread t = new Thread(() -> {
+                    try {
+                        d.run();
+                    } catch (Exception ex) {
+                        System.out.println("Error en duelo concurrente: " + ex.getMessage());
+                    } finally {
+                        sistemaPelea.liberarArena(d.getArena());
+                    }
+                });
+                hilosCuartos.add(t);
+                t.start();
+            }
+            for (Thread t : hilosCuartos) {
+                t.join();
+            }
+
+            // Recoger ganadores de cuartos
+            for (Duelo d : duelosCuartos) {
+                if (d.getGanador() != null) {
+                    ganadoresCuartos.add(d.getGanador());
+                    System.out.println("Ganador Cuarto: " + d.getGanador().getNombre());
+                }
+            }
+
+            // Si menos de 2 ganadores, abortamos
+            if (ganadoresCuartos.size() < 2) {
+                System.out.println("No hay suficientes ganadores de cuartos para semifinales. Torneo finalizado.");
+                return;
+            }
+
+            // ---------- SEMIFINALES (2 duelos simultáneos) ----------
+            System.out.println("\n[SEMIFINALES]");
+            List<Entrenador> semifinalistas = new ArrayList<>(ganadoresCuartos);
+            List<Duelo> duelosSemi = new ArrayList<>();
+            List<Entrenador> ganadoresSemi = new ArrayList<>();
+
+            for (int i = 0; i < semifinalistas.size(); i += 2) {
+                if (i + 1 >= semifinalistas.size()) break;
+                ArenaFisica arena = sistemaPelea.asignarArenaLibre();
+                Duelo d = gimnasio.crearDuelo(
+                        semifinalistas.get(i).getNombre(),
+                        semifinalistas.get(i + 1).getNombre(),
+                        arena
+                );
+                if (d != null) {
+                    duelosSemi.add(d);
+                    sistemaPelea.addDuelo(d);
+                } else {
+                    System.out.println("No se pudo crear duelo semifinal entre " +
+                                       semifinalistas.get(i).getNombre() + " y " +
+                                       semifinalistas.get(i + 1).getNombre());
+                    arena.liberar();
+                }
+            }
+
+            // Si no se crearon semifinales, abortamos
+            if (duelosSemi.isEmpty()) {
+                System.out.println("No hay duelos válidos en semifinales. Torneo finalizado.");
+                return;
+            }
+
+            // Ejecutar las semifinales en paralelo y esperar
+            List<Thread> hilosSemi = new ArrayList<>();
+            for (Duelo d : duelosSemi) {
+                Thread t = new Thread(() -> {
+                    try {
+                        d.run();
+                    } catch (Exception ex) {
+                        System.out.println("Error en duelo semifinal: " + ex.getMessage());
+                    } finally {
+                        sistemaPelea.liberarArena(d.getArena());
+                    }
+                });
+                hilosSemi.add(t);
+                t.start();
+            }
+            for (Thread t : hilosSemi) {
+                t.join();
+            }
+
+            // Recoger ganadores de semifinales
+            for (Duelo d : duelosSemi) {
+                if (d.getGanador() != null) {
+                    ganadoresSemi.add(d.getGanador());
+                    System.out.println("Ganador Semifinal: " + d.getGanador().getNombre());
+                }
+            }
+
+            // Si menos de 2 ganadores, abortamos
+            if (ganadoresSemi.size() < 2) {
+                System.out.println("No hay dos ganadores de semifinales para la final. Torneo finalizado.");
+                return;
+            }
+
+            // ---------- FINAL (1 duelo) ----------
+            System.out.println("\n[FINAL]");
+            ArenaFisica arenaFinal = sistemaPelea.asignarArenaLibre();
+            Duelo dFinal = gimnasio.crearDuelo(
+                    ganadoresSemi.get(0).getNombre(),
+                    ganadoresSemi.get(1).getNombre(),
+                    arenaFinal
+            );
+            if (dFinal != null) {
+                sistemaPelea.addDuelo(dFinal);
+                dFinal.iniciarDuelo();
+                System.out.println("Ganador Final: " + dFinal.getGanador().getNombre());
+                sistemaPelea.liberarArena(arenaFinal);
+            } else {
+                System.out.println("No se pudo crear el duelo final. Torneo finalizado.");
+                arenaFinal.liberar();
+            }
+
+            // El torneo ya terminó
+            etapa.avanzarEtapa(); // pasa a FINALIZADO
+            System.out.println("\n--- TORNEO FINALIZADO: ETAPA FINALIZADO ---");
+
+            // Limpiamos los inscriptos para un posible próximo torneo
+            gimnasio.clearInscriptos();
+
+        } catch (InterruptedException ie) {
+            System.out.println("Error al asignar arena: " + ie.getMessage());
+        } catch (ArenaOcupadaException ae) {
+            System.out.println("Error: la arena está ocupada.");
+        }
+    }
+
+    private static void mostrarEstadoActual(Gimnasio gim, SistemaPelea sp) {
+        System.out.println("\n-- Estado Actual del Gimnasio --");
+        System.out.println("Entrenadores registrados:");
+        for (String key : gim.getEntrenadores().keySet()) {
+            System.out.println(" - " + key);
+        }
+        System.out.println("\nArenas disponibles (#" + sp.getArenas().size() + "): ");
+        for (ArenaFisica a : sp.getArenas()) {
+            System.out.println("Arena #" + a.getId() + "  |  Ocupada: " + a.estaOcupada());
+        }
+        System.out.println("\nEnt. inscritos al próximo torneo (" + gim.getInscriptosTorneo().size() + "/8):");
+        for (Entrenador e : gim.getInscriptosTorneo()) {
+            System.out.println(" - " + e.getNombre());
+        }
+    }
 }

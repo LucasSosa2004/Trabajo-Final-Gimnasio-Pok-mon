@@ -1,6 +1,9 @@
 package modelo;
 
-public class ArenaDificil extends ArenaDificultadDecorator {
+import java.io.Serializable;
+
+public class ArenaDificil extends ArenaDificultadDecorator implements Serializable {
+	private static final long serialVersionUID = 1L;
     public ArenaDificil(ArenaLogica base) {
         super(base);
     }

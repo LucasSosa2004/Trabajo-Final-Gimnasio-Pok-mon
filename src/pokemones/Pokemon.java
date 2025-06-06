@@ -6,8 +6,10 @@ import interfaces.IClasificable;
 import interfaces.IHechizable;
 import interfaces.IHostil;
 import interfaces.IValuable;
+import java.io.Serializable;
 
-public abstract class Pokemon implements Cloneable, IHostil, IValuable, IHechizable, IClasificable {
+public abstract class Pokemon implements Cloneable, IHostil, IValuable, IHechizable, IClasificable, Serializable {
+	private static final long serialVersionUID = 1L;
     public String nombre;
     public double vitalidad;
     public double escudo;

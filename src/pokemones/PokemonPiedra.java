@@ -1,8 +1,10 @@
 package pokemones;
 
 import armas.Arma;
+import java.io.Serializable;
 
-public class PokemonPiedra extends Pokemon {
+public class PokemonPiedra extends Pokemon implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	private Arma arma;
 	

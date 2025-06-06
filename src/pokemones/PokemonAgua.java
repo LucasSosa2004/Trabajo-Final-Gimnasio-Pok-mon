@@ -2,8 +2,10 @@ package pokemones;
 
 import armas.Arma;
 import excepciones.PokemonNoPuedeUsarArmaE;
+import java.io.Serializable;
 
-public class PokemonAgua extends Pokemon {
+public class PokemonAgua extends Pokemon implements Serializable {
+	private static final long serialVersionUID = 1L;
 
     public PokemonAgua(String nombre) {
         super();

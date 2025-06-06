@@ -2,8 +2,11 @@ package pokemones;
 
 import armas.Arma;
 import excepciones.PokemonNoPuedeUsarArmaE;
+import java.io.Serializable;
 
-public class PokemonFuego extends Pokemon {
+
+public class PokemonFuego extends Pokemon implements Serializable {
+	private static final long serialVersionUID = 1L;
 
     public PokemonFuego(String nombre) {
         this.nombre = nombre;

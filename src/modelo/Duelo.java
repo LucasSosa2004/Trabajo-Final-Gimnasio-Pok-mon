@@ -1,5 +1,7 @@
 package modelo;
 
+import java.io.Serializable;
+
 import entrenador.Entrenador;
 import excepciones.EntrenadorSinPokemonesException;
 import pokemones.Pokemon;
@@ -8,20 +10,18 @@ import pokemones.Pokemon;
  * El duelo recibe dos entrenadores, opcionalmente cada uno lanza un hechizo,
  * luego selecciona automáticamente sus primeros Pokémons y resuelve
  * el duelo hasta que uno se queda sin equipo activo.
- * 
- * 
  */
-public class Duelo implements Runnable {
+public class Duelo implements Runnable, Serializable {
+    private static final long serialVersionUID = 1L;
+
     private Entrenador e1, e2, ganador;
     private int clave;
     private boolean dueloTerminado;
     private ArenaFisica arena;
 
-    private static final int PREMIO_GANADOR = 500; // 
-
     /**
      * Crea un nuevo Duelo en la arena dada.
-     * 
+     *
      * @param e1    Entrenador 1 (debe tener al menos 1 Pokémon activo)
      * @param e2    Entrenador 2 (debe tener al menos 1 Pokémon activo)
      * @param arena Arena física donde se librará este duelo
@@ -59,6 +59,11 @@ public class Duelo implements Runnable {
 
     public Entrenador getEntrenador2() {
         return e2;
+    }
+
+    /** Nuevo método para obtener la arena asociada */
+    public ArenaFisica getArena() {
+        return arena;
     }
 
     /**
@@ -143,7 +148,8 @@ public class Duelo implements Runnable {
 
     @Override
     public String toString() {
-        return "Duelo [e1=" + e1 + ", e2=" + e2 + ", ganador=" + ganador +
+        return "Duelo [e1=" + e1.getNombre() + ", e2=" + e2.getNombre() +
+               ", ganador=" + (ganador != null ? ganador.getNombre() : "N/A") +
                ", clave=" + clave + ", dueloTerminado=" + dueloTerminado + "]";
     }
 }

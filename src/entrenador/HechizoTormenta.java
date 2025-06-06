@@ -2,12 +2,13 @@ package entrenador;
 
 import interfaces.IHechizable;
 import interfaces.IHechizo;
+import java.io.Serializable;
 
 /**
  * Hechizo que reduce el escudo y/o la fuerza del objetivo.
  */
-public class HechizoTormenta implements IHechizo {
-
+public class HechizoTormenta implements IHechizo, Serializable {
+	private static final long serialVersionUID = 1L;
     /**
      * Aplica el efecto de tormenta al objeto hechizable.
      * 

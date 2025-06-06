@@ -1,92 +1,112 @@
 package modelo;
 
-import armas.*;
-import entrenador.Entrenador;
-import excepciones.*;
-import pokemones.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 
-public class Tienda {
-	public ArmaFactory armaFactory;
-	public PokemonFactory pokemonFactory;	
-	
+import armas.ArmaFactory;
+import entrenador.Entrenador;
+import excepciones.CompraImposibleException;
+import excepciones.PokemonNoExisteException;
+import excepciones.PokemonNoPuedeUsarArmaE;
+import excepciones.TipoDesconocidoException;
+import pokemones.Pokemon;
+import pokemones.PokemonFactory;
+
+/**
+ * Tienda encargada de vender Pokémon y armas.
+ * Las fábricas internas se marcan como transient para que no se serialicen.
+ */
+public class Tienda implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    // Las fábricas no se serializan
+    private transient ArmaFactory armaFactory;
+    private transient PokemonFactory pokemonFactory;
+
     public Tienda() {
-		this.armaFactory = new ArmaFactory();
-		this.pokemonFactory = new PokemonFactory();
-	}
-	
-	/**
-     * <br><b>Pre:</b><br>
-     * El tipo de arma, el entrenador y el nombre del Pokemon no pueden ser nulos.
-     * 
-     * <br><b>Post:</b><br>
-     * Permite a un entrenador comprar un arma para uno de sus Pokemones.
-     * 
-     * @param tipo Tipo de arma a comprar
-     * @param e Entrenador que realiza la compra
-     * @param nombre Nombre del Pokemon que usara el arma
-     * @throws CompraImposibleException Si el entrenador no tiene suficientes creditos
-     * @throws TipoDesconocidoException Si el tipo de arma no es reconocido
-     * @throws PokemonNoPuedeUsarArmaE Si el Pokemon no puede usar el arma
+        this.armaFactory = new ArmaFactory();
+        this.pokemonFactory = new PokemonFactory();
+    }
+
+    /**
+     * Permite a un entrenador comprar un arma para uno de sus Pokémons.
+     *
+     * @param tipo   Tipo de arma a comprar
+     * @param e      Entrenador que realiza la compra
+     * @param nombre Nombre del Pokémon que usará el arma
+     * @throws CompraImposibleException   Si el entrenador no tiene suficientes créditos
+     * @throws TipoDesconocidoException   Si el tipo de arma no es reconocido
+     * @throws PokemonNoPuedeUsarArmaE    Si el Pokémon no puede usar el arma
+     * @throws PokemonNoExisteException   Si el Pokémon no existe en el entrenador
      */
     public void comprarArma(String tipo, Entrenador e, String nombre)
-            throws CompraImposibleException, TipoDesconocidoException, PokemonNoPuedeUsarArmaE {
-        assert tipo != null && !tipo.isEmpty() : "El tipo de arma no puede ser nulo o vacio";
+            throws CompraImposibleException, TipoDesconocidoException, PokemonNoPuedeUsarArmaE, PokemonNoExisteException {
+        assert tipo != null && !tipo.isEmpty() : "El tipo de arma no puede ser nulo o vacío";
         assert e != null : "El entrenador no puede ser nulo";
-        assert nombre != null && !nombre.isEmpty() : "El nombre del Pokemon no puede ser nulo o vacio";
+        assert nombre != null && !nombre.isEmpty() : "El nombre del Pokémon no puede ser nulo o vacío";
 
-        Arma a;
-        Pokemon p;
-		try {
-			p = e.buscaPokemon(nombre);
-			a = armaFactory.getArma(tipo);
-	        if (e.getCreditos() < a.getCosto())
-	        	throw new CompraImposibleException(e.getCreditos(), a.getCosto());
-			else {
-				p.setArma(a);
-				e.subCreditos(a.getCosto());
-			}
-		} catch (TipoDesconocidoException e1) {
-			System.out.println("El tipo de arma " + e1.getTipo() + " es desconocido");
-		} catch (PokemonNoPuedeUsarArmaE e1) {
-			System.out.println("El pokemon " + e1.getNombre() + " no puede usar arma");
-		} catch (PokemonNoExisteException e1) {
-			System.out.println("El pokemon " + e1.getNombre() + " no existe");
-		}
+        // Buscar el Pokémon en el entrenador
+        Pokemon p = e.buscaPokemon(nombre);
+        // Obtener el arma de la fábrica (puede lanzar TipoDesconocidoException)
+        armas.Arma a = armaFactory.getArma(tipo);
+        // Verificar créditos
+        double costoArma = a.getCosto();
+        if (e.getCreditos() < costoArma) {
+            throw new CompraImposibleException(e.getCreditos(), costoArma);
+        }
+        // Asignar el arma y descontar créditos
+        p.setArma(a);
+        e.subCreditos(costoArma);
 
-        assert e.getCreditos() >= 0 : "Los creditos del entrenador no pueden ser negativos";
-    }
-    
-
-	/**
-	 * Permite a un entrenador comprar un Pokemon de un tipo especÃ­fico.
-	 * 
-	 * @param e Entrenador que realiza la compra
-	 * @param tipo Tipo de Pokemon a comprar
-	 * @param nombre Nombre del Pokemon a comprar
-	 * @throws CompraImposibleException Si el entrenador no tiene suficientes creditos
-	 */
-	public void compraPokemon(Entrenador e, String tipo, String nombre) throws CompraImposibleException{  	 
-    	 try {
-    		Pokemon p = pokemonFactory.getPokemon(tipo, nombre); 
-        	if(e.getCreditos() < p.getCosto())
-        		throw new CompraImposibleException(e.getCreditos(),p.getCosto());
-			e.putPokemon(p);
-			e.subCreditos(p.getCosto());
-		} catch (NombreUtilizadoException e1) {
-			System.out.println("El nombre "+e1.getNombre()+" ya esta siendo utilizado");
-		} catch (TipoDesconocidoException e1) {
-			System.out.println("El tipo de pokemon "+e1.getTipo()+" es desconocido");
-
-		}
+        assert e.getCreditos() >= 0 : "Los créditos del entrenador no pueden ser negativos";
     }
 
+    /**
+     * Permite a un entrenador comprar un Pokémon de un tipo específico.
+     *
+     * @param e      Entrenador que realiza la compra
+     * @param tipo   Tipo de Pokémon a comprar
+     * @param nombre Nombre del Pokémon a comprar
+     * @throws CompraImposibleException If el entrenador no tiene suficientes créditos
+     * @throws TipoDesconocidoException If el tipo de Pokémon no es reconocido
+     */
+    public void compraPokemon(Entrenador e, String tipo, String nombre)
+            throws CompraImposibleException, TipoDesconocidoException {
+        assert e != null : "El entrenador no puede ser nulo";
+        assert tipo != null && !tipo.isEmpty() : "El tipo de Pokémon no puede ser nulo o vacío";
+        assert nombre != null && !nombre.isEmpty() : "El nombre del Pokémon no puede ser nulo o vacío";
 
-	@Override
-	public String toString() {
-		return "Tienda [armaFactory=" + armaFactory + ", pokemonFactory=" + pokemonFactory + "]";
-	}
-	
-	
+        // Crear el Pokémon con la fábrica (puede lanzar TipoDesconocidoException)
+        Pokemon p = pokemonFactory.getPokemon(tipo, nombre);
+        double costoPoke = p.getCosto();
+        if (e.getCreditos() < costoPoke) {
+            throw new CompraImposibleException(e.getCreditos(), costoPoke);
+        }
+        // Agregar el Pokémon al entrenador y descontar créditos
+        try {
+            e.putPokemon(p);
+        } catch (excepciones.NombreUtilizadoException ex) {
+            // Si el nombre ya existe, mostramos mensaje y salimos
+            System.out.println("El nombre " + ex.getNombre() + " ya está siendo utilizado");
+            return;
+        }
+        e.subCreditos(costoPoke);
 
+        assert e.getCreditos() >= 0 : "Los créditos del entrenador no pueden ser negativos";
+    }
+
+    /**
+     * Tras la deserialización, volvemos a instanciar las fábricas marcadas como transient.
+     */
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        ois.defaultReadObject();
+        this.armaFactory = new ArmaFactory();
+        this.pokemonFactory = new PokemonFactory();
+    }
+
+    @Override
+    public String toString() {
+        return "Tienda [armaFactory=" + armaFactory + ", pokemonFactory=" + pokemonFactory + "]";
+    }
 }
-

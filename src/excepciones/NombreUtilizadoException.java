@@ -1,6 +1,9 @@
 package excepciones;
 
-public class NombreUtilizadoException extends Exception {
+import java.io.Serializable;
+
+public class NombreUtilizadoException extends Exception implements Serializable {
+	private static final long serialVersionUID = 1L;
 	protected String nombre;
 
 	/**

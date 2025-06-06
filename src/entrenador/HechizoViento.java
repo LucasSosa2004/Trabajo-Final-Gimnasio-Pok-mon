@@ -2,12 +2,12 @@ package entrenador;
 
 import interfaces.IHechizable;
 import interfaces.IHechizo;
-
+import java.io.Serializable;
 /**
  * Hechizo que reduce la fuerza y/o vitalidad del objetivo.
  */
-public class HechizoViento implements IHechizo {
-
+public class HechizoViento implements IHechizo, Serializable {
+	private static final long serialVersionUID = 1L;
     /**
      * Aplica el efecto de viento al objeto hechizable.
      * 

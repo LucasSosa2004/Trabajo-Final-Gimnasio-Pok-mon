@@ -1,6 +1,9 @@
 package excepciones;
 
-public class PokemonNoPuedeUsarArmaE extends PokemonException {
+import java.io.Serializable;
+
+public class PokemonNoPuedeUsarArmaE extends PokemonException implements Serializable {
+	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * Constructor de la excepcion PokemonNoPuedeUsarArmaE.

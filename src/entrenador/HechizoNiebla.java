@@ -2,12 +2,13 @@ package entrenador;
 
 import interfaces.IHechizable;
 import interfaces.IHechizo;
+import java.io.Serializable;
 
 /**
  * Hechizo que reduce la vitalidad o fuerza del objetivo.
  */
-public class HechizoNiebla implements IHechizo {
-
+public class HechizoNiebla implements IHechizo, Serializable {
+	private static final long serialVersionUID = 1L;
     /**
      * Aplica el efecto de niebla al objeto hechizable.
      * 

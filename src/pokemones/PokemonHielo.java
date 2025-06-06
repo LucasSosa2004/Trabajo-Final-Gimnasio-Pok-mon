@@ -2,8 +2,11 @@ package pokemones;
 
 import armas.Arma;
 import excepciones.PokemonNoPuedeUsarArmaE;
+import java.io.Serializable;
 
-public class PokemonHielo extends Pokemon {
+
+public class PokemonHielo extends Pokemon implements Serializable {
+	private static final long serialVersionUID = 1L;
 
     public PokemonHielo(String nombre) {
         this.nombre = nombre;

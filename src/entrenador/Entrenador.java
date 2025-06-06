@@ -10,13 +10,15 @@ import interfaces.IClasificable;
 import interfaces.IHechizable;
 import interfaces.IHechizo;
 import pokemones.Pokemon;
+import java.io.Serializable;
 
 
 /**
  * Cada Entrenador tiene un nombre, creditos, una lista de pokemones
  * y un "equipo activo" de hasta 3 para duelos.
  */
-public class Entrenador implements Cloneable, IClasificable {
+public class Entrenador implements Cloneable, IClasificable, Serializable {
+	private static final long serialVersionUID = 1L;
     private String nombre;
     private double creditos = 0;
     private HashMap<String,Pokemon> pokemones = new HashMap<>();

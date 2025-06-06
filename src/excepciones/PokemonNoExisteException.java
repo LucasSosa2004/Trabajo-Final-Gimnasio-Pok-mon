@@ -1,6 +1,9 @@
 package excepciones;
 
-public class PokemonNoExisteException extends PokemonException {
+import java.io.Serializable;
+
+public class PokemonNoExisteException extends PokemonException implements Serializable {
+	private static final long serialVersionUID = 1L;
 	protected String nombre;
 	
 	/**
