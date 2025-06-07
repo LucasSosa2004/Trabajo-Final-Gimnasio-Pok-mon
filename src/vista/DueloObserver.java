@@ -15,10 +15,12 @@ public class DueloObserver implements IDueloObserver {
         this.textArea = textArea;
     }
     
-    private void appendText(String text) {
-        SwingUtilities.invokeLater(() -> {
-            textArea.append(text + "\n");
-            textArea.setCaretPosition(textArea.getDocument().getLength());
+    private void appendText(final String text) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                textArea.append(text + "\n");
+                textArea.setCaretPosition(textArea.getDocument().getLength());
+            }
         });
     }
     

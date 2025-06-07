@@ -16,8 +16,8 @@ import armas.ArmaFactory;
 import persistencia.GimnasioManager;
 import vista.VentanaPokemones;
 import controlador.Controlador;
-import javax.swing.SwingUtilities;
 
+import java.awt.EventQueue;
 import java.util.*;
 
 /**
@@ -51,23 +51,25 @@ public class Prueba {
     }
 
     private static void iniciarVersionGUI() {
-        SwingUtilities.invokeLater(() -> {
-            try {
-                // Inicializar el sistema
-                Gimnasio gimnasio = Gimnasio.getInstancia();
-                SistemaPelea sistemaPelea = SistemaPelea.getInstancia();
-                sistemaPelea.inicializarArenas(3); // Inicializar con 3 arenas por defecto
-                
-                // Crear y configurar la vista y el controlador
-                VentanaPokemones ventana = new VentanaPokemones();
-                Controlador controlador = new Controlador();
-                controlador.setVista(ventana);
-                
-                // Mostrar la ventana
-                ventana.setVisible(true);
-            } catch (Exception e) {
-                System.err.println("Error al iniciar la interfaz gráfica: " + e.getMessage());
-                e.printStackTrace();
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    // Inicializar el sistema
+                    Gimnasio gimnasio = Gimnasio.getInstancia();
+                    SistemaPelea sistemaPelea = SistemaPelea.getInstancia();
+                    sistemaPelea.inicializarArenas(3); // Inicializar con 3 arenas por defecto
+                    
+                    // Crear y configurar la vista y el controlador
+                    VentanaPokemones ventana = new VentanaPokemones();
+                    Controlador controlador = new Controlador();
+                    controlador.setVista(ventana);
+                    
+                    // Mostrar la ventana
+                    ventana.setVisible(true);
+                } catch (Exception e) {
+                    System.err.println("Error al iniciar la interfaz gráfica: " + e.getMessage());
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -383,14 +385,16 @@ public class Prueba {
 
             // Ejecutar los duelos de cuartos en paralelo y esperar
             List<Thread> hilosCuartos = new ArrayList<>();
-            for (Duelo d : duelosCuartos) {
-                Thread t = new Thread(() -> {
-                    try {
-                        d.run();
-                    } catch (Exception ex) {
-                        System.out.println("Error en duelo concurrente: " + ex.getMessage());
-                    } finally {
-                        sistemaPelea.liberarArena(d.getArena());
+            for (final Duelo d : duelosCuartos) {
+                Thread t = new Thread(new Runnable() {
+                    public void run() {
+                        try {
+                            d.run();
+                        } catch (Exception ex) {
+                            System.out.println("Error en duelo concurrente: " + ex.getMessage());
+                        } finally {
+                            sistemaPelea.liberarArena(d.getArena());
+                        }
                     }
                 });
                 hilosCuartos.add(t);
@@ -447,14 +451,16 @@ public class Prueba {
 
             // Ejecutar las semifinales en paralelo y esperar
             List<Thread> hilosSemi = new ArrayList<>();
-            for (Duelo d : duelosSemi) {
-                Thread t = new Thread(() -> {
-                    try {
-                        d.run();
-                    } catch (Exception ex) {
-                        System.out.println("Error en duelo semifinal: " + ex.getMessage());
-                    } finally {
-                        sistemaPelea.liberarArena(d.getArena());
+            for (final Duelo d : duelosSemi) {
+                Thread t = new Thread(new Runnable() {
+                    public void run() {
+                        try {
+                            d.run();
+                        } catch (Exception ex) {
+                            System.out.println("Error en duelo semifinal: " + ex.getMessage());
+                        } finally {
+                            sistemaPelea.liberarArena(d.getArena());
+                        }
                     }
                 });
                 hilosSemi.add(t);

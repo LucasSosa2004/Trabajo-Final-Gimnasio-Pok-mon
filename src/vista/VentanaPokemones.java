@@ -108,19 +108,6 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 	private JButton boton_AgregarArena;
 	private JTextArea textAreaDuelo;
 
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					VentanaPokemones frame = new VentanaPokemones();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
 	public VentanaPokemones() {
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
