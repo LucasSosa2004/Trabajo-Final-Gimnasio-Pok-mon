@@ -62,7 +62,7 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 	private JTextArea textArea;
 	private JButton boton_iniciar_torneo;
 
-	// Paneles espec韋icos para cada opci髇 en panel_detalles
+	// Paneles espec铆ficos para cada opci贸n en panel_detalles
 	private JPanel panelAgregarEntrenador;
 	private JPanel panelArena;
 	private JTextField textNombreEntrenador;
@@ -106,7 +106,8 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 	private JComboBox<String> comboDificultadArena;
 	private JComboBox<String> comboTipoArena;
 	private JButton boton_AgregarArena;
-	/*  
+	private JTextArea textAreaDuelo;
+
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -118,7 +119,7 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 				}
 			}
 		});
-	}*/
+	}
 
 	public VentanaPokemones() {
 
@@ -148,7 +149,7 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 		panel_entrenadores.add(panel_AgregarAlTorneo, BorderLayout.SOUTH);
 		panel_AgregarAlTorneo.setLayout(new GridLayout(0, 1, 0, 0));
 
-		// Panel de creaci髇 y botones
+		// Panel de creaci贸n y botones
 		panel_creacion = new JPanel();
 		panel_central.add(panel_creacion);
 		panel_creacion.setLayout(new GridLayout(2, 1, 0, 0));
@@ -187,7 +188,7 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 		panel_creacion.add(panel_detalles);
 		panel_detalles.setLayout(new CardLayout());
 
-		// Panel por defecto vac韔
+		// Panel por defecto vac铆o
 		JPanel panel = new JPanel();
 		panel_detalles.add(panel, "VACIO");
 		
@@ -569,74 +570,103 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 
 
 				panelDuelo = new JPanel();
-				GridBagLayout gbl_panelDuelo = new GridBagLayout();
-				gbl_panelDuelo.columnWeights = new double[] { 0.0, 1.0 };
-				panelDuelo.setLayout(gbl_panelDuelo);
-				GridBagConstraints gbc_lblNomEntrenadorDuelo = new GridBagConstraints();
-				gbc_lblNomEntrenadorDuelo.insets = new Insets(0, 0, 5, 5);								
-												
-				lblNomEntrenadorDuelo = new JLabel("Entrenador 1:");
-				lblNomEntrenadorDuelo.setForeground(Color.DARK_GRAY);
-				lblNomEntrenadorDuelo.setFont(new Font("Arial", Font.BOLD, 14));
-
-				gbc_lblNomEntrenadorDuelo.gridx = 0;
-				gbc_lblNomEntrenadorDuelo.gridy = 0;
-				panelDuelo.add(lblNomEntrenadorDuelo, gbc_lblNomEntrenadorDuelo);
-		
-				textEntrenador1 = new JTextField();
-				textEntrenador1.setFont(new Font("Arial", Font.ITALIC, 12));
-				GridBagConstraints gbc_textEntrenador1 = new GridBagConstraints();
-				gbc_textEntrenador1.fill = GridBagConstraints.HORIZONTAL;
-				gbc_textEntrenador1.insets = new Insets(0, 0, 5, 0);
-				gbc_textEntrenador1.gridx = 1;
-				gbc_textEntrenador1.gridy = 0;
-				panelDuelo.add(textEntrenador1, gbc_textEntrenador1);
-				textEntrenador1.setColumns(10);
-				
-				boton_AgregarE1 = new JButton("Seleccionar");
-				boton_AgregarE1.setFont(new Font("Arial", Font.BOLD, 12));
-				GridBagConstraints gbc_boton_AgregarE1 = new GridBagConstraints();
-				gbc_boton_AgregarE1.insets = new Insets(0, 0, 5, 0);
-				gbc_boton_AgregarE1.gridx = 1;
-				gbc_boton_AgregarE1.gridy = 1;
-				panelDuelo.add(boton_AgregarE1, gbc_boton_AgregarE1);
-		
-				lblEntrenador = new JLabel("Entrenador 2:");
-				lblEntrenador.setForeground(Color.DARK_GRAY);
-				lblEntrenador.setFont(new Font("Arial", Font.BOLD, 14));
-				GridBagConstraints gbc_lblEntrenador = new GridBagConstraints();
-				gbc_lblEntrenador.insets = new Insets(0, 0, 5, 5);
-				gbc_lblEntrenador.gridx = 0;
-				gbc_lblEntrenador.gridy = 3;
-				panelDuelo.add(lblEntrenador, gbc_lblEntrenador);
-
-				textEntrenador2 = new JTextField();
-				textEntrenador2.setFont(new Font("Arial", Font.ITALIC, 12));
-				GridBagConstraints gbc_textEntrenador2 = new GridBagConstraints();
-				gbc_textEntrenador2.fill = GridBagConstraints.HORIZONTAL;
-				gbc_textEntrenador2.insets = new Insets(0, 0, 5, 0);
-				gbc_textEntrenador2.gridx = 1;
-				gbc_textEntrenador2.gridy = 3;
-				panelDuelo.add(textEntrenador2, gbc_textEntrenador2);
-				textEntrenador2.setColumns(10);
-		
-				boton_AgregarE2 = new JButton("Seleccionar");
-				boton_AgregarE2.setFont(new Font("Arial", Font.BOLD, 12));
-				GridBagConstraints gbc_boton_AgregarE2 = new GridBagConstraints();
-				gbc_boton_AgregarE2.insets = new Insets(0, 0, 5, 0);
-				gbc_boton_AgregarE2.gridx = 1;
-				gbc_boton_AgregarE2.gridy = 4;
-				panelDuelo.add(boton_AgregarE2, gbc_boton_AgregarE2);
-				
 				panel_detalles.add(panelDuelo, "DUELO");
-						
-				boton_AgregarDuelo = new JButton("Agregar duelo");
-				boton_AgregarDuelo.setFont(new Font("Arial", Font.BOLD, 12));
-				GridBagConstraints gbc_boton_AgregarDuelo = new GridBagConstraints();
-				gbc_boton_AgregarDuelo.insets = new Insets(0, 0, 0, 5);
-				gbc_boton_AgregarDuelo.gridx = 0;
-				gbc_boton_AgregarDuelo.gridy = 5;
-				panelDuelo.add(boton_AgregarDuelo, gbc_boton_AgregarDuelo);
+				
+				GridBagLayout gbl_panelDuelo = new GridBagLayout();
+				gbl_panelDuelo.columnWidths = new int[]{0, 0, 0};
+				gbl_panelDuelo.rowHeights = new int[]{0, 0, 0, 0, 0};
+				gbl_panelDuelo.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+				gbl_panelDuelo.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+				panelDuelo.setLayout(gbl_panelDuelo);
+
+                // Panel de selecci贸n de entrenadores
+                JPanel panelSeleccion = new JPanel(new GridBagLayout());
+                GridBagConstraints gbc_panelSeleccion = new GridBagConstraints();
+                gbc_panelSeleccion.fill = GridBagConstraints.HORIZONTAL;
+                gbc_panelSeleccion.gridwidth = 2;
+                gbc_panelSeleccion.insets = new Insets(5, 5, 5, 5);
+                gbc_panelSeleccion.gridx = 0;
+                gbc_panelSeleccion.gridy = 0;
+                panelDuelo.add(panelSeleccion, gbc_panelSeleccion);
+
+                // Entrenador 1
+                JLabel lblEntrenador1 = new JLabel("Entrenador 1:");
+                lblEntrenador1.setFont(new Font("Arial", Font.BOLD, 14));
+                GridBagConstraints gbc_lblEntrenador1 = new GridBagConstraints();
+                gbc_lblEntrenador1.insets = new Insets(0, 0, 5, 5);
+                gbc_lblEntrenador1.gridx = 0;
+                gbc_lblEntrenador1.gridy = 0;
+                panelSeleccion.add(lblEntrenador1, gbc_lblEntrenador1);
+
+                textEntrenador1 = new JTextField(20);
+                textEntrenador1.setEditable(false);
+                GridBagConstraints gbc_textEntrenador1 = new GridBagConstraints();
+                gbc_textEntrenador1.fill = GridBagConstraints.HORIZONTAL;
+                gbc_textEntrenador1.insets = new Insets(0, 0, 5, 5);
+                gbc_textEntrenador1.gridx = 1;
+                gbc_textEntrenador1.gridy = 0;
+                panelSeleccion.add(textEntrenador1, gbc_textEntrenador1);
+
+                boton_AgregarE1 = new JButton("Seleccionar");
+                boton_AgregarE1.setFont(new Font("Arial", Font.BOLD, 12));
+                GridBagConstraints gbc_botonE1 = new GridBagConstraints();
+                gbc_botonE1.insets = new Insets(0, 0, 5, 0);
+                gbc_botonE1.gridx = 2;
+                gbc_botonE1.gridy = 0;
+                panelSeleccion.add(boton_AgregarE1, gbc_botonE1);
+
+                // Entrenador 2
+                JLabel lblEntrenador2 = new JLabel("Entrenador 2:");
+                lblEntrenador2.setFont(new Font("Arial", Font.BOLD, 14));
+                GridBagConstraints gbc_lblEntrenador2 = new GridBagConstraints();
+                gbc_lblEntrenador2.insets = new Insets(0, 0, 5, 5);
+                gbc_lblEntrenador2.gridx = 0;
+                gbc_lblEntrenador2.gridy = 1;
+                panelSeleccion.add(lblEntrenador2, gbc_lblEntrenador2);
+
+                textEntrenador2 = new JTextField(20);
+                textEntrenador2.setEditable(false);
+                textEntrenador2.setEnabled(false);
+                GridBagConstraints gbc_textEntrenador2 = new GridBagConstraints();
+                gbc_textEntrenador2.fill = GridBagConstraints.HORIZONTAL;
+                gbc_textEntrenador2.insets = new Insets(0, 0, 5, 5);
+                gbc_textEntrenador2.gridx = 1;
+                gbc_textEntrenador2.gridy = 1;
+                panelSeleccion.add(textEntrenador2, gbc_textEntrenador2);
+
+                boton_AgregarE2 = new JButton("Seleccionar");
+                boton_AgregarE2.setFont(new Font("Arial", Font.BOLD, 12));
+                boton_AgregarE2.setEnabled(false);
+                GridBagConstraints gbc_botonE2 = new GridBagConstraints();
+                gbc_botonE2.insets = new Insets(0, 0, 5, 0);
+                gbc_botonE2.gridx = 2;
+                gbc_botonE2.gridy = 1;
+                panelSeleccion.add(boton_AgregarE2, gbc_botonE2);
+
+                // Bot贸n para iniciar duelo
+                boton_AgregarDuelo = new JButton("Iniciar Duelo");
+                boton_AgregarDuelo.setFont(new Font("Arial", Font.BOLD, 14));
+                boton_AgregarDuelo.setEnabled(false);
+                GridBagConstraints gbc_botonDuelo = new GridBagConstraints();
+                gbc_botonDuelo.insets = new Insets(10, 0, 10, 0);
+                gbc_botonDuelo.gridwidth = 2;
+                gbc_botonDuelo.gridx = 0;
+                gbc_botonDuelo.gridy = 2;
+                panelDuelo.add(boton_AgregarDuelo, gbc_botonDuelo);
+
+				// 脕rea de eventos del duelo
+				textAreaDuelo = new JTextArea();
+				textAreaDuelo.setEditable(false);
+				textAreaDuelo.setFont(new Font("Arial", Font.PLAIN, 12));
+				JScrollPane scrollEventos = new JScrollPane(textAreaDuelo);
+				scrollEventos.setPreferredSize(new Dimension(400, 200));
+				GridBagConstraints gbc_scrollEventos = new GridBagConstraints();
+				gbc_scrollEventos.fill = GridBagConstraints.BOTH;
+				gbc_scrollEventos.gridwidth = 3;
+				gbc_scrollEventos.weighty = 1.0;
+				gbc_scrollEventos.gridx = 0;
+				gbc_scrollEventos.gridy = 3;
+				panelDuelo.add(scrollEventos, gbc_scrollEventos);
 
 		//////////////////////////////////////////////////////////
 				// Panel de lista de torneo
@@ -757,8 +787,8 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 			cl.show(panel_detalles, "DUELO");
 		} else {
 			
-			// cl.show(panel_detalles, "VACIO"); // Opcional: oculta si otro bot髇 no tiene
-			// panel a鷑
+			// cl.show(panel_detalles, "VACIO"); // Opcional: oculta si otro bot贸n no tiene
+			// panel a帽
 		}
 	}*/
 
@@ -1084,5 +1114,10 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 	@Override
 	public String getEntrenador2() {
 		return this.textEntrenador2.getText();
+	}
+
+	@Override
+	public JTextArea getTextAreaDuelo() {
+		return textAreaDuelo;
 	}
 }

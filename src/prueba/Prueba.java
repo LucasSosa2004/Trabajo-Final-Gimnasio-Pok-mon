@@ -14,22 +14,65 @@ import pokemones.PokemonFactory;
 import armas.Arma;
 import armas.ArmaFactory;
 import persistencia.GimnasioManager;
+import vista.VentanaPokemones;
+import controlador.Controlador;
+import javax.swing.SwingUtilities;
 
 import java.util.*;
 
 /**
- * Clase principal para ejecutar por consola:
- *  Etapa 1: Registro de entrenadores, alta/mejora de Pokémon, creación de arenas.
- *  Etapa 2: Inscripción de hasta 8 entrenadores al torneo.
- *  Etapa 3: Desarrollo de torneo por eliminación directa (cuartos, semis, final).
- *  Persistencia: se guarda/carga el estado (Gimnasio, SistemaPelea y EtapaTorneo).
- *
- *  NO incluye ninguna interfaz gráfica, todo es por consola.
+ * Clase principal para ejecutar:
+ *  - Versión Consola: Etapa 1 (Registro), Etapa 2 (Inscripción), Etapa 3 (Torneo)
+ *  - Versión GUI: Interfaz gráfica con todas las funcionalidades
  */
 public class Prueba {
     public static void main(String[] args) {
+        // Preguntar al usuario qué versión quiere ejecutar
         Scanner scanner = new Scanner(System.in);
+        System.out.println("=== Bienvenido al sistema del Gimnasio Pokémon ===");
+        System.out.println("¿Qué versión desea ejecutar?");
+        System.out.println("1. Versión Consola");
+        System.out.println("2. Versión GUI (Interfaz Gráfica)");
+        System.out.print("Seleccione opción (1 o 2): ");
+        
+        int opcion = -1;
+        try {
+            opcion = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException ex) {
+            System.out.println("Opción inválida. Iniciando versión consola por defecto.");
+            opcion = 1;
+        }
+        
+        if (opcion == 2) {
+            iniciarVersionGUI();
+        } else {
+            iniciarVersionConsola(scanner);
+        }
+    }
 
+    private static void iniciarVersionGUI() {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                // Inicializar el sistema
+                Gimnasio gimnasio = Gimnasio.getInstancia();
+                SistemaPelea sistemaPelea = SistemaPelea.getInstancia();
+                sistemaPelea.inicializarArenas(3); // Inicializar con 3 arenas por defecto
+                
+                // Crear y configurar la vista y el controlador
+                VentanaPokemones ventana = new VentanaPokemones();
+                Controlador controlador = new Controlador();
+                controlador.setVista(ventana);
+                
+                // Mostrar la ventana
+                ventana.setVisible(true);
+            } catch (Exception e) {
+                System.err.println("Error al iniciar la interfaz gráfica: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private static void iniciarVersionConsola(Scanner scanner) {
         // 1) Instanciar GimnasioManager y tratar de cargar estado existente
         GimnasioManager manager = new GimnasioManager();
         EtapaTorneo etapaTorneo = manager.cargarEstado();
@@ -41,7 +84,6 @@ public class Prueba {
         Gimnasio gimnasio = Gimnasio.getInstancia();
         SistemaPelea sistemaPelea = SistemaPelea.getInstancia();
 
-        System.out.println("=== Bienvenido al sistema del Gimnasio Pokémon ===");
         boolean salir = false;
         while (!salir) {
             System.out.println("\n--- Etapa actual: " + etapaTorneo.getEtapaActual() + " ---");
@@ -160,10 +202,6 @@ public class Prueba {
 
         scanner.close();
     }
-
-    // -----------------------------------------
-    // Métodos auxiliares de cada opción del menú
-    // -----------------------------------------
 
     private static void altaEntrenador(Gimnasio gimnasio, GimnasioManager manager, EtapaTorneo etapa, Scanner scanner) {
         System.out.println("\n-- Alta de Entrenador --");

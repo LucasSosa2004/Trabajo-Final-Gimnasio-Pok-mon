@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.JTextArea;
 
 import entrenador.Entrenador;
 import modelo.Duelo;
@@ -69,5 +70,10 @@ public interface IVista {
     void encenderBotonAgregarDuelo();
 
     String getEntrenador2();
+
+    /**
+     * Obtiene el área de texto donde se mostrarán los eventos del duelo
+     */
+    JTextArea getTextAreaDuelo();
 
 }

@@ -1,155 +1,212 @@
 package modelo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import entrenador.Entrenador;
 import excepciones.EntrenadorSinPokemonesException;
+import interfaces.IDueloObserver;
 import pokemones.Pokemon;
 
 /**
  * El duelo recibe dos entrenadores, opcionalmente cada uno lanza un hechizo,
- * luego selecciona autom·ticamente sus primeros PokÈmons y resuelve
+ * luego selecciona autom√°ticamente sus primeros Pok√©mons y resuelve
  * el duelo hasta que uno se queda sin equipo activo.
+ * Implementa el patr√≥n Observable para notificar eventos durante el enfrentamiento
+ * y Runnable para permitir la ejecuci√≥n concurrente de m√∫ltiples duelos.
  */
 public class Duelo implements Runnable, Serializable {
     private static final long serialVersionUID = 1L;
-
-    private Entrenador e1, e2, ganador;
-    private int clave;
-    private boolean dueloTerminado;
+    
+    private Entrenador entrenador1;
+    private Entrenador entrenador2;
     private ArenaFisica arena;
-
+    private Entrenador ganador;
+    private boolean dueloTerminado;
+    private transient List<IDueloObserver> observers = new ArrayList<>();
+    
     /**
      * Crea un nuevo Duelo en la arena dada.
      *
-     * @param e1    Entrenador 1 (debe tener al menos 1 PokÈmon activo)
-     * @param e2    Entrenador 2 (debe tener al menos 1 PokÈmon activo)
-     * @param arena Arena fÌsica donde se librar· este duelo
-     * @throws EntrenadorSinPokemonesException si alguno no tiene PokÈmons activos
+     * @param e1 Entrenador 1 (debe tener al menos 1 Pok√©mon activo)
+     * @param e2 Entrenador 2 (debe tener al menos 1 Pok√©mon activo)
+     * @param arena Arena f√≠sica donde se librar√° este duelo
+     * @throws EntrenadorSinPokemonesException si alguno no tiene Pok√©mons activos
      */
     public Duelo(Entrenador e1, Entrenador e2, ArenaFisica arena) throws EntrenadorSinPokemonesException {
-        if (e1.getEquipoActivo().isEmpty())
-            throw new EntrenadorSinPokemonesException(e1.getNombre());
-        if (e2.getEquipoActivo().isEmpty())
-            throw new EntrenadorSinPokemonesException(e2.getNombre());
-
-        this.e1 = e1;
-        this.e2 = e2;
-        this.ganador = null;
-        this.clave = arena.getId();
-        this.dueloTerminado = false;
+        if (!e1.tienePokemonesActivos() || !e2.tienePokemonesActivos()) {
+            throw new EntrenadorSinPokemonesException(
+                !e1.tienePokemonesActivos() ? e1.getNombre() : e2.getNombre()
+            );
+        }
+        this.entrenador1 = e1;
+        this.entrenador2 = e2;
         this.arena = arena;
+        this.dueloTerminado = false;
     }
-
-    public int getClave() {
-        return clave;
+    
+    public void addObserver(IDueloObserver observer) {
+        if (observers == null) {
+            observers = new ArrayList<>();
+        }
+        observers.add(observer);
     }
-
-    public boolean isDueloTerminado() {
-        return dueloTerminado;
+    
+    public void removeObserver(IDueloObserver observer) {
+        if (observers != null) {
+            observers.remove(observer);
+        }
     }
-
-    public Entrenador getGanador() {
-        return ganador;
+    
+    private void notifyInicioDuelo() {
+        if (observers != null) {
+            for (IDueloObserver observer : observers) {
+                observer.notificarInicioDuelo(
+                    entrenador1.getNombre(),
+                    entrenador2.getNombre(),
+                    arena.getNombre()
+                );
+            }
+        }
     }
-
-    public Entrenador getEntrenador1() {
-        return e1;
+    
+    private void notifyAtaque(Pokemon atacante, Pokemon defensor, double da√±o) {
+        if (observers != null) {
+            for (IDueloObserver observer : observers) {
+                observer.notificarAtaque(
+                    atacante.getNombre(),
+                    defensor.getNombre(),
+                    da√±o
+                );
+            }
+        }
     }
-
-    public Entrenador getEntrenador2() {
-        return e2;
+    
+    private void notifyPokemonDerrotado(Pokemon pokemon, Entrenador entrenador) {
+        if (observers != null) {
+            for (IDueloObserver observer : observers) {
+                observer.notificarPokemonDerrotado(
+                    pokemon.getNombre(),
+                    entrenador.getNombre()
+                );
+            }
+        }
     }
-
-    /** Nuevo mÈtodo para obtener la arena asociada */
-    public ArenaFisica getArena() {
-        return arena;
+    
+    private void notifyFinDuelo() {
+        if (observers != null) {
+            for (IDueloObserver observer : observers) {
+                observer.notificarFinDuelo(
+                    ganador.getNombre(),
+                    (ganador == entrenador1 ? entrenador2 : entrenador1).getNombre()
+                );
+            }
+        }
     }
-
+    
     /**
-     * Resuelve el duelo de forma sÌncrona (se invoca dentro de run()).
-     * Al terminar, otorga el premio y recarga los PokÈmons del ganador.
+     * Resuelve el duelo de forma s√≠ncrona.
+     * Al terminar, otorga el premio y notifica a los observadores.
      */
     public void iniciarDuelo() {
-        assert !e1.getEquipoActivo().isEmpty() : "El equipo activo del entrenador 1 no puede estar vacÌo";
-        assert !e2.getEquipoActivo().isEmpty() : "El equipo activo del entrenador 2 no puede estar vacÌo";
-
-        boolean turno = true;
-
-        Pokemon p1 = e1.proximoPokemon();
-        Pokemon p2 = e2.proximoPokemon();
-
-        // Hechizos iniciales: cada entrenador lanza sobre el primer PokÈmon del rival
-        e1.hechizar(p2);
-        e2.hechizar(p1);
-
-        // Listas de participantes para recargar luego
-        java.util.List<Pokemon> participantesE1 = new java.util.ArrayList<>();
-        java.util.List<Pokemon> participantesE2 = new java.util.ArrayList<>();
-        if (p1 != null) participantesE1.add(p1);
-        if (p2 != null) participantesE2.add(p2);
-
-        // Bucle hasta que uno se quede sin PokÈmon
-        while (p1 != null && p2 != null) {
-            if (turno) {
-                if (p1.getVitalidad() > 0 && p2.getVitalidad() > 0) {
-                    p1.atacar(p2);
+        try {
+            notifyInicioDuelo();
+            
+            // Cada entrenador lanza su hechizo sobre el rival
+            entrenador1.hechizar(entrenador2);
+            entrenador2.hechizar(entrenador1);
+            
+            Pokemon pokemon1 = entrenador1.proximoPokemon();
+            Pokemon pokemon2 = entrenador2.proximoPokemon();
+            
+            while (pokemon1 != null && pokemon2 != null) {
+                // Ataque del primer Pok√©mon
+                double vitalidadAntes = pokemon2.getVitalidad();
+                pokemon1.atacar(pokemon2);
+                double da√±o = vitalidadAntes - pokemon2.getVitalidad();
+                notifyAtaque(pokemon1, pokemon2, da√±o);
+                
+                // Verificar si el segundo Pok√©mon fue derrotado
+                if (pokemon2.getVitalidad() <= 0) {
+                    notifyPokemonDerrotado(pokemon2, entrenador2);
+                    pokemon1.recibeExp();
+                    pokemon2 = entrenador2.proximoPokemon();
+                    if (pokemon2 == null) {
+                        ganador = entrenador1;
+                        break;
+                    }
                 }
-            } else {
-                if (p2.getVitalidad() > 0 && p1.getVitalidad() > 0) {
-                    p2.atacar(p1);
+                
+                // Ataque del segundo Pok√©mon
+                vitalidadAntes = pokemon1.getVitalidad();
+                pokemon2.atacar(pokemon1);
+                da√±o = vitalidadAntes - pokemon1.getVitalidad();
+                notifyAtaque(pokemon2, pokemon1, da√±o);
+                
+                // Verificar si el primer Pok√©mon fue derrotado
+                if (pokemon1.getVitalidad() <= 0) {
+                    notifyPokemonDerrotado(pokemon1, entrenador1);
+                    pokemon2.recibeExp();
+                    pokemon1 = entrenador1.proximoPokemon();
+                    if (pokemon1 == null) {
+                        ganador = entrenador2;
+                        break;
+                    }
                 }
             }
-            turno = !turno;
-
-            if (p1 != null && p1.getVitalidad() <= 0) {
-                p2.recibeExp();
-                p1 = e1.proximoPokemon();
-                if (p1 != null) participantesE1.add(p1);
+            
+            // Aplicar efectos de la arena al ganador
+            if (ganador != null) {
+                ganador.addCreditos(arena.getPremio());
+                notifyFinDuelo();
             }
-            if (p2 != null && p2.getVitalidad() <= 0) {
-                p1.recibeExp();
-                p2 = e2.proximoPokemon();
-                if (p2 != null) participantesE2.add(p2);
-            }
+        } finally {
+            dueloTerminado = true;
         }
-
-        // Determinar ganador
-        java.util.List<Pokemon> participantesGanador;
-        if (p1 == null) {
-            this.ganador = e2;
-            participantesGanador = participantesE2;
-        } else {
-            this.ganador = e1;
-            participantesGanador = participantesE1;
-        }
-
-        // Otorgar premio seg˙n la arena decorada
-        this.ganador.addCreditos(arena.getPremio());
-        this.dueloTerminado = true;
-
-        // Recargar la vitalidad de los PokÈmons del ganador
-        for (Pokemon p : participantesGanador) {
-            if (p != null) p.recargar();
-        }
-
-        assert this.ganador != null : "El ganador no puede ser nulo";
-        assert this.dueloTerminado : "El duelo debe estar marcado como terminado";
     }
-
+    
     @Override
     public void run() {
         try {
             iniciarDuelo();
         } finally {
-            arena.liberar();
+            // Aseguramos que la arena se libere incluso si hay una excepci√≥n
+            if (arena != null) {
+                arena.liberar();
+            }
         }
     }
-
+    
+    public Entrenador getEntrenador1() {
+        return entrenador1;
+    }
+    
+    public Entrenador getEntrenador2() {
+        return entrenador2;
+    }
+    
+    public ArenaFisica getArena() {
+        return arena;
+    }
+    
+    public Entrenador getGanador() {
+        return ganador;
+    }
+    
+    public boolean isDueloTerminado() {
+        return dueloTerminado;
+    }
+    
+    public int getClave() {
+        return arena.getId();
+    }
+    
     @Override
     public String toString() {
-        return "Duelo [e1=" + e1.getNombre() + ", e2=" + e2.getNombre() +
-               ", ganador=" + (ganador != null ? ganador.getNombre() : "N/A") +
-               ", clave=" + clave + ", dueloTerminado=" + dueloTerminado + "]";
+        return "Duelo [entrenador1=" + entrenador1.getNombre() + 
+               ", entrenador2=" + entrenador2.getNombre() + 
+               ", arena=" + arena.getNombre() + 
+               ", terminado=" + dueloTerminado + "]";
     }
 }
