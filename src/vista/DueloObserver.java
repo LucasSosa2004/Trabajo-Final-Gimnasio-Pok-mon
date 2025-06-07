@@ -5,8 +5,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 /**
- * Implementación de IDueloObserver que muestra los eventos del duelo
- * en un componente JTextArea de la interfaz gráfica.
+ * Implementacion del observador de duelos para la interfaz grafica.
  */
 public class DueloObserver implements IDueloObserver {
     private JTextArea textArea;
@@ -26,7 +25,7 @@ public class DueloObserver implements IDueloObserver {
     
     @Override
     public void notificarInicioDuelo(String entrenador1, String entrenador2, String arena) {
-        appendText("¡INICIO DEL DUELO!");
+        appendText("INICIO DEL DUELO!");
         appendText("Entrenador 1: " + entrenador1);
         appendText("Entrenador 2: " + entrenador2);
         appendText("Arena: " + arena);
@@ -34,21 +33,21 @@ public class DueloObserver implements IDueloObserver {
     }
     
     @Override
-    public void notificarAtaque(String atacante, String defensor, double daño) {
-        appendText(atacante + " ataca a " + defensor + " causando " + String.format("%.2f", daño) + " de daño!");
+    public void notificarAtaque(String atacante, String defensor, double danio) {
+        appendText(atacante + " ataca a " + defensor + " causando " + String.format("%.2f", danio) + " de danio!");
     }
     
     @Override
     public void notificarPokemonDerrotado(String pokemon, String entrenador) {
-        appendText("¡" + pokemon + " de " + entrenador + " ha sido derrotado!");
+        appendText(pokemon + " de " + entrenador + " ha sido derrotado!");
         appendText("----------------------------------------");
     }
     
     @Override
     public void notificarFinDuelo(String ganador, String perdedor) {
-        appendText("\n¡FIN DEL DUELO!");
-        appendText("¡" + ganador + " es el ganador!");
-        appendText("¡" + perdedor + " ha sido derrotado!");
+        appendText("\nFIN DEL DUELO!");
+        appendText(ganador + " es el ganador!");
+        appendText(perdedor + " ha sido derrotado!");
         appendText("========================================\n");
     }
 } 

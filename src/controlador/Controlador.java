@@ -23,6 +23,9 @@ import pokemones.Pokemon;
 import pokemones.PokemonFactory;
 import vista.DueloObserver;
 import vista.IVista;
+import vista.VentanaPokemones;
+import interfaces.IFacadePokemones;
+import vista.FacadePokemones;
 
 public class Controlador implements ActionListener {
 
@@ -45,6 +48,7 @@ public class Controlador implements ActionListener {
         this.vista.setActionListener(this);
         this.gimnasio = Gimnasio.getInstancia();
         this.sistemaPelea = SistemaPelea.getInstancia();
+        this.sistemaPelea.inicializarArenas(3); // Por defecto 3 arenas
         this.duelos = new ArrayList<>();
         this.dueloObserver = new DueloObserver(vista.getTextAreaDuelo());
     }
@@ -53,61 +57,79 @@ public class Controlador implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String comando = e.getActionCommand();
         try {
-            switch (comando) {
-                case "ENTRENADOR":
-                    vista.mostrarPanel("AGREGAR_ENTRENADOR");
-                    break;
-                case "POKEMON":
-                    vista.mostrarPanel("AGREGAR_POKEMON");
-                    break;
-                case "TIENDA":
-                    vista.mostrarPanel("TIENDA");
-                    break;
-                case "ARENA":
-                    vista.mostrarPanel("ARENA");
-                    break;
-                case "DUELO":
-                    vista.mostrarPanel("DUELO");
-                    break;
-                case "CREAR_ENTRENADOR":
-                    CREAR_ENTRENADOR();
-                    break;
-                case "CREAR_POKEMON":
-                    CREAR_POKEMON();
-                    break;
-                case "AGREGAR_A_EQUIPO":
-                    AGREGAR_A_EQUIPO();
-                    break;
-                case "RECARGAR":
-                    RECARGAR();
-                    break;
-                case "COMPRAR_POKEMON":
-                    COMPRAR_POKEMON();
-                    break;
-                case "COMPRAR_ARMA":
-                    COMPRAR_ARMA();
-                    break;
-                case "AGREGAR_E1":
-                    AGREGAR_E1();
-                    break;
-                case "AGREGAR_E2":
-                    AGREGAR_E2();
-                    break;
-                case "AGREGAR_DUELO":
-                    AGREGAR_DUELO();
-                    break;
-                case "INICIAR_TORNEO":
-                    INICIAR_TORNEO();
-                    break;
-                case "LISTA_ENTRENADORES":
-                    LISTA_ENTRENADORES();
-                    break;
-                case "LISTA_DUELOS":
-                    LISTA_DUELOS();
-                    break;
+            if (comando.equals("COMPRAR_POKEMON")) {
+                facade.comprarPokemon(
+                    vista.getEntrenadorSeleccionado(),
+                    vista.getTipoPokemonSeleccionado(),
+                    vista.getNombrePokemon()
+                );
+                vista.mostrarMensaje("Pokemon comprado exitosamente");
+            }
+            else if (comando.equals("COMPRAR_ARMA")) {
+                facade.comprarArma(
+                    vista.getEntrenadorSeleccionado(),
+                    vista.getTipoArmaSeleccionado(),
+                    vista.getNombrePokemonParaArma()
+                );
+                vista.mostrarMensaje("Arma comprada exitosamente");
+            }
+            else if (comando.equals("AGREGAR_A_EQUIPO")) {
+                facade.agregarAEquipoActivo(
+                    vista.getEntrenadorSeleccionado(),
+                    vista.getNombrePokemonParaEquipo()
+                );
+                vista.mostrarMensaje("Pokemon agregado al equipo activo exitosamente");
+            }
+            else if (comando.equals("INICIAR_DUELO")) {
+                facade.iniciarDuelo(
+                    vista.getEntrenador1Seleccionado(),
+                    vista.getEntrenador2Seleccionado()
+                );
+            }
+            else if (comando.equals("ENTRENADOR")) {
+                vista.mostrarPanel("AGREGAR_ENTRENADOR");
+            }
+            else if (comando.equals("POKEMON")) {
+                vista.mostrarPanel("AGREGAR_POKEMON");
+            }
+            else if (comando.equals("TIENDA")) {
+                vista.mostrarPanel("TIENDA");
+            }
+            else if (comando.equals("ARENA")) {
+                vista.mostrarPanel("ARENA");
+            }
+            else if (comando.equals("DUELO")) {
+                vista.mostrarPanel("DUELO");
+            }
+            else if (comando.equals("CREAR_ENTRENADOR")) {
+                CREAR_ENTRENADOR();
+            }
+            else if (comando.equals("CREAR_POKEMON")) {
+                CREAR_POKEMON();
+            }
+            else if (comando.equals("RECARGAR")) {
+                RECARGAR();
+            }
+            else if (comando.equals("AGREGAR_E1")) {
+                AGREGAR_E1();
+            }
+            else if (comando.equals("AGREGAR_E2")) {
+                AGREGAR_E2();
+            }
+            else if (comando.equals("AGREGAR_DUELO")) {
+                AGREGAR_DUELO();
+            }
+            else if (comando.equals("INICIAR_TORNEO")) {
+                INICIAR_TORNEO();
+            }
+            else if (comando.equals("LISTA_ENTRENADORES")) {
+                LISTA_ENTRENADORES();
+            }
+            else if (comando.equals("LISTA_DUELOS")) {
+                LISTA_DUELOS();
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            vista.mostrarError("Error: " + ex.getMessage());
         }
     }
 
@@ -144,40 +166,6 @@ public class Controlador implements ActionListener {
     private void INICIAR_TORNEO() {
         for (Duelo d : duelos) {
             d.iniciarDuelo();
-        }
-    }
-
-    private void COMPRAR_POKEMON() {
-        String tipoPokemon = vista.getTipoPokemonTienda();
-        String nombrePokemon = vista.getNombrePokemonTienda();
-        Entrenador entrenador = vista.getEntrenador();
-
-        try {
-            PokemonFactory factory = new PokemonFactory();
-            Pokemon p = factory.getPokemon(tipoPokemon, nombrePokemon);
-            gimnasio.comprarPokemon(entrenador, p);
-            modeloComboPokemones.addElement(nombrePokemon);
-            vista.actualizarComboListaPokemones(modeloComboPokemones);
-            vista.vaciarTextPokemonTienda();
-            vista.setTextEntrenador(entrenador.getNombre() + " Cred: " + entrenador.getCreditos());
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage(), "Error compra Pokémon", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void COMPRAR_ARMA() {
-        String tipoArma = vista.getTipoArmaTienda();
-        String nombrePokemon = vista.getNombrePokemonComboTienda();
-        Entrenador entrenador = vista.getEntrenador();
-
-        try {
-            ArmaFactory factory = new ArmaFactory();
-            Arma a = factory.getArma(tipoArma);
-            Pokemon p = entrenador.buscaPokemon(nombrePokemon);
-            gimnasio.comprarArma(entrenador, p, a);
-            vista.setTextEntrenador(entrenador.getNombre() + " Cred: " + entrenador.getCreditos());
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage(), "Error compra arma", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -222,18 +210,6 @@ public class Controlador implements ActionListener {
             vista.vaciarTextPokemonCreado();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error creación Pokémon", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void AGREGAR_A_EQUIPO() {
-        String nombrePokemon = vista.getNombrePokemonComboPokemon();
-        Entrenador entrenador = vista.getEntrenador();
-        try {
-            Pokemon p = entrenador.buscaPokemon(nombrePokemon);
-            entrenador.agregarAEquipoActivo(p);
-            vista.apagarBotonesPokemonCreado();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage(), "Error al agregar al equipo", JOptionPane.ERROR_MESSAGE);
         }
     }
 

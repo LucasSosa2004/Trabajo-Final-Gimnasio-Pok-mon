@@ -10,11 +10,8 @@ import interfaces.IDueloObserver;
 import pokemones.Pokemon;
 
 /**
- * El duelo recibe dos entrenadores, opcionalmente cada uno lanza un hechizo,
- * luego selecciona automáticamente sus primeros Pokémons y resuelve
- * el duelo hasta que uno se queda sin equipo activo.
- * Implementa el patrón Observable para notificar eventos durante el enfrentamiento
- * y Runnable para permitir la ejecución concurrente de múltiples duelos.
+ * Clase que representa un duelo entre dos entrenadores.
+ * Implementa Runnable para permitir ejecucion concurrente.
  */
 public class Duelo implements Runnable, Serializable {
     private static final long serialVersionUID = 1L;
@@ -24,7 +21,7 @@ public class Duelo implements Runnable, Serializable {
     private ArenaFisica arena;
     private Entrenador ganador;
     private boolean dueloTerminado;
-    private transient List<IDueloObserver> observers = new ArrayList<>();
+    private transient List<IDueloObserver> observers = new ArrayList<IDueloObserver>();
     
     /**
      * Crea un nuevo Duelo en la arena dada.
@@ -48,7 +45,7 @@ public class Duelo implements Runnable, Serializable {
     
     public void addObserver(IDueloObserver observer) {
         if (observers == null) {
-            observers = new ArrayList<>();
+            observers = new ArrayList<IDueloObserver>();
         }
         observers.add(observer);
     }
@@ -61,43 +58,36 @@ public class Duelo implements Runnable, Serializable {
     
     private void notifyInicioDuelo() {
         if (observers != null) {
-            for (IDueloObserver observer : observers) {
-                observer.notificarInicioDuelo(
+            for (IDueloObserver obs : observers) {
+                obs.notificarInicioDuelo(
                     entrenador1.getNombre(),
                     entrenador2.getNombre(),
-                    arena.getNombre()
+                    arena.toString()
                 );
             }
         }
     }
     
-    private void notifyAtaque(Pokemon atacante, Pokemon defensor, double daño) {
+    private void notifyAtaque(String atacante, String defensor, double danio) {
         if (observers != null) {
-            for (IDueloObserver observer : observers) {
-                observer.notificarAtaque(
-                    atacante.getNombre(),
-                    defensor.getNombre(),
-                    daño
-                );
+            for (IDueloObserver obs : observers) {
+                obs.notificarAtaque(atacante, defensor, danio);
             }
         }
     }
     
-    private void notifyPokemonDerrotado(Pokemon pokemon, Entrenador entrenador) {
+    private void notifyPokemonDerrotado(String pokemon, String entrenador) {
         if (observers != null) {
-            for (IDueloObserver observer : observers) {
-                observer.notificarPokemonDerrotado(
-                    pokemon.getNombre(),
-                    entrenador.getNombre()
-                );
+            for (IDueloObserver obs : observers) {
+                obs.notificarPokemonDerrotado(pokemon, entrenador);
             }
         }
     }
     
     private void notifyFinDuelo() {
         if (observers != null) {
-            for (IDueloObserver observer : observers) {
-                observer.notificarFinDuelo(
+            for (IDueloObserver obs : observers) {
+                obs.notificarFinDuelo(
                     ganador.getNombre(),
                     (ganador == entrenador1 ? entrenador2 : entrenador1).getNombre()
                 );
@@ -110,72 +100,71 @@ public class Duelo implements Runnable, Serializable {
      * Al terminar, otorga el premio y notifica a los observadores.
      */
     public void iniciarDuelo() {
-        try {
-            notifyInicioDuelo();
-            
-            // Cada entrenador lanza su hechizo sobre el rival
+        notifyInicioDuelo();
+        
+        // Lanzar hechizos si los tienen
+        if (entrenador1.tieneHechizo()) {
             entrenador1.hechizar(entrenador2);
-            entrenador2.hechizar(entrenador1);
-            
-            Pokemon pokemon1 = entrenador1.proximoPokemon();
-            Pokemon pokemon2 = entrenador2.proximoPokemon();
-            
-            while (pokemon1 != null && pokemon2 != null) {
-                // Ataque del primer Pokémon
-                double vitalidadAntes = pokemon2.getVitalidad();
-                pokemon1.atacar(pokemon2);
-                double daño = vitalidadAntes - pokemon2.getVitalidad();
-                notifyAtaque(pokemon1, pokemon2, daño);
-                
-                // Verificar si el segundo Pokémon fue derrotado
-                if (pokemon2.getVitalidad() <= 0) {
-                    notifyPokemonDerrotado(pokemon2, entrenador2);
-                    pokemon1.recibeExp();
-                    pokemon2 = entrenador2.proximoPokemon();
-                    if (pokemon2 == null) {
-                        ganador = entrenador1;
-                        break;
-                    }
-                }
-                
-                // Ataque del segundo Pokémon
-                vitalidadAntes = pokemon1.getVitalidad();
-                pokemon2.atacar(pokemon1);
-                daño = vitalidadAntes - pokemon1.getVitalidad();
-                notifyAtaque(pokemon2, pokemon1, daño);
-                
-                // Verificar si el primer Pokémon fue derrotado
-                if (pokemon1.getVitalidad() <= 0) {
-                    notifyPokemonDerrotado(pokemon1, entrenador1);
-                    pokemon2.recibeExp();
-                    pokemon1 = entrenador1.proximoPokemon();
-                    if (pokemon1 == null) {
-                        ganador = entrenador2;
-                        break;
-                    }
-                }
-            }
-            
-            // Aplicar efectos de la arena al ganador
-            if (ganador != null) {
-                ganador.addCreditos(arena.getPremio());
-                notifyFinDuelo();
-            }
-        } finally {
-            dueloTerminado = true;
         }
+        if (entrenador2.tieneHechizo()) {
+            entrenador2.hechizar(entrenador1);
+        }
+        
+        // Bucle principal del duelo
+        while (!dueloTerminado) {
+            // Turno entrenador 1
+            if (entrenador1.tienePokemonesActivos()) {
+                Pokemon p1 = entrenador1.getPokemonActivo();
+                Pokemon p2 = entrenador2.getPokemonActivo();
+                double vitalidadAntes = p2.getVitalidad();
+                p1.atacar(p2);
+                double danio = vitalidadAntes - p2.getVitalidad();
+                notifyAtaque(p1.getNombre(), p2.getNombre(), danio);
+                
+                if (p2.getVitalidad() <= 0) {
+                    notifyPokemonDerrotado(p2.getNombre(), entrenador2.getNombre());
+                    entrenador2.pokemonDerrotado();
+                    if (!entrenador2.tienePokemonesActivos()) {
+                        ganador = entrenador1;
+                        dueloTerminado = true;
+                        break;
+                    }
+                }
+            }
+            
+            // Turno entrenador 2
+            if (entrenador2.tienePokemonesActivos()) {
+                Pokemon p2 = entrenador2.getPokemonActivo();
+                Pokemon p1 = entrenador1.getPokemonActivo();
+                double vitalidadAntes = p1.getVitalidad();
+                p2.atacar(p1);
+                double danio = vitalidadAntes - p1.getVitalidad();
+                notifyAtaque(p2.getNombre(), p1.getNombre(), danio);
+                
+                if (p1.getVitalidad() <= 0) {
+                    notifyPokemonDerrotado(p1.getNombre(), entrenador1.getNombre());
+                    entrenador1.pokemonDerrotado();
+                    if (!entrenador1.tienePokemonesActivos()) {
+                        ganador = entrenador2;
+                        dueloTerminado = true;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        notifyFinDuelo();
+        
+        // Dar premio al ganador
+        ganador.addCreditos(arena.getPremio());
+        
+        // Dar experiencia a los pokemones del ganador
+        ganador.darExperienciaAEquipo();
     }
     
     @Override
     public void run() {
-        try {
-            iniciarDuelo();
-        } finally {
-            // Aseguramos que la arena se libere incluso si hay una excepción
-            if (arena != null) {
-                arena.liberar();
-            }
-        }
+        iniciarDuelo();
     }
     
     public Entrenador getEntrenador1() {
