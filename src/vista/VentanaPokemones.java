@@ -184,10 +184,12 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 		panel_opciones.add(boton_duelo);
 
 		// Agregar botón de guardar estado
-		boton_guardar_estado = new JButton("Guardar Estado");
+		boton_guardar_estado = new JButton("Guardar");
 		boton_guardar_estado.setActionCommand("GUARDAR_ESTADO");
 		boton_guardar_estado.setEnabled(true);
-		panel_botones.add(boton_guardar_estado);
+		boton_guardar_estado.setFont(new Font("Arial", Font.PLAIN, 12));
+		boton_guardar_estado.setPreferredSize(new Dimension(80, 25));
+		panel_botones.add(boton_guardar_estado, BorderLayout.EAST);
 
 		// Panel de detalles con CardLayout
 		panel_detalles = new JPanel();
