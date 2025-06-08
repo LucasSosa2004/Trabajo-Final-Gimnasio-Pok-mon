@@ -101,6 +101,9 @@ public class Controlador implements ActionListener {
 		case "GUARDAR_ESTADO":
 			this.GUARDAR_ESTADO();
 			break;
+		case "CARGAR_ESTADO":
+			this.CARGAR_ESTADO();
+			break;
 		case "LISTA_ENTRENADORES":
 			this.LISTA_ENTRENADORES();
 			break;
@@ -116,6 +119,26 @@ public class Controlador implements ActionListener {
 			vista.setTextConsola("Estado guardado exitosamente");
 		} else {
 			vista.setTextConsola("No se puede guardar el estado mientras un torneo está en curso");
+		}
+	}
+
+	private void CARGAR_ESTADO() {
+		try {
+			// Intentar cargar el estado
+			var etapa = manager.cargarEstado();
+			if (etapa != null) {
+				// Actualizar la vista con los datos cargados
+				modeloListaEntrenadores.clear();
+				for (var entrenador : facade.getGimnasio().getEntrenadores().values()) {
+					modeloListaEntrenadores.addElement(entrenador);
+				}
+				vista.actualizarListaEntrenadores(modeloListaEntrenadores);
+				vista.setTextConsola("Estado cargado exitosamente");
+			} else {
+				vista.setTextConsola("No hay estado guardado para cargar");
+			}
+		} catch (Exception ex) {
+			vista.setTextConsola("Error al cargar el estado: " + ex.getMessage());
 		}
 	}
 

@@ -95,4 +95,9 @@ public interface IVista {
     
     void apagarBotonGuardarEstado();
 
+    // Nuevos métodos para el botón de cargar estado
+    void encenderBotonCargarEstado();
+    
+    void apagarBotonCargarEstado();
+
 }
