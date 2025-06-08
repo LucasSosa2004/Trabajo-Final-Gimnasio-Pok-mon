@@ -2,256 +2,358 @@ package controlador;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
-import javax.swing.JOptionPane;
 
 import entrenador.Entrenador;
+import excepciones.ArenaOcupadaException;
 import excepciones.CompraImposibleException;
+import excepciones.EntrenadorNoExisteException;
+import excepciones.EntrenadorSinPokemonesException;
 import excepciones.EquipoLlenoException;
 import excepciones.NombreUtilizadoException;
 import excepciones.PokemonNoExisteException;
 import excepciones.PokemonNoPuedeUsarArmaE;
 import excepciones.TipoDesconocidoException;
-import modelo.Duelo;
+import modelo.ArenaLogica;
 import modelo.FacadePokemones;
 import pokemones.Pokemon;
 import vista.IVista;
 
 public class Controlador implements ActionListener {
 
-    private FacadePokemones facade = FacadePokemones.getInstancia();
-    private IVista vista;
-    private DefaultListModel<Entrenador> modeloListaEntrenadores = new DefaultListModel<>();
-    private DefaultListModel<Duelo> modeloListaDuelos = new DefaultListModel<>();
-    private DefaultComboBoxModel<String> modeloComboPokemones = new DefaultComboBoxModel<>();
+	private FacadePokemones facade = FacadePokemones.getInstancia();
+	private IVista vista;
+	private DefaultListModel<Entrenador> modeloListaEntrenadores = new DefaultListModel<>();
+	private DefaultListModel<String> modeloListaDuelos = new DefaultListModel<>();
+	private DefaultComboBoxModel<String> modeloComboPokemones = new DefaultComboBoxModel<>();
+	private List<String> entrenadoresEnDuelos = new ArrayList<>();
+	private boolean hayArena;
 
-    public IVista getVista() {
-        return vista;
-    }
+	public IVista getVista() {
+		return vista;
+	}
 
-    public void setVista(IVista vista) {
-        this.vista = vista;
-        this.vista.setActionListener(this);
-    }
+	public void setVista(IVista vista) {
+		this.vista = vista;
+		this.vista.setActionListener(this);
+	}
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        String comando = e.getActionCommand();
-        switch (comando) {
-        case "ENTRENADOR":
-            vista.mostrarPanel("AGREGAR_ENTRENADOR");
-            break;
-        case "POKEMON":
-            vista.mostrarPanel("AGREGAR_POKEMON");
-            break;
-        case "TIENDA":
-            vista.mostrarPanel("TIENDA");
-            break;
-        case "ARENA":
-            vista.mostrarPanel("ARENA");
-            break;
-        case "DUELO":
-            vista.mostrarPanel("DUELO");
-            break;
-        case "CREAR_ENTRENADOR":
-            CREAR_ENTRENADOR();
-            break;
-        case "CREAR_POKEMON":
-            CREAR_POKEMON();
-            break;
-        case "AGREGAR_A_EQUIPO":
-            AGREGAR_A_EQUIPO();
-            break;
-        case "RECARGAR":
-            RECARGAR();
-            break;
-        case "COMPRAR_POKEMON":
-            COMPRAR_POKEMON();
-            break;
-        case "COMPRAR_ARMA":
-            COMPRAR_ARMA();
-            break;
-        case "AGREGAR_E1":
-            AGREGAR_E1();
-            break;
-        case "AGREGAR_E2":
-            AGREGAR_E2();
-            break;
-        case "AGREGAR_DUELO":
-            AGREGAR_DUELO();
-            break;
-        case "INICIAR_TORNEO":
-            // Iniciar torneo
-            break;
-        case "LISTA_ENTRENADORES":
-            LISTA_ENTRENADORES();
-            break;
-        case "LISTA_DUELOS":
-            LISTA_DUELOS();
-            break;
-        }
-    }
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		String comando = e.getActionCommand();
+		switch (comando) {
+		case "ENTRENADOR":
+			vista.mostrarPanel("AGREGAR_ENTRENADOR");
+			break;
+		case "POKEMON":
+			vista.mostrarPanel("AGREGAR_POKEMON");
+			break;
+		case "TIENDA":
+			vista.mostrarPanel("TIENDA");
+			break;
+		case "ARENA":
+			vista.mostrarPanel("ARENA");
+			this.ARENA();
+			break;
+		case "DUELO":
+			vista.mostrarPanel("DUELO");
+			break;
+		case "CREAR_ENTRENADOR":
+			this.CREAR_ENTRENADOR();
+			break;
+		case "CREAR_POKEMON":
+			this.CREAR_POKEMON();
+			break;
+		case "AGREGAR_A_EQUIPO":
+			this.AGREGAR_A_EQUIPO();
+			break;
+		case "RECARGAR":
+			this.RECARGAR();
+			break;
+		case "COMPRAR_POKEMON":
+			this.COMPRAR_POKEMON();
+			break;
+		case "COMPRAR_ARMA":
+			this.COMPRAR_ARMA();
+			break;
+		case "AGREGAR_ARENA":
+			this.AGREGAR_ARENA();
+			break;
+		case "AGREGAR_E1":
+			this.AGREGAR_E1();
+			break;
+		case "AGREGAR_E2":
+			this.AGREGAR_E2();
+			break;
+		case "AGREGAR_DUELO":
+			this.AGREGAR_DUELO();
+			break;
+		case "INICIAR_TORNEO":
+			this.INICIAR_TORNEO();
+			break;
+		case "LISTA_ENTRENADORES":
+			this.LISTA_ENTRENADORES();
+			break;
+		case "LISTA_DUELOS":
+			this.LISTA_DUELOS();
+			break;
+		}
+	}
 
-    private void AGREGAR_E2() {
-        vista.encenderBotonAgregarDuelo();
-    }
+	private void INICIAR_TORNEO() {
+		try {
+			facade.iniciarTorneo();
+			this.entrenadoresEnDuelos.clear();
+			this.modeloListaDuelos.clear();
+			vista.actualizarListaDuelo(modeloListaDuelos);
+			vista.apagarBotonIniciarTorneo();
+			
+		} catch (EntrenadorNoExisteException | EntrenadorSinPokemonesException e) {
+			vista.setTextConsola(e.getMessage());
+		}
+	}
 
-    private void AGREGAR_E1() {
-        vista.encenderTextoE2();
-        vista.encenderBotonSeleccionarE2();
-    }
+	private void AGREGAR_ARENA() {
+		String tipoArena;
+		String dificultadArena;
+		ArenaLogica base;
+		ArenaLogica decorada;
+		
+		tipoArena=vista.getTipoArena();
+		dificultadArena=vista.getDificultadArena();
+		base = facade.crearArenaBase(tipoArena);
+		decorada = facade.crearArenaDecorada(dificultadArena,base);
+		facade.agregarArena(decorada);
+		
+		vista.setTextConsola("Arena agregada al gimnasio.");
+		this.hayArena  = true;
+		if (this.modeloListaEntrenadores.getSize() > 1) 
+			vista.encenderBotonDuelo();
+		vista.resetZonaArena();		
+	}
 
-    private void AGREGAR_DUELO() {
-        // facade.getSistemaPelea().addDuelo(...);
-    }
+	private void ARENA() {
 
-    private void COMPRAR_ARMA() {
-        String tipoArma = vista.getTipoArmaTienda();
-        String nombrePokemon = vista.getNombrePokemonComboTienda();
-        Entrenador entrenador = vista.getEntrenador();
+	}
 
-        try {
-            facade.getGimnasio().getTienda().comprarArma(tipoArma, entrenador, nombrePokemon);
-            vista.setTextEntrenador(entrenador.getNombre() + " Cred: " + entrenador.getCreditos());
-        } catch (PokemonNoPuedeUsarArmaE e) {
-            JOptionPane.showMessageDialog(null,
-                "El pokémon " + e.getNombre() + " no puede usar ese arma.",
-                "Error compra arma", JOptionPane.ERROR_MESSAGE);
-        } catch (CompraImposibleException e) {
-            JOptionPane.showMessageDialog(null,
-                "Créditos insuficientes: tienes " + e.getCreditos() +
-                ", necesitas " + e.getCosto() + ".",
-                "Error compra arma", JOptionPane.ERROR_MESSAGE);
-        } catch (TipoDesconocidoException e) {
-            JOptionPane.showMessageDialog(null,
-                "Tipo de arma desconocido: " + tipoArma,
-                "Error compra arma", JOptionPane.ERROR_MESSAGE);
-        } catch (PokemonNoExisteException e) {
-            JOptionPane.showMessageDialog(null,
-                "El pokémon " + e.getNombre() + " no existe.",
-                "Error compra arma", JOptionPane.ERROR_MESSAGE);
-        }
-    }
+	private void AGREGAR_E2() {
+		String entrenador;
+		entrenador = vista.getEntrenador2();
+		if (this.entrenadoresEnDuelos.contains(entrenador)) {
+			vista.setTextConsola("El entrenador " + entrenador + " ya participa de un duelo, seleccione otro.");
+		}else {
+		
+		vista.encenderBotonAgregarDuelo();
+		vista.apagarBotonAgregarE2();
+		vista.setTextConsola(vista.getEntrenador2() + " aregado al duelo.");
+		}
+	}
 
-    private void COMPRAR_POKEMON() {
-        String tipoPokemon = vista.getTipoPokemonTienda();
-        String nombrePokemon = vista.getNombrePokemonTienda();
-        Entrenador entrenador = vista.getEntrenador();
+	private void AGREGAR_E1() {
+		String entrenador;
+		entrenador = vista.getEntrenador1();
+		if (this.entrenadoresEnDuelos.contains(entrenador)) {
+			vista.setTextConsola("El entrenador " + entrenador + " ya participa de un duelo, seleccione otro.");
+		} else {
+			vista.apagarBotonAgregarE1();
+			vista.encenderTextoE2();
+			vista.encenderBotonSeleccionarE2();
+			vista.setTextConsola(vista.getEntrenador1() + " aregado al duelo.");
+		}
 
-        try {
-            facade.getGimnasio().getTienda().compraPokemon(entrenador, tipoPokemon, nombrePokemon);
-            vista.actualizarComboListaPokemones(modeloComboPokemones);
-            vista.vaciarTextPokemonTienda();
-            vista.setTextEntrenador(entrenador.getNombre() + " Cred: " + entrenador.getCreditos());
-            modeloComboPokemones.addElement(nombrePokemon);
-            vista.actualizarComboListaPokemones(modeloComboPokemones);
-        } catch (TipoDesconocidoException e) {
-            JOptionPane.showMessageDialog(null,
-                "Tipo de Pokémon desconocido: " + tipoPokemon,
-                "Error compra Pokémon", JOptionPane.ERROR_MESSAGE);
-        } catch (CompraImposibleException e) {
-            JOptionPane.showMessageDialog(null,
-                "Créditos insuficientes: tienes " + e.getCreditos() +
-                ", necesitas " + e.getCosto() + ".",
-                "Error compra Pokémon", JOptionPane.ERROR_MESSAGE);
-        }
-    }
+	}
 
-    private void RECARGAR() {
-        String nombrePokemon = vista.getNombrePokemonComboPokemon();
-        Entrenador entrenador = vista.getEntrenador();
-        try {
-            entrenador.buscaPokemon(nombrePokemon).recargar();
-        } catch (PokemonNoExisteException e) {
-            JOptionPane.showMessageDialog(null,
-                "El pokémon " + e.getNombre() + " no existe.",
-                "Error recarga", JOptionPane.ERROR_MESSAGE);
-        }
-    }
+	private void AGREGAR_DUELO() {
+		String entrenador1;
+		String entrenador2;
+		entrenador1 = vista.getEntrenador1();
+		entrenador2 = vista.getEntrenador2();
+		
+		vista.resetZonaDuelo();
+		try {
 
-    void CREAR_ENTRENADOR() {
-        String nombreEntrenador = vista.getNombreEntrenador();
-        int creditos = vista.getCreditosEntrenador();
-        try {
-            Entrenador entrenador = new Entrenador(nombreEntrenador, creditos);
-            facade.getGimnasio().putEntrenador(entrenador);
-            modeloListaEntrenadores.addElement(entrenador);
-            vista.actualizarListaEntrenadores(modeloListaEntrenadores);
-            vista.resetZonaEntrenador();
-        } catch (NombreUtilizadoException e1) {
-            JOptionPane.showMessageDialog(null,
-                "El nombre de entrenador ya está en uso: " + e1.getNombre(),
-                "Error creación entrenador", JOptionPane.ERROR_MESSAGE);
-        }
+			facade.agregarDuelo(entrenador1,entrenador2);
 
-        if (modeloListaEntrenadores.getSize() > 1) {
-            vista.encenderBotonDuelo();
-        }
-    }
+			modeloListaDuelos.addElement(entrenador1 + " VS "+ entrenador2);
+			vista.actualizarListaDuelo(modeloListaDuelos);
+			vista.setTextConsola("Duelo creado.");
+			this.entrenadoresEnDuelos.add(entrenador1);
+			this.entrenadoresEnDuelos.add(entrenador2);
+			if (this.modeloListaDuelos.getSize() == 2) {
+				vista.encenderBotonTorneo();
+			}
 
-    void CREAR_POKEMON() {
-        String nombrePokemon = vista.getNombrePokemonCreado();
-        String tipoPokemon = vista.getTipoPokemonCreado();
-        Entrenador entrenador = vista.getEntrenador();
-        try {
-            Pokemon pokemon = facade.getPokFact().getPokemon(tipoPokemon, nombrePokemon);
-            entrenador.putPokemon(pokemon);
-            modeloComboPokemones.addElement(nombrePokemon);
-            vista.actualizarComboListaPokemones(modeloComboPokemones);
-            vista.vaciarTextPokemonCreado();
-        } catch (TipoDesconocidoException e1) {
-            JOptionPane.showMessageDialog(null,
-                "Tipo de Pokémon desconocido: " + tipoPokemon,
-                "Error creación Pokémon", JOptionPane.ERROR_MESSAGE);
-        } catch (NombreUtilizadoException e1) {
-            JOptionPane.showMessageDialog(null,
-                "Ya existe un Pokémon con ese nombre: " + e1.getNombre(),
-                "Error creación Pokémon", JOptionPane.ERROR_MESSAGE);
-        }
-    }
+		} catch (EntrenadorNoExisteException e) {
+			vista.setTextConsola("Nombre de entrenador " + e.getNombre() + " no existe.");
+		} catch (IllegalArgumentException | IllegalStateException e) {
+			vista.setTextConsola( e.getMessage());
+	    }catch (EntrenadorSinPokemonesException e) {
+			this.vista.setTextConsola(e.getMessage());;
+		} catch (ArenaOcupadaException e) {}
+		
 
-    void AGREGAR_A_EQUIPO() {
-        String nombrePokemon = vista.getNombrePokemonComboPokemon();
-        Entrenador entrenador = vista.getEntrenador();
-        try {
-            entrenador.agregarPokemonEquipo(nombrePokemon);
-        } catch (EquipoLlenoException e1) {
-            JOptionPane.showMessageDialog(null,
-                "El equipo está lleno.",
-                "Error agregar al equipo", JOptionPane.ERROR_MESSAGE);
-        }
-    }
 
-    void LISTA_ENTRENADORES() {
-        HashMap<String, Pokemon> listaPokemones;
-        vista.vaciarTextPokemonCreado();
-        modeloComboPokemones.removeAllElements();
+	
+	}
 
-        Entrenador entrenador = vista.getEntrenador();
-        if (entrenador != null) {
-            if (vista.getEntrenador2().equals("")) {
-                vista.setTextEntrenador1(entrenador.getNombre());
-            } else if (!vista.getEntrenador1().equals("") &&
-                       !vista.getEntrenador1().equals(entrenador.getNombre())) {
-                vista.setTextEntrenador2(entrenador.getNombre());
-            }
-            listaPokemones = entrenador.getPokemones();
-            vista.setTextEntrenador(entrenador.getNombre() + " Cred: " + entrenador.getCreditos());
-            listaPokemones.forEach((k, v) -> modeloComboPokemones.addElement(k));
-        }
+	private void COMPRAR_ARMA() {
+		String tipoArma;
+		String nombrePokemon;
+		Entrenador entrenador;
 
-        // Reemplaza isEmpty() por getSize() == 0
-        if (modeloComboPokemones.getSize() == 0) {
-            vista.apagarBotonesPokemonCreado();
-        } else {
-            vista.actualizarComboListaPokemones(modeloComboPokemones);
-        }
-    }
+		tipoArma = vista.getTipoArmaTienda();
+		nombrePokemon = vista.getNombrePokemonComboTienda();
+		entrenador = vista.getEntrenador();
 
-    private void LISTA_DUELOS() {
-        // implementación pendiente
-    }
+		try {
+			facade.comprarArma(tipoArma, entrenador, nombrePokemon);
+			vista.setTextEntrenador(entrenador.getNombre() + " Cred: " + entrenador.getCreditos());
+			vista.setTextConsola(
+					tipoArma + " adquirida, aÃ±adido al pokemon " + nombrePokemon + " de " + entrenador.getNombre());
+		} catch (PokemonNoPuedeUsarArmaE e) {
+			vista.setTextConsola("El pokemon: " + e.getNombre() + " no es de tipo piedra, no puede usar arma.");
+
+		} catch (CompraImposibleException e) {
+			vista.setTextConsola(
+					"Dinero insuficiente. Dinero actual: " + e.getCreditos() + ". Dinero necesario: " + e.getCosto());
+		} catch (TipoDesconocidoException e) {
+		} catch (PokemonNoExisteException e) {
+		}
+
+	}
+
+	private void COMPRAR_POKEMON() {
+		String tipoPokemon;
+		String nombrePokemon;
+		Entrenador entrenador;
+		nombrePokemon = vista.getNombrePokemonTienda();
+		tipoPokemon = vista.getTipoPokemonTienda();
+		entrenador = vista.getEntrenador();
+		try {
+			facade.comprarPokemon(entrenador, tipoPokemon, nombrePokemon);
+			vista.actualizarComboListaPokemones(modeloComboPokemones);
+			vista.vaciarTextPokemonTienda();
+			vista.setTextEntrenador(entrenador.getNombre() + " Cred: " + entrenador.getCreditos());
+			modeloComboPokemones.addElement(nombrePokemon);
+			vista.actualizarComboListaPokemones(modeloComboPokemones);
+			vista.setTextConsola("Pokemon " + nombrePokemon + " adquirido, aÃ±adido al equipo de " + entrenador.getNombre());
+		} catch (CompraImposibleException e) {
+			vista.setTextConsola(
+					"Dinero insuficiente. Dinero actual: " + e.getCreditos() + ". Dinero necesario: " + e.getCosto());
+		} catch (TipoDesconocidoException e) {
+		}
+
+	}
+
+	private void RECARGAR() {
+		String nombrePokemon;
+		Entrenador entrenador;
+		nombrePokemon = vista.getNombrePokemonComboPokemon();
+		entrenador = vista.getEntrenador();
+
+		try {
+			entrenador.buscaPokemon(nombrePokemon).recargar();
+			vista.setTextConsola("Pokemon " + nombrePokemon + " del " + entrenador.getNombre() + " recargado.");
+
+		} catch (PokemonNoExisteException e) {
+
+		}
+	}
+
+	void CREAR_ENTRENADOR() {
+		String nombreEntrenador;
+		Entrenador entrenador;
+		int creditos;
+		nombreEntrenador = vista.getNombreEntrenador();
+		creditos = vista.getCreditosEntrenador();
+		try {
+			entrenador = facade.crearEntrenador(nombreEntrenador, creditos);
+			facade.agregarAlGimnasio(entrenador);
+			modeloListaEntrenadores.addElement(entrenador);
+			vista.actualizarListaEntrenadores(modeloListaEntrenadores);
+			vista.resetZonaEntrenador();
+			vista.setTextConsola("Entrenador " + nombreEntrenador + " aÃ±adido al gimnasio.");
+			if (this.modeloListaEntrenadores.getSize() > 1 && hayArena) {
+				vista.encenderBotonDuelo();
+			}
+		} catch (NombreUtilizadoException e1) {
+
+			vista.setTextConsola("Nombre de entrenador " + e1.getNombre() + " ya utilizado, escriba otro.");
+
+		}
+
+
+
+	}
+
+	void CREAR_POKEMON() {
+		String tipoPokemon;
+		String nombrePokemon;
+		Entrenador entrenador;
+		Pokemon pokemon;
+		nombrePokemon = vista.getNombrePokemonCreado();
+		tipoPokemon = vista.getTipoPokemonCreado();
+		entrenador = vista.getEntrenador();
+		try {
+			pokemon = facade.crearPokemon(tipoPokemon, nombrePokemon);
+			entrenador.putPokemon(pokemon);
+			modeloComboPokemones.addElement(nombrePokemon);
+			vista.setTextConsola("Pokemon " + nombrePokemon + " aÃ±adido al equipo de " + entrenador.getNombre() + ".");
+			vista.actualizarComboListaPokemones(modeloComboPokemones);
+			vista.vaciarTextPokemonCreado();
+		} catch (TipoDesconocidoException e1) {
+		}
+
+		catch (NombreUtilizadoException e1) {
+			vista.setTextConsola("Nombre de pokemon " + e1.getNombre() + " ya utilizado, escriba otro.");
+		}
+
+	}
+
+	void AGREGAR_A_EQUIPO() {
+		String nombrePokemon;
+		Entrenador entrenador;
+		nombrePokemon = vista.getNombrePokemonComboPokemon();
+		entrenador = vista.getEntrenador();
+		try {
+			entrenador.agregarPokemonEquipo(nombrePokemon);
+			vista.setTextConsola("Pokemon " + nombrePokemon + " agregado al equipo de " + entrenador.getNombre() + ".");
+		} catch (EquipoLlenoException e1) {
+			vista.setTextConsola("El equipo esta lleno, no se pueden agregar mas pokemones.");
+		}
+	}
+
+	void LISTA_ENTRENADORES() {
+
+		Entrenador entrenador;
+		HashMap<String, Pokemon> listaPokemones = new HashMap<>();
+		vista.vaciarTextPokemonCreado();
+		this.modeloComboPokemones.removeAllElements();
+		entrenador = vista.getEntrenador();
+		if (entrenador != null) {
+
+			if (vista.getEntrenador1().equals("") || vista.estadoBotonE1()) {
+				vista.setTextEntrenador1(entrenador.getNombre());
+			} else if (vista.estadoBotonE2() && !vista.getEntrenador1().equals(entrenador.getNombre())) {
+				vista.setTextEntrenador2(entrenador.getNombre());
+			}
+			listaPokemones = entrenador.getPokemones();
+			vista.setTextEntrenador(entrenador.getNombre() + " Cred: " + entrenador.getCreditos());
+		}
+		if (listaPokemones.isEmpty()) {
+			vista.apagarBotonesPokemonCreado();
+		} else
+			listaPokemones.forEach((k, v) -> modeloComboPokemones.addElement(k));
+		vista.actualizarComboListaPokemones(modeloComboPokemones);
+	}
+
+	private void LISTA_DUELOS() {
+
+	}
+
 }

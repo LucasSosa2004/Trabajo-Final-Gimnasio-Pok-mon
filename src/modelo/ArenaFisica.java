@@ -13,12 +13,16 @@ public class ArenaFisica implements Serializable {
         this.arenaDecorada = arenaDecorada;
     }
 
-    public synchronized void ocupar() {
+    public synchronized void ocupar() throws InterruptedException {
+        while (this.ocupada) {
+            wait();
+        }
         this.ocupada = true;
     }
 
     public synchronized void liberar() {
         this.ocupada = false;
+        notifyAll();
     }
 
     public synchronized boolean estaOcupada() {

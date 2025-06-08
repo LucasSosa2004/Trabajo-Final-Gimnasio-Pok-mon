@@ -52,15 +52,15 @@ public interface IVista {
 
     void encenderBotonDuelo();
 
-    void actualizarListaDuelo(DefaultListModel<Duelo> modelo);
-
-    Duelo getDuelo();
+    void actualizarListaDuelo(DefaultListModel<String> modelo);
 
     String getEntrenador1();
 
     void setTextEntrenador1(String nombre);
 
     void setTextEntrenador2(String nombre);
+    
+    void setTextConsola(String informacion);
 
     void encenderBotonSeleccionarE2();
 
@@ -69,5 +69,25 @@ public interface IVista {
     void encenderBotonAgregarDuelo();
 
     String getEntrenador2();
+
+    boolean estadoBotonE1();
+
+    void apagarBotonAgregarE1();
+
+    boolean estadoBotonE2();
+
+    void apagarBotonAgregarE2();
+
+    void resetZonaDuelo();
+    
+    String getTipoArena();
+    
+    String getDificultadArena();
+
+	void resetZonaArena();
+
+	void encenderBotonTorneo();
+
+	void apagarBotonIniciarTorneo();
 
 }

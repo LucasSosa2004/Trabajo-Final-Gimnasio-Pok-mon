@@ -12,12 +12,16 @@ public class Arena implements Serializable {
         this.ocupada = false;
     }
 
-    public synchronized void ocupar() {
+    public synchronized void ocupar() throws InterruptedException {
+        while (this.ocupada) {
+            wait();
+        }
         this.ocupada = true;
     }
 
     public synchronized void liberar() {
         this.ocupada = false;
+        notifyAll();
     }
 
     public synchronized boolean estaOcupada() {
