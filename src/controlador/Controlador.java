@@ -21,12 +21,14 @@ import excepciones.PokemonNoPuedeUsarArmaE;
 import excepciones.TipoDesconocidoException;
 import modelo.ArenaLogica;
 import modelo.FacadePokemones;
+import persistencia.GimnasioManager;
 import pokemones.Pokemon;
 import vista.IVista;
 
 public class Controlador implements ActionListener {
 
 	private FacadePokemones facade = FacadePokemones.getInstancia();
+	private GimnasioManager manager = new GimnasioManager();
 	private IVista vista;
 	private DefaultListModel<Entrenador> modeloListaEntrenadores = new DefaultListModel<>();
 	private DefaultListModel<String> modeloListaDuelos = new DefaultListModel<>();
@@ -96,6 +98,9 @@ public class Controlador implements ActionListener {
 		case "INICIAR_TORNEO":
 			this.INICIAR_TORNEO();
 			break;
+		case "GUARDAR_ESTADO":
+			this.GUARDAR_ESTADO();
+			break;
 		case "LISTA_ENTRENADORES":
 			this.LISTA_ENTRENADORES();
 			break;
@@ -105,13 +110,24 @@ public class Controlador implements ActionListener {
 		}
 	}
 
+	private void GUARDAR_ESTADO() {
+		if (facade.puedeGuardarEstado()) {
+			manager.guardarEstado(facade.getGimnasio(), facade.getSistemaPelea(), facade.getEtapa());
+			vista.setTextConsola("Estado guardado exitosamente");
+		} else {
+			vista.setTextConsola("No se puede guardar el estado mientras un torneo está en curso");
+		}
+	}
+
 	private void INICIAR_TORNEO() {
 		try {
+			vista.apagarBotonGuardarEstado();
 			facade.iniciarTorneo();
 			this.entrenadoresEnDuelos.clear();
 			this.modeloListaDuelos.clear();
 			vista.actualizarListaDuelo(modeloListaDuelos);
 			vista.apagarBotonIniciarTorneo();
+			vista.encenderBotonGuardarEstado();
 			
 		} catch (EntrenadorNoExisteException | EntrenadorSinPokemonesException e) {
 			vista.setTextConsola(e.getMessage());

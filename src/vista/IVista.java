@@ -90,4 +90,9 @@ public interface IVista {
 
 	void apagarBotonIniciarTorneo();
 
+    // Nuevos métodos para el botón de guardar estado
+    void encenderBotonGuardarEstado();
+    
+    void apagarBotonGuardarEstado();
+
 }

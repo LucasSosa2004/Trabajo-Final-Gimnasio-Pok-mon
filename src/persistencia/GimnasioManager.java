@@ -5,6 +5,7 @@ import java.io.*;
 import modelo.Gimnasio;
 import modelo.SistemaPelea;
 import modelo.EtapaTorneo;
+import modelo.FacadePokemones;
 
 /**
  * GimnasioManager se encarga de guardar y cargar el estado completo:
@@ -16,13 +17,19 @@ public class GimnasioManager {
     private static final String ARCHIVO_ESTADO = "gimnasio.dat";
 
     public GimnasioManager() {
-        // Constructor vac�o
+        // Constructor vacío
     }
 
     /**
      * Guarda en disco los objetos: Gimnasio.instancia(), SistemaPelea.instancia() y la etapaActual.
+     * No se podrá guardar el estado mientras un torneo esté en curso.
      */
     public void guardarEstado(Gimnasio gimnasio, SistemaPelea sistemaPelea, EtapaTorneo etapa) {
+        if (!FacadePokemones.getInstancia().puedeGuardarEstado()) {
+            System.err.println("No se puede guardar el estado mientras un torneo está en curso");
+            return;
+        }
+        
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(ARCHIVO_ESTADO))) {
             oos.writeObject(gimnasio);
             oos.writeObject(sistemaPelea);
@@ -34,9 +41,9 @@ public class GimnasioManager {
 
     /**
      * Carga desde disco las mismas tres entidades. Si no existe el archivo, retorna null.
-     * Adem�s reasigna los singletons de Gimnasio y SistemaPelea.
+     * Además reasigna los singletons de Gimnasio y SistemaPelea.
      *
-     * @return la EtapaTorneo cargada (o null si no hab�a archivo)
+     * @return la EtapaTorneo cargada (o null si no había archivo)
      */
     @SuppressWarnings("unchecked")
     public EtapaTorneo cargarEstado() {

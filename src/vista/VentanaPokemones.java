@@ -61,6 +61,7 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 	private JScrollPane scrollConsola;
 	private JTextArea textConsola;
 	private JButton boton_iniciar_torneo;
+	private JButton boton_guardar_estado;
 
 	// Paneles específicos para cada opción en panel_detalles
 	private JPanel panelAgregarEntrenador;
@@ -181,6 +182,12 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 		boton_duelo = new JButton("Duelo");
 		boton_duelo.setFont(new Font("Arial", Font.BOLD, 14));
 		panel_opciones.add(boton_duelo);
+
+		// Agregar botón de guardar estado
+		boton_guardar_estado = new JButton("Guardar Estado");
+		boton_guardar_estado.setActionCommand("GUARDAR_ESTADO");
+		boton_guardar_estado.setEnabled(true);
+		panel_botones.add(boton_guardar_estado);
 
 		// Panel de detalles con CardLayout
 		panel_detalles = new JPanel();
@@ -692,6 +699,7 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 				
 				boton_iniciar_torneo.setActionCommand("INICIAR_TORNEO");
 				
+				boton_guardar_estado.setActionCommand("GUARDAR_ESTADO");
 				
 				boton_CrearNuevoEntrenador.setEnabled(false);
 				
@@ -860,6 +868,7 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 
 	    
 	    this.boton_iniciar_torneo.addActionListener(actionListener);
+	    this.boton_guardar_estado.addActionListener(actionListener);
 		this.actionListener = actionListener;
 
 	}
@@ -1145,5 +1154,15 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 	@Override
 	public void apagarBotonIniciarTorneo() {
 		this.boton_iniciar_torneo.setEnabled(false);
+	}
+
+	@Override
+	public void encenderBotonGuardarEstado() {
+		this.boton_guardar_estado.setEnabled(true);
+	}
+
+	@Override
+	public void apagarBotonGuardarEstado() {
+		this.boton_guardar_estado.setEnabled(false);
 	}
 }
