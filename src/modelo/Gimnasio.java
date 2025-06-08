@@ -9,22 +9,22 @@ import excepciones.EntrenadorSinPokemonesException;
 import excepciones.NombreUtilizadoException;
 
 /**
- * Clase Gimnasio que implementa el patrón Singleton.
- * Contiene entrenadores, una tienda y métodos para inscribir al torneo.
+ * Clase Gimnasio que implementa el patrï¿½n Singleton.
+ * Contiene entrenadores, una tienda y mï¿½todos para inscribir al torneo.
  */
 public class Gimnasio implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /** Instancia única (Singleton) */
+    /** Instancia ï¿½nica (Singleton) */
     private static Gimnasio instancia;
 
-    /** Entrenadores registrados (clave = nombre en mayúsculas) */
+    /** Entrenadores registrados (clave = nombre en mayï¿½sculas) */
     private Map<String, Entrenador> entrenadores = new HashMap<>();
 
     /** Tienda asociada al gimnasio */
     private Tienda tienda;
 
-    /** Lista de entrenadores inscritos al torneo (máximo 8) */
+    /** Lista de entrenadores inscritos al torneo (mï¿½ximo 8) */
     private List<Entrenador> inscritosTorneo = new ArrayList<>();
 
     private Gimnasio() {
@@ -44,9 +44,9 @@ public class Gimnasio implements Serializable {
     }
 
     /**
-     * Devuelve el Entrenador con el nombre dado (en mayúsculas).
+     * Devuelve el Entrenador con el nombre dado (en mayï¿½sculas).
      *
-     * @param nombre Nombre del entrenador (no puede ser nulo ni vacío)
+     * @param nombre Nombre del entrenador (no puede ser nulo ni vacï¿½o)
      * @return El entrenador existente
      * @throws EntrenadorNoExisteException Si no existe
      */
@@ -86,23 +86,23 @@ public class Gimnasio implements Serializable {
         this.tienda = tienda;
     }
 
-    // --- Métodos para inscripción al torneo ---
+    // --- Mï¿½todos para inscripciï¿½n al torneo ---
 
     /**
-     * Inscribe un entrenador al torneo (hasta 8). Lanza excepción si:
+     * Inscribe un entrenador al torneo (hasta 8). Lanza excepciï¿½n si:
      * 1) No existe el entrenador
-     * 2) Ya está inscrito
+     * 2) Ya estï¿½ inscrito
      * 3) Ya hay 8 inscritos
      *
      * @param nombre Nombre del entrenador a inscribir
      * @throws EntrenadorNoExisteException  Si no existe en el gimnasio
      * @throws IllegalStateException        Si ya hay 8 inscritos
-     * @throws IllegalArgumentException     Si el entrenador ya está inscrito
+     * @throws IllegalArgumentException     Si el entrenador ya estï¿½ inscrito
      */
-    public void inscribirAlTorneo(String nombre) throws EntrenadorNoExisteException {
-        Entrenador e = getEntrenador(nombre);
+    public void inscribirAlTorneo(String nombre) throws EntrenadorNoExisteException{
+    	Entrenador e = getEntrenador(nombre);
         if (inscritosTorneo.contains(e)) {
-            throw new IllegalArgumentException("El entrenador " + nombre + " ya está inscrito.");
+            throw new IllegalArgumentException("El entrenador " + nombre + " ya esta inscrito.");
         }
         if (inscritosTorneo.size() >= 8) {
             throw new IllegalStateException("Ya hay 8 entrenadores inscritos.");
@@ -123,26 +123,18 @@ public class Gimnasio implements Serializable {
     }
 
     /**
-     * Crea un Duelo entre dos entrenadores que ya estén inscritos en el torneo.
+     * Crea un Duelo entre dos entrenadores que ya estï¿½n inscritos en el torneo.
      * En caso de error, devuelve null y muestra mensaje por consola.
+     * @throws EntrenadorNoExisteException 
+     * @throws EntrenadorSinPokemonesException 
      */
-    public Duelo crearDuelo(String nombre1, String nombre2, ArenaFisica arena) {
-        try {
+    public Duelo crearDuelo(String nombre1, String nombre2, ArenaFisica arena) throws EntrenadorNoExisteException, EntrenadorSinPokemonesException {
+
             Entrenador e1 = this.getEntrenador(nombre1);
             Entrenador e2 = this.getEntrenador(nombre2);
-            // Sólo permitimos duelos entre entrenadores que realmente estén inscritos
-            if (!inscritosTorneo.contains(e1) || !inscritosTorneo.contains(e2)) {
-                System.out.println("Uno o ambos entrenadores no están inscritos en el torneo.");
-                return null;
-            }
+
             return new Duelo(e1, e2, arena);
-        } catch (EntrenadorNoExisteException ex) {
-            System.out.println("El entrenador " + ex.getNombre() + " no existe.");
-            return null;
-        } catch (EntrenadorSinPokemonesException ex) {  // <— Se corrige el paquete
-            System.out.println("El entrenador " + ex.getNombre() + " no tiene pokemones para iniciar un duelo.");
-            return null;
-        }
+  
     }
 
     @Override

@@ -1,6 +1,8 @@
 package modelo;
 
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import entrenador.Entrenador;
 import excepciones.EntrenadorSinPokemonesException;
@@ -8,7 +10,7 @@ import pokemones.Pokemon;
 
 /**
  * El duelo recibe dos entrenadores, opcionalmente cada uno lanza un hechizo,
- * luego selecciona automáticamente sus primeros Pokémons y resuelve
+ * luego selecciona automï¿½ticamente sus primeros Pokï¿½mons y resuelve
  * el duelo hasta que uno se queda sin equipo activo.
  */
 public class Duelo implements Runnable, Serializable {
@@ -18,14 +20,15 @@ public class Duelo implements Runnable, Serializable {
     private int clave;
     private boolean dueloTerminado;
     private ArenaFisica arena;
-
+    private Queue<Pokemon> colaAuxE1 = new LinkedList<>();
+    private Queue<Pokemon> colaAuxE2 = new LinkedList<>();
     /**
      * Crea un nuevo Duelo en la arena dada.
      *
-     * @param e1    Entrenador 1 (debe tener al menos 1 Pokémon activo)
-     * @param e2    Entrenador 2 (debe tener al menos 1 Pokémon activo)
-     * @param arena Arena física donde se librará este duelo
-     * @throws EntrenadorSinPokemonesException si alguno no tiene Pokémons activos
+     * @param e1    Entrenador 1 (debe tener al menos 1 Pokï¿½mon activo)
+     * @param e2    Entrenador 2 (debe tener al menos 1 Pokï¿½mon activo)
+     * @param arena Arena fï¿½sica donde se librarï¿½ este duelo
+     * @throws EntrenadorSinPokemonesException si alguno no tiene Pokï¿½mons activos
      */
     public Duelo(Entrenador e1, Entrenador e2, ArenaFisica arena) throws EntrenadorSinPokemonesException {
         if (e1.getEquipoActivo().isEmpty())
@@ -61,25 +64,28 @@ public class Duelo implements Runnable, Serializable {
         return e2;
     }
 
-    /** Nuevo método para obtener la arena asociada */
+    /** Nuevo mï¿½todo para obtener la arena asociada */
     public ArenaFisica getArena() {
         return arena;
     }
 
     /**
-     * Resuelve el duelo de forma síncrona (se invoca dentro de run()).
-     * Al terminar, otorga el premio y recarga los Pokémons del ganador.
+     * Resuelve el duelo de forma sï¿½ncrona (se invoca dentro de run()).
+     * Al terminar, otorga el premio y recarga los Pokï¿½mons del ganador.
      */
     public void iniciarDuelo() {
-        assert !e1.getEquipoActivo().isEmpty() : "El equipo activo del entrenador 1 no puede estar vacío";
-        assert !e2.getEquipoActivo().isEmpty() : "El equipo activo del entrenador 2 no puede estar vacío";
+        assert !e1.getEquipoActivo().isEmpty() : "El equipo activo del entrenador 1 no puede estar vacï¿½o";
+        assert !e2.getEquipoActivo().isEmpty() : "El equipo activo del entrenador 2 no puede estar vacï¿½o";
 
         boolean turno = true;
 
         Pokemon p1 = e1.proximoPokemon();
         Pokemon p2 = e2.proximoPokemon();
-
-        // Hechizos iniciales: cada entrenador lanza sobre el primer Pokémon del rival
+        Pokemon p;
+        colaAuxE1.add(p1);
+        colaAuxE2.add(p2);
+        
+        // Hechizos iniciales: cada entrenador lanza sobre el primer Pokï¿½mon del rival
         e1.hechizar(p2);
         e2.hechizar(p1);
 
@@ -89,7 +95,7 @@ public class Duelo implements Runnable, Serializable {
         if (p1 != null) participantesE1.add(p1);
         if (p2 != null) participantesE2.add(p2);
 
-        // Bucle hasta que uno se quede sin Pokémon
+        // Bucle hasta que uno se quede sin Pokï¿½mon
         while (p1 != null && p2 != null) {
             if (turno) {
                 if (p1.getVitalidad() > 0 && p2.getVitalidad() > 0) {
@@ -105,34 +111,47 @@ public class Duelo implements Runnable, Serializable {
             if (p1 != null && p1.getVitalidad() <= 0) {
                 p2.recibeExp();
                 p1 = e1.proximoPokemon();
+                colaAuxE1.add(p1);
                 if (p1 != null) participantesE1.add(p1);
             }
             if (p2 != null && p2.getVitalidad() <= 0) {
                 p1.recibeExp();
                 p2 = e2.proximoPokemon();
+                colaAuxE2.add(p2);
                 if (p2 != null) participantesE2.add(p2);
             }
         }
 
         // Determinar ganador
-        java.util.List<Pokemon> participantesGanador;
         if (p1 == null) {
             this.ganador = e2;
-            participantesGanador = participantesE2;
+            while(!colaAuxE2.isEmpty()) {
+            	p = colaAuxE2.poll();
+            	p.recargar();
+            	ganador.getEquipoActivo().add(p);
+            	System.out.println("E2: " + p);
+            }
         } else {
             this.ganador = e1;
-            participantesGanador = participantesE1;
+            while(!colaAuxE1.isEmpty()) {
+            	p = colaAuxE1.poll();
+            	p.recargar();
+            	ganador.getEquipoActivo().add(p);
+            	System.out.println("E1: " + p);
+            }
         }
 
-        // Otorgar premio según la arena decorada
+        // Otorgar premio segï¿½n la arena decorada
         this.ganador.addCreditos(arena.getPremio());
         this.dueloTerminado = true;
 
-        // Recargar la vitalidad de los Pokémons del ganador
-        for (Pokemon p : participantesGanador) {
+        // Recargar la vitalidad de los Pokï¿½mons del ganador
+        
+        
+        /*for (Pokemon p : participantesGanador) {
             if (p != null) p.recargar();
-        }
-
+        }*/
+        
         assert this.ganador != null : "El ganador no puede ser nulo";
         assert this.dueloTerminado : "El duelo debe estar marcado como terminado";
     }
@@ -142,7 +161,9 @@ public class Duelo implements Runnable, Serializable {
         try {
             iniciarDuelo();
         } finally {
-            arena.liberar();
+            // Aseguramos que la arena siempre se libere, incluso si hay una excepciÃ³n
+            SistemaPelea.getInstancia().liberarArena(this.arena);
+            this.dueloTerminado = true;
         }
     }
 

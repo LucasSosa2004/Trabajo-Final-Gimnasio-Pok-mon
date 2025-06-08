@@ -50,7 +50,7 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 	private JPanel panel_creacion;
 	private JPanel panel_botones;
 	private JPanel panel_detalles;
-	private JList<Duelo> listaDuelo;
+	private JList<String> listaDuelo;
 	private JPanel panel_opciones;
 	private JButton boton_entrenador;
 	private JButton boton_pokemon;
@@ -58,11 +58,11 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 	private JButton boton_arena;
 	private JScrollPane scrollEntrenadores;
 	private JList<Entrenador> listEntrenadores;
-	private JScrollPane scrollPane_1;
-	private JTextArea textArea;
+	private JScrollPane scrollConsola;
+	private JTextArea textConsola;
 	private JButton boton_iniciar_torneo;
 
-	// Paneles específicos para cada opción en panel_detalles
+	// Paneles especÃ­ficos para cada opciÃ³n en panel_detalles
 	private JPanel panelAgregarEntrenador;
 	private JPanel panelArena;
 	private JTextField textNombreEntrenador;
@@ -148,7 +148,7 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 		panel_entrenadores.add(panel_AgregarAlTorneo, BorderLayout.SOUTH);
 		panel_AgregarAlTorneo.setLayout(new GridLayout(0, 1, 0, 0));
 
-		// Panel de creación y botones
+		// Panel de creaciÃ³n y botones
 		panel_creacion = new JPanel();
 		panel_central.add(panel_creacion);
 		panel_creacion.setLayout(new GridLayout(2, 1, 0, 0));
@@ -187,7 +187,7 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 		panel_creacion.add(panel_detalles);
 		panel_detalles.setLayout(new CardLayout());
 
-		// Panel por defecto vacío
+		// Panel por defecto vacÃ­o
 		JPanel panel = new JPanel();
 		panel_detalles.add(panel, "VACIO");
 		
@@ -385,7 +385,7 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 				comboTipoPokemon = new JComboBox<String>();
 				comboTipoPokemon.setFont(new Font("Arial", Font.PLAIN, 14));
 				comboTipoPokemon.setModel(
-						new DefaultComboBoxModel<String>(new String[] { "Seleccione un tipo", "Agua", "Fuego", "Hielo", "Piedra" }));
+						new DefaultComboBoxModel<String>(new String[] { "Seleccione un tipo", "Agua", "Hielo", "Fuego", "Piedra" }));
 				GridBagConstraints gbc_comboTipoPokemon = new GridBagConstraints();
 				gbc_comboTipoPokemon.insets = new Insets(0, 0, 5, 0);
 				gbc_comboTipoPokemon.fill = GridBagConstraints.HORIZONTAL;
@@ -498,7 +498,7 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 				gbc_lblTipoPokemonTienda.gridy = 3;
 				panelTienda.add(lblTipoPokemonTienda, gbc_lblTipoPokemonTienda);
 		
-				comboTipoPokemonesTienda = new JComboBox<String>(new String[] { "Seleccione un tipo", "Agua", "Fuego", "Hielo", "Piedra" });
+				comboTipoPokemonesTienda = new JComboBox<String>(new String[] { "Seleccione un tipo", "Agua (100)", "Hielo (100)", "Fuego (120)", "Piedra (200)" });
 				GridBagConstraints gbc_comboTipoPokemonesTienda = new GridBagConstraints();
 				gbc_comboTipoPokemonesTienda.insets = new Insets(0, 0, 5, 0);
 				gbc_comboTipoPokemonesTienda.fill = GridBagConstraints.HORIZONTAL;
@@ -542,7 +542,7 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 				panelTienda.add(lblCompraArma, gbc_lblCompraArma);
 				
 						comboComprarArmasTienda = new JComboBox<String>();
-						comboComprarArmasTienda.setModel(new DefaultComboBoxModel<String>(new String[] {"Seleccione un arma", "Hacha", "Espada"}));
+						comboComprarArmasTienda.setModel(new DefaultComboBoxModel<String>(new String[] {"Seleccione un arma", "Espada (50)", "Hacha (80)"}));
 						GridBagConstraints gbc_comboComprarArmasTienda = new GridBagConstraints();
 						gbc_comboComprarArmasTienda.insets = new Insets(0, 0, 5, 0);
 						gbc_comboComprarArmasTienda.fill = GridBagConstraints.HORIZONTAL;
@@ -646,7 +646,7 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 				
 				scrollDuelo = new JScrollPane();
 				panel_torneo.add(scrollDuelo, BorderLayout.CENTER);
-				listaDuelo = new JList<Duelo>();
+				listaDuelo = new JList<String>();
 				
 				scrollDuelo.setViewportView(listaDuelo);
 		
@@ -655,11 +655,12 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 				contentPane.add(panel_sur, BorderLayout.SOUTH);
 				panel_sur.setPreferredSize(new Dimension(50, 100));
 				panel_sur.setLayout(new BorderLayout(0, 0));
-				scrollPane_1 = new JScrollPane();
-				panel_sur.add(scrollPane_1, BorderLayout.CENTER);
-				textArea = new JTextArea();
-				textArea.setFont(new Font("Arial", Font.BOLD, 14));
-				scrollPane_1.setViewportView(textArea);
+				scrollConsola = new JScrollPane();
+				panel_sur.add(scrollConsola, BorderLayout.CENTER);
+				textConsola = new JTextArea();
+				textConsola.setEditable(false);
+				textConsola.setFont(new Font("Arial", Font.PLAIN, 14));
+				scrollConsola.setViewportView(textConsola);
 		
 				// Panel iniciar torneo
 				boton_iniciar_torneo = new JButton("Iniciar torneo");
@@ -682,6 +683,7 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 				boton_CompraArma.setActionCommand("COMPRAR_ARMA");
 
 				boton_arena.setActionCommand("ARENA");
+				this.boton_AgregarArena.setActionCommand("AGREGAR_ARENA");
 				
 				boton_duelo.setActionCommand("DUELO");
 				boton_AgregarE1.setActionCommand("AGREGAR_E1");
@@ -757,8 +759,8 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 			cl.show(panel_detalles, "DUELO");
 		} else {
 			
-			// cl.show(panel_detalles, "VACIO"); // Opcional: oculta si otro botón no tiene
-			// panel aún
+			// cl.show(panel_detalles, "VACIO"); // Opcional: oculta si otro botÃ³n no tiene
+			// panel aÃºn
 		}
 	}*/
 
@@ -815,12 +817,14 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 
 
 		
-		int creditos=0;
+		int creditos=-1;
 
 		try {
 		    creditos = Integer.parseInt(this.textCred.getText());
-		} catch (NumberFormatException e){}
 
+		} catch (NumberFormatException e){}
+	    if (this.textCred.getText().equals(""))
+	    	creditos = 0;
 		boolean condicion = creditos>=0 && nombreEntrenador!=null && !nombreEntrenador.equals("");
 		this.boton_CrearNuevoEntrenador.setEnabled(condicion);
 		
@@ -840,9 +844,11 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 	    this.boton_AgregarAEquipo.addActionListener(actionListener);
 	    this.boton_entrenador.addActionListener(actionListener);
 	    this.boton_pokemon.addActionListener(actionListener);
+	    
 	    this.boton_tienda.addActionListener(actionListener);
 	    this.boton_ComprarPokemon.addActionListener(actionListener);
 	    this.boton_CompraArma.addActionListener(actionListener);
+	    this.boton_Recargar.addActionListener(actionListener);
 	   
 	    this.boton_arena.addActionListener(actionListener);
 	    this.boton_AgregarArena.addActionListener(actionListener);
@@ -888,7 +894,7 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 	}
 
 	@Override
-	public void actualizarListaDuelo(DefaultListModel<Duelo> modelo) {
+	public void actualizarListaDuelo(DefaultListModel<String> modelo) {
 	    this.listaDuelo.setModel(modelo);
 	}
 	
@@ -906,10 +912,11 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 
 		
 		boolean condicionEntrenadorSelect = entrenador!=null;
+		boolean condicionEncenderBotonE1 = entrenador!=null && !this.textEntrenador1.getText().isEmpty() && !this.boton_AgregarE2.isEnabled() && !this.boton_AgregarDuelo.isEnabled();
 		this.boton_pokemon.setEnabled(condicionEntrenadorSelect);
 		this.boton_tienda.setEnabled(condicionEntrenadorSelect);
-
-		this.boton_AgregarE1.setEnabled(condicionEntrenadorSelect);
+		
+		this.boton_AgregarE1.setEnabled(condicionEncenderBotonE1);
 
 		event = new ActionEvent(e, 0, comando);
 		this.actionListener.actionPerformed(event);
@@ -969,11 +976,7 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 		return (Entrenador)this.listEntrenadores.getSelectedValue();
 	}
 
-	@Override
-	public Duelo getDuelo() {
-		return (Duelo)this.listaDuelo.getSelectedValue();
-	}
-	
+
 	@Override
 	public void actualizarComboListaPokemones(DefaultComboBoxModel <String> modelo) {
 		this.comboListaPokemonesPokemon.setModel(modelo);
@@ -1070,7 +1073,6 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 	@Override
 	public void encenderBotonSeleccionarE2() {
 		this.boton_AgregarE2.setEnabled(true);
-		this.boton_AgregarE1.setEnabled(false);
 	}
 	@Override
 	public void encenderTextoE2() {
@@ -1084,5 +1086,59 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 	@Override
 	public String getEntrenador2() {
 		return this.textEntrenador2.getText();
+	}
+	@Override
+	public boolean estadoBotonE1() {
+		return this.boton_AgregarE1.isEnabled();
+	}
+	@Override
+	public void apagarBotonAgregarE1() {
+		this.boton_AgregarE1.setEnabled(false);
+	}
+	@Override
+	public boolean estadoBotonE2() {
+		return this.boton_AgregarE2.isEnabled();
+	}
+	@Override
+	public void apagarBotonAgregarE2() {
+		this.boton_AgregarE2.setEnabled(false);
+		
+	}
+	@Override
+	public void resetZonaDuelo() {
+		this.textEntrenador1.setText("");
+		this.textEntrenador2.setText("");
+		this.boton_AgregarE1.setEnabled(false);
+		this.boton_AgregarE2.setEnabled(false);
+		this.boton_AgregarDuelo.setEnabled(false);
+	}
+
+	@Override
+	public void setTextConsola(String informacion) {
+		this.textConsola.setText(this.textConsola.getText()+informacion+"\n");
+		
+	}
+
+	@Override
+	public String getTipoArena() {
+		return (String)this.comboTipoArena.getSelectedItem();
+	}
+
+	@Override
+	public String getDificultadArena() {
+		// TODO Auto-generated method stub
+		return (String)this.comboDificultadArena.getSelectedItem();
+	}
+
+	@Override
+	public void resetZonaArena() {
+		this.comboTipoArena.setSelectedIndex(0);
+		this.comboDificultadArena.setSelectedIndex(0);
+		this.boton_AgregarArena.setEnabled(false);
+
+	}
+	@Override
+	public void encenderBotonTorneo() {
+		this.boton_iniciar_torneo.setEnabled(true);
 	}
 }
