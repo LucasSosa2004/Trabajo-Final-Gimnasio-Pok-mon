@@ -127,6 +127,7 @@ public class FacadePokemones {
 		List<Thread> duelos = this.sistemaPelea.getDuelos();
 		for (Thread hilo : duelos) {
 			hilo.start();
+			hilo.getg
 		}
 		for (Thread hilo : duelos) {
 			try {
