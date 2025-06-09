@@ -1,6 +1,5 @@
 package modelo;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -25,6 +24,7 @@ public class FacadePokemones {
 	private ArmaFactory armFac;
 	private int numArenas;
 	private EtapaTorneo etapa;
+	private boolean puedeGuardarEstado;
 
 	private FacadePokemones() {
 		this.gimnasio = Gimnasio.getInstancia();
@@ -33,6 +33,7 @@ public class FacadePokemones {
 		this.pokFac = new PokemonFactory();
 		this.numArenas = 0;
 		this.etapa = new EtapaTorneo();
+		this.puedeGuardarEstado=true;
 	}
 
 	public static FacadePokemones getInstancia() {
@@ -122,6 +123,7 @@ public class FacadePokemones {
 	}
 
 	public void iniciarTorneo() throws EntrenadorNoExisteException, EntrenadorSinPokemonesException {
+		this.puedeGuardarEstado=false;
 		List<Thread> duelos = this.sistemaPelea.getDuelos();
 		for (Thread hilo : duelos) {
 			hilo.start();
@@ -133,10 +135,11 @@ public class FacadePokemones {
 				e.printStackTrace();
 			}
 		}
+		this.puedeGuardarEstado=true;
 
 	}
 
-	public void agregarDuelo(String entrenador1, String entrenador2)
+	public Duelo crearDuelo(String entrenador1, String entrenador2)
 			throws EntrenadorNoExisteException, EntrenadorSinPokemonesException, ArenaOcupadaException {
 		Entrenador e1 = this.gimnasio.getEntrenador(entrenador1);
 		Entrenador e2 = this.gimnasio.getEntrenador(entrenador2);
@@ -152,7 +155,18 @@ public class FacadePokemones {
 
 		Duelo duelo = new Duelo(e1, e2, arena);
 
-		this.sistemaPelea.addDuelo(duelo);
 
+		
+		return duelo;
 	}
+	
+	public void agregarDuelo(Duelo duelo) throws ArenaOcupadaException {
+		this.sistemaPelea.addDuelo(duelo);
+	}
+	public EtapaTorneo getEtapa() {
+        return etapa;
+    }
+	public boolean puedeGuardarEstado() {
+        return puedeGuardarEstado;
+    }
 }

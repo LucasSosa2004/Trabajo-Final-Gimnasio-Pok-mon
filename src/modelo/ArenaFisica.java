@@ -1,51 +1,53 @@
 package modelo;
 
 import java.io.Serializable;
+import java.util.concurrent.Semaphore;
 
 public class ArenaFisica implements Serializable {
 	private static final long serialVersionUID = 1L;
-    private boolean ocupada = false;
-    private ArenaLogica arenaDecorada;
-    private int id;
+	private Semaphore semaforo;
+	private ArenaLogica arenaDecorada;
+	private int id;
 
-    public ArenaFisica(int id, ArenaLogica arenaDecorada) {
-        this.id = id;
-        this.arenaDecorada = arenaDecorada;
-    }
+	public ArenaFisica(int id, ArenaLogica arenaDecorada) {
+		this.id = id;
+		this.arenaDecorada = arenaDecorada;
+		this.semaforo = new Semaphore(1);
+	}
 
-    public synchronized void ocupar() throws InterruptedException {
-        while (this.ocupada) {
-            wait();
-        }
-        this.ocupada = true;
-    }
+	public void ocupar() throws InterruptedException {
 
-    public synchronized void liberar() {
-        this.ocupada = false;
-        notifyAll();
-    }
+		System.out.println("Arena fisica" + this.id + " ocupada, hilo esperando...");
 
-    public synchronized boolean estaOcupada() {
-        return ocupada;
-    }
+		System.out.println("Arena fisica " + this.id + " ocupada por hilo " + Thread.currentThread().getName());
+		this.semaforo.acquire();
 
-    public String getNombre() {
-        return arenaDecorada.getNombre();
-    }
+	}
 
-    public String getDetalle() {
-        return arenaDecorada.getDetalle();
-    }
+	public void liberar() {
+		System.out.println("Arena fisica " + this.id + " liberada por hilo " + Thread.currentThread().getName());
+		this.semaforo.release();
+	}
 
-    public int getPremio() {
-        return arenaDecorada.getPremio();
-    }
 
-    public int getId() {
-        return id;
-    }
 
-    public ArenaLogica getArenaDecorada() {
-        return arenaDecorada;
-    }
+	public String getNombre() {
+		return arenaDecorada.getNombre();
+	}
+
+	public String getDetalle() {
+		return arenaDecorada.getDetalle();
+	}
+
+	public int getPremio() {
+		return arenaDecorada.getPremio();
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public ArenaLogica getArenaDecorada() {
+		return arenaDecorada;
+	}
 }

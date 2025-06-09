@@ -89,5 +89,12 @@ public interface IVista {
 	void encenderBotonTorneo();
 
 	void apagarBotonIniciarTorneo();
+	
+	void encenderBotonGuardarEstado();
 
+    void apagarBotonGuardarEstado();
+
+    void encenderBotonCargarEstado();
+
+    void apagarBotonCargarEstado();
 }

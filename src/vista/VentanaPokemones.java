@@ -38,7 +38,7 @@ import javax.swing.event.ListSelectionListener;
 import entrenador.Entrenador;
 import modelo.Duelo;
 
-public class VentanaPokemones extends JFrame implements KeyListener, IVista, MouseListener, ListSelectionListener, ItemListener {
+public class VentanaPokemones extends JFrame implements KeyListener, IVista, MouseListener, ListSelectionListener, ItemListener, ActionListener {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -60,7 +60,6 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 	private JList<Entrenador> listEntrenadores;
 	private JScrollPane scrollConsola;
 	private JTextArea textConsola;
-	private JButton boton_iniciar_torneo;
 
 	// Paneles específicos para cada opción en panel_detalles
 	private JPanel panelAgregarEntrenador;
@@ -106,6 +105,10 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 	private JComboBox<String> comboDificultadArena;
 	private JComboBox<String> comboTipoArena;
 	private JButton boton_AgregarArena;
+	private JPanel panelBotonesSur;
+	private JButton boton_iniciar_torneo;
+	private JButton boton_guardar;
+	private JButton boton_empezarArch;
 	/*  
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -661,12 +664,26 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 				textConsola.setEditable(false);
 				textConsola.setFont(new Font("Arial", Font.PLAIN, 14));
 				scrollConsola.setViewportView(textConsola);
-		
-				// Panel iniciar torneo
+				
+				panelBotonesSur = new JPanel();
+				panel_sur.add(panelBotonesSur, BorderLayout.SOUTH);
+				panelBotonesSur.setLayout(new GridLayout(0, 3, 0, 0));
+				
 				boton_iniciar_torneo = new JButton("Iniciar torneo");
 				boton_iniciar_torneo.setFont(new Font("Arial", Font.BOLD, 14));
-				panel_sur.add(boton_iniciar_torneo, BorderLayout.SOUTH);
+				boton_iniciar_torneo.setEnabled(false);
+				boton_iniciar_torneo.setActionCommand("INICIAR_TORNEO");
+				panelBotonesSur.add(boton_iniciar_torneo);
 				
+				boton_guardar = new JButton("Guardar");
+				boton_guardar.setForeground(Color.DARK_GRAY);
+				boton_guardar.setFont(new Font("Arial", Font.BOLD, 14));
+				panelBotonesSur.add(boton_guardar);
+				
+				boton_empezarArch = new JButton("Empezar de archivo");
+				boton_empezarArch.setForeground(Color.DARK_GRAY);
+				boton_empezarArch.setFont(new Font("Arial", Font.BOLD, 14));
+				panelBotonesSur.add(boton_empezarArch);
 				
 				//BOTONES
 				boton_entrenador.setActionCommand("ENTRENADOR");
@@ -690,7 +707,10 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 				boton_AgregarE2.setActionCommand("AGREGAR_E2");
 				boton_AgregarDuelo.setActionCommand("AGREGAR_DUELO");
 				
-				boton_iniciar_torneo.setActionCommand("INICIAR_TORNEO");
+				this.boton_empezarArch.setActionCommand("EMPEZAR_DE_ARCHIVO");
+				this.boton_guardar.setActionCommand("GUARDAR");
+				
+				
 				
 				
 				boton_CrearNuevoEntrenador.setEnabled(false);
@@ -710,9 +730,10 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 				boton_AgregarE1.setEnabled(false);
 				boton_AgregarE2.setEnabled(false);
 				boton_AgregarDuelo.setEnabled(false);
-					
 				
-				boton_iniciar_torneo.setEnabled(false);
+				this.boton_empezarArch.setEnabled(true);
+				this.boton_guardar.setEnabled(true);
+				
 				
 
 				//TEXTOS
@@ -739,6 +760,8 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 				
 				this.comboDificultadArena.addItemListener(this);
 				this.comboTipoArena.addItemListener(this);
+				
+
 				
 				this.setVisible(true);
 
@@ -857,7 +880,9 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 	    this.boton_AgregarE1.addActionListener(actionListener);
 	    this.boton_AgregarE2.addActionListener(actionListener);
 	    this.boton_AgregarDuelo.addActionListener(actionListener);
-
+	    
+	    this.boton_empezarArch.addActionListener(actionListener);
+	    this.boton_guardar.addActionListener(actionListener);
 	    
 	    this.boton_iniciar_torneo.addActionListener(actionListener);
 		this.actionListener = actionListener;
@@ -1146,4 +1171,33 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 	public void apagarBotonIniciarTorneo() {
 		this.boton_iniciar_torneo.setEnabled(false);
 	}
+	public void actionPerformed(ActionEvent e) {
+	}
+
+	@Override
+	public void encenderBotonGuardarEstado() {
+		this.boton_guardar.setEnabled(true);
+		
+	}
+
+	@Override
+	public void apagarBotonGuardarEstado() {
+		this.boton_guardar.setEnabled(false);
+
+	}
+
+	@Override
+	public void encenderBotonCargarEstado() {
+		this.boton_empezarArch.setEnabled(true);
+
+		
+	}
+
+	@Override
+	public void apagarBotonCargarEstado() {
+		this.boton_empezarArch.setEnabled(false);
+		
+	}
+	
+	
 }
