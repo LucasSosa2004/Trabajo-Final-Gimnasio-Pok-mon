@@ -79,20 +79,10 @@ public class Duelo extends Observable implements Runnable, Serializable {
 	}
 
 	/**
-	 * Resuelve el duelo de forma sincronica (se invoca dentro de run()). Al terminar,
+	 * Resuelve el duelo de forma síncrona (se invoca dentro de run()). Al terminar,
 	 * otorga el premio y recarga los Pokémons del ganador.
-	 * 
-	 * <br><b>Precondiciones:</b><br>
-	 * - Los equipos activos de ambos entrenadores no pueden estar vacíos
-	 * 
-	 * <br><b>Postcondiciones:</b><br>
-	 * - El duelo debe terminar con un ganador
-	 * - Los Pokémons del ganador deben ser recargados
-	 * - El premio debe ser otorgado al ganador
 	 */
 	public void iniciarDuelo() {
-		assert !e1.getEquipoActivo().isEmpty() : "El equipo activo del entrenador 1 no puede estar vacío";
-		assert !e2.getEquipoActivo().isEmpty() : "El equipo activo del entrenador 2 no puede estar vacío";
 		String informacion;
 		boolean turno = true;
 		informacion=("COMIENZA_DUELO: " + e1.getNombre() + " vs " + e2.getNombre());
@@ -134,9 +124,9 @@ public class Duelo extends Observable implements Runnable, Serializable {
 				p2 = e2.proximoPokemon();
 				if (p2 != null)
 					colaAuxE2.add(p2);
-
 			}
 		}
+
 		// Determinar ganador
 		if (p1 == null) {
 			this.ganador = e2;
@@ -158,22 +148,15 @@ public class Duelo extends Observable implements Runnable, Serializable {
 		this.ganador.addCreditos(arena.getPremio());
 		this.dueloTerminado = true;
 
-		// Recargar la vitalidad de los Pokémons del ganador
-
-		assert this.ganador != null : "El ganador no puede ser nulo";
-		assert this.dueloTerminado : "El duelo debe estar marcado como terminado";
-
 		try {
 			Thread.sleep(5000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		informacion = "RESULTADO: Ganó " + this.getGanador().getNombre() + "!";
 		setChanged();
 		notifyObservers(informacion);
-
 	}
 
 	/**
@@ -186,7 +169,6 @@ public class Duelo extends Observable implements Runnable, Serializable {
 			this.arena.ocupar();
 			this.iniciarDuelo();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			this.arena.liberar();

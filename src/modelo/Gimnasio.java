@@ -94,18 +94,15 @@ public class Gimnasio implements Serializable {
     // --- Métodos para inscripción al torneo ---
 
     /**
-     * Inscribe un entrenador al torneo (hasta 8). Lanza excepción si:
-     * 1) No existe el entrenador
-     * 2) Ya está inscrito
-     * 3) Ya hay 8 inscritos
-     *
+     * Inscribe un entrenador al torneo (hasta 8). 
+     * 
      * @param nombre Nombre del entrenador a inscribir
-     * @throws EntrenadorNoExisteException  Si no existe en el gimnasio
-     * @throws IllegalStateException        Si ya hay 8 inscritos
-     * @throws IllegalArgumentException     Si el entrenador ya está inscrito
+     * @throws EntrenadorNoExisteException Si no existe en el gimnasio
+     * @throws IllegalStateException Si ya hay 8 inscritos
+     * @throws IllegalArgumentException Si el entrenador ya está inscrito
      */
-    public void inscribirAlTorneo(String nombre) throws EntrenadorNoExisteException{
-    	Entrenador e = getEntrenador(nombre);
+    public void inscribirAlTorneo(String nombre) throws EntrenadorNoExisteException {
+        Entrenador e = getEntrenador(nombre);
         if (inscritosTorneo.contains(e)) {
             throw new IllegalArgumentException("El entrenador " + nombre + " ya esta inscrito.");
         }
@@ -129,7 +126,6 @@ public class Gimnasio implements Serializable {
 
     /**
      * Crea un Duelo entre dos entrenadores que ya están inscritos en el torneo.
-     * En caso de error, devuelve null y muestra mensaje por consola.
      * 
      * @param nombre1 Nombre del primer entrenador
      * @param nombre2 Nombre del segundo entrenador
@@ -139,12 +135,8 @@ public class Gimnasio implements Serializable {
      * @throws EntrenadorSinPokemonesException Si alguno no tiene Pokémons activos
      */
     public Duelo crearDuelo(String nombre1, String nombre2, ArenaFisica arena) throws EntrenadorNoExisteException, EntrenadorSinPokemonesException {
-        assert nombre1 != null && !nombre1.isEmpty() : "El nombre del primer entrenador no puede ser nulo o vacío";
-        assert nombre2 != null && !nombre2.isEmpty() : "El nombre del segundo entrenador no puede ser nulo o vacío";
-        assert arena != null : "La arena no puede ser nula";
         Entrenador e1 = this.getEntrenador(nombre1);
         Entrenador e2 = this.getEntrenador(nombre2);
-
         return new Duelo(e1, e2, arena);
     }
 

@@ -31,7 +31,6 @@ public class SistemaPelea implements Serializable {
     /** Lista de arenas físicas disponibles (recursos compartidos) */
     private HashMap<Integer, ArenaFisica> arenas = new HashMap<>();
 
-
     private SistemaPelea() {
         // Constructor privado para Singleton
     }
@@ -52,20 +51,15 @@ public class SistemaPelea implements Serializable {
         return this.listaDuelos;
     }
 
-
     /**
      * Agrega un duelo al sistema de peleas.
      *
-     * @param duelo El duelo a agregar (no puede ser nulo)
+     * @param duelo El duelo a agregar
      * @throws ArenaOcupadaException Si ya existe un duelo en esa misma clave (arena)
      */
     public synchronized void addDuelo(Duelo duelo) throws ArenaOcupadaException {
-        assert duelo != null : "El duelo no puede ser nulo";
         this.listaDuelos.add(new Thread(duelo));
     }
-
-
-
 
     public Map<Integer,ArenaFisica> getArenas() {
         return this.arenas;
@@ -74,10 +68,9 @@ public class SistemaPelea implements Serializable {
     /**
      * Libera una arena después de que un duelo ha terminado.
      * 
-     * @param arena La arena a liberar (no puede ser nula)
+     * @param arena La arena a liberar
      */
     public synchronized void liberarArena(ArenaFisica arena) {
-        assert arena != null : "La arena no puede ser nula";
         arena.liberar();
         notifyAll();
     }
@@ -86,9 +79,4 @@ public class SistemaPelea implements Serializable {
 	public String toString() {
 		return "SistemaPelea [listaDuelos=" + listaDuelos + ", arenas=" + arenas + "]";
 	}
-
-
-    
-
-   
 }

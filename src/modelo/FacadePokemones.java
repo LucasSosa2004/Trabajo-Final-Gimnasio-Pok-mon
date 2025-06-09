@@ -129,7 +129,6 @@ public class FacadePokemones {
 		List<Thread> duelos = this.sistemaPelea.getDuelos();
 		for (Thread hilo : duelos) {
 			hilo.start();
-			hilo.getg
 		}
 		for (Thread hilo : duelos) {
 			try {
@@ -139,7 +138,6 @@ public class FacadePokemones {
 			}
 		}
 		this.puedeGuardarEstado=true;
-
 	}
 
 	public Duelo crearDuelo(String entrenador1, String entrenador2)
