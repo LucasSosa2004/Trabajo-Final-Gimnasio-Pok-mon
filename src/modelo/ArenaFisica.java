@@ -16,16 +16,11 @@ public class ArenaFisica implements Serializable {
 	}
 
 	public void ocupar() throws InterruptedException {
-
-		System.out.println("Arena fisica" + this.id + " ocupada, hilo esperando...");
-
-		System.out.println("Arena fisica " + this.id + " ocupada por hilo " + Thread.currentThread().getName());
 		this.semaforo.acquire();
 
 	}
 
 	public void liberar() {
-		System.out.println("Arena fisica " + this.id + " liberada por hilo " + Thread.currentThread().getName());
 		this.semaforo.release();
 	}
 

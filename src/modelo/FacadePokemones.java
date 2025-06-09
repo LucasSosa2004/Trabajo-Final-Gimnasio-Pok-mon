@@ -66,6 +66,8 @@ public class FacadePokemones {
 	}
 
 	public Entrenador crearEntrenador(String nombreEntrenador, int creditos) {
+		assert nombreEntrenador != null && !nombreEntrenador.isEmpty() : "El nombre del entrenador no puede ser nulo o vacío";
+		assert creditos >= 0 : "Los créditos iniciales no pueden ser negativos";
 		Entrenador entrenador = new Entrenador(nombreEntrenador, creditos);
 		return entrenador;
 	}
@@ -146,8 +148,6 @@ public class FacadePokemones {
 		Entrenador e2 = this.gimnasio.getEntrenador(entrenador2);
 		Random random = new Random();
 		int arenaAleatoria = random.nextInt(this.numArenas);
-
-		System.out.println("Num arena: " + arenaAleatoria);
 
 		ArenaFisica arena = this.sistemaPelea.getArenas().get(arenaAleatoria);
 		if (arena == null) {

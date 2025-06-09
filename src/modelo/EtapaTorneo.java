@@ -39,6 +39,7 @@ public class EtapaTorneo implements Serializable {
             default:
                 break;
         }
+        assert etapaActual != Etapa.REGISTRO_ENTRENADORES || etapaActual == Etapa.FINALIZADO : "La etapa debe avanzar correctamente";
     }
 
     /**

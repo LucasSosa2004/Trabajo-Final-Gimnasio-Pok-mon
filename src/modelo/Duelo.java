@@ -13,8 +13,13 @@ import pokemones.Pokemon;
 
 /**
  * El duelo recibe dos entrenadores, opcionalmente cada uno lanza un hechizo,
- * luego selecciona autom�ticamente sus primeros Pok�mons y resuelve el duelo
+ * luego selecciona automáticamente sus primeros Pokémons y resuelve el duelo
  * hasta que uno se queda sin equipo activo.
+ * 
+ * <br><b>Invariante de clase:</b><br>
+ * - Los entrenadores no pueden ser nulos
+ * - La arena no puede ser nula
+ * - El duelo debe tener un ganador cuando termina
  */
 public class Duelo extends Observable implements Runnable, Serializable {
 	private static final long serialVersionUID = 1L;
@@ -29,10 +34,10 @@ public class Duelo extends Observable implements Runnable, Serializable {
 	/**
 	 * Crea un nuevo Duelo en la arena dada.
 	 *
-	 * @param e1    Entrenador 1 (debe tener al menos 1 Pok�mon activo)
-	 * @param e2    Entrenador 2 (debe tener al menos 1 Pok�mon activo)
-	 * @param arena Arena f�sica donde se librar� este duelo
-	 * @throws EntrenadorSinPokemonesException si alguno no tiene Pok�mons activos
+	 * @param e1    Entrenador 1 (debe tener al menos 1 Pokémon activo)
+	 * @param e2    Entrenador 2 (debe tener al menos 1 Pokémon activo)
+	 * @param arena Arena física donde se librará este duelo
+	 * @throws EntrenadorSinPokemonesException si alguno no tiene Pokémons activos
 	 */
 	public Duelo(Entrenador e1, Entrenador e2, ArenaFisica arena) throws EntrenadorSinPokemonesException {
 		if (e1.getEquipoActivo().isEmpty())
@@ -68,24 +73,31 @@ public class Duelo extends Observable implements Runnable, Serializable {
 		return e2;
 	}
 
-	/** Nuevo m�todo para obtener la arena asociada */
+	/** Nuevo método para obtener la arena asociada */
 	public ArenaFisica getArena() {
 		return arena;
 	}
 
 	/**
-	 * Resuelve el duelo de forma s�ncrona (se invoca dentro de run()). Al terminar,
-	 * otorga el premio y recarga los Pok�mons del ganador.
+	 * Resuelve el duelo de forma sincronica (se invoca dentro de run()). Al terminar,
+	 * otorga el premio y recarga los Pokémons del ganador.
+	 * 
+	 * <br><b>Precondiciones:</b><br>
+	 * - Los equipos activos de ambos entrenadores no pueden estar vacíos
+	 * 
+	 * <br><b>Postcondiciones:</b><br>
+	 * - El duelo debe terminar con un ganador
+	 * - Los Pokémons del ganador deben ser recargados
+	 * - El premio debe ser otorgado al ganador
 	 */
 	public void iniciarDuelo() {
-		assert !e1.getEquipoActivo().isEmpty() : "El equipo activo del entrenador 1 no puede estar vac�o";
-		assert !e2.getEquipoActivo().isEmpty() : "El equipo activo del entrenador 2 no puede estar vac�o";
+		assert !e1.getEquipoActivo().isEmpty() : "El equipo activo del entrenador 1 no puede estar vacío";
+		assert !e2.getEquipoActivo().isEmpty() : "El equipo activo del entrenador 2 no puede estar vacío";
 		String informacion;
 		boolean turno = true;
 		informacion=("COMIENZA_DUELO: " + e1.getNombre() + " vs " + e2.getNombre());
 		setChanged();
 		notifyObservers();
-		System.out.println(informacion);
 
 		Pokemon p1 = e1.proximoPokemon();
 		Pokemon p2 = e2.proximoPokemon();
@@ -93,14 +105,11 @@ public class Duelo extends Observable implements Runnable, Serializable {
 		colaAuxE1.add(p1);
 		colaAuxE2.add(p2);
 
-		// Hechizos iniciales: cada entrenador lanza sobre el primer Pok�mon del rival
+		// Hechizos iniciales: cada entrenador lanza sobre el primer Pokémon del rival
 		e1.hechizar(p2);
 		e2.hechizar(p1);
 
-
-		System.out.println("va a empezar el combate");
-
-		// Bucle hasta que uno se quede sin Pok�mon
+		// Bucle hasta que uno se quede sin Pokémon
 		while (p1 != null && p2 != null) {
 			if (turno) {
 				if (p1.getVitalidad() > 0 && p2.getVitalidad() > 0) {
@@ -128,8 +137,6 @@ public class Duelo extends Observable implements Runnable, Serializable {
 
 			}
 		}
-		System.out.println("se determino un ganador");
-
 		// Determinar ganador
 		if (p1 == null) {
 			this.ganador = e2;
@@ -147,11 +154,11 @@ public class Duelo extends Observable implements Runnable, Serializable {
 			}
 		}
 
-		// Otorgar premio seg�n la arena decorada
+		// Otorgar premio según la arena decorada
 		this.ganador.addCreditos(arena.getPremio());
 		this.dueloTerminado = true;
 
-		// Recargar la vitalidad de los Pok�mons del ganador
+		// Recargar la vitalidad de los Pokémons del ganador
 
 		assert this.ganador != null : "El ganador no puede ser nulo";
 		assert this.dueloTerminado : "El duelo debe estar marcado como terminado";
@@ -166,9 +173,13 @@ public class Duelo extends Observable implements Runnable, Serializable {
 		informacion = "RESULTADO: Ganó " + this.getGanador().getNombre() + "!";
 		setChanged();
 		notifyObservers(informacion);
-		System.out.println("RESULTADO: " + informacion);
+
 	}
 
+	/**
+	 * Ejecuta el duelo en un hilo separado.
+	 * Ocupa la arena, ejecuta el duelo y finalmente la libera.
+	 */
 	@Override
 	public void run() {
 		try {

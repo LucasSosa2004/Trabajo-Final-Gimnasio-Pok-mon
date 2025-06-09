@@ -9,22 +9,27 @@ import excepciones.EntrenadorSinPokemonesException;
 import excepciones.NombreUtilizadoException;
 
 /**
- * Clase Gimnasio que implementa el patr�n Singleton.
- * Contiene entrenadores, una tienda y m�todos para inscribir al torneo.
+ * Clase Gimnasio que implementa el patrón Singleton.
+ * Contiene entrenadores, una tienda y métodos para inscribir al torneo.
+ * 
+ * <br><b>Invariante de clase:</b><br>
+ * - La tienda no puede ser nula
+ * - No puede haber más de 8 entrenadores inscritos en el torneo
+ * - Los nombres de los entrenadores deben ser únicos
  */
 public class Gimnasio implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /** Instancia �nica (Singleton) */
+    /** Instancia única (Singleton) */
     private static Gimnasio instancia;
 
-    /** Entrenadores registrados (clave = nombre en may�sculas) */
+    /** Entrenadores registrados (clave = nombre en mayúsculas) */
     private Map<String, Entrenador> entrenadores = new HashMap<>();
 
     /** Tienda asociada al gimnasio */
     private Tienda tienda;
 
-    /** Lista de entrenadores inscritos al torneo (m�ximo 8) */
+    /** Lista de entrenadores inscritos al torneo (máximo 8) */
     private List<Entrenador> inscritosTorneo = new ArrayList<>();
 
     private Gimnasio() {
@@ -44,9 +49,9 @@ public class Gimnasio implements Serializable {
     }
 
     /**
-     * Devuelve el Entrenador con el nombre dado (en may�sculas).
+     * Devuelve el Entrenador con el nombre dado (en mayúsculas).
      *
-     * @param nombre Nombre del entrenador (no puede ser nulo ni vac�o)
+     * @param nombre Nombre del entrenador (no puede ser nulo ni vacío)
      * @return El entrenador existente
      * @throws EntrenadorNoExisteException Si no existe
      */
@@ -86,18 +91,18 @@ public class Gimnasio implements Serializable {
         this.tienda = tienda;
     }
 
-    // --- M�todos para inscripci�n al torneo ---
+    // --- Métodos para inscripción al torneo ---
 
     /**
-     * Inscribe un entrenador al torneo (hasta 8). Lanza excepci�n si:
+     * Inscribe un entrenador al torneo (hasta 8). Lanza excepción si:
      * 1) No existe el entrenador
-     * 2) Ya est� inscrito
+     * 2) Ya está inscrito
      * 3) Ya hay 8 inscritos
      *
      * @param nombre Nombre del entrenador a inscribir
      * @throws EntrenadorNoExisteException  Si no existe en el gimnasio
      * @throws IllegalStateException        Si ya hay 8 inscritos
-     * @throws IllegalArgumentException     Si el entrenador ya est� inscrito
+     * @throws IllegalArgumentException     Si el entrenador ya está inscrito
      */
     public void inscribirAlTorneo(String nombre) throws EntrenadorNoExisteException{
     	Entrenador e = getEntrenador(nombre);
@@ -123,18 +128,24 @@ public class Gimnasio implements Serializable {
     }
 
     /**
-     * Crea un Duelo entre dos entrenadores que ya est�n inscritos en el torneo.
+     * Crea un Duelo entre dos entrenadores que ya están inscritos en el torneo.
      * En caso de error, devuelve null y muestra mensaje por consola.
-     * @throws EntrenadorNoExisteException 
-     * @throws EntrenadorSinPokemonesException 
+     * 
+     * @param nombre1 Nombre del primer entrenador
+     * @param nombre2 Nombre del segundo entrenador
+     * @param arena Arena donde se realizará el duelo
+     * @return El duelo creado
+     * @throws EntrenadorNoExisteException Si alguno de los entrenadores no existe
+     * @throws EntrenadorSinPokemonesException Si alguno no tiene Pokémons activos
      */
     public Duelo crearDuelo(String nombre1, String nombre2, ArenaFisica arena) throws EntrenadorNoExisteException, EntrenadorSinPokemonesException {
+        assert nombre1 != null && !nombre1.isEmpty() : "El nombre del primer entrenador no puede ser nulo o vacío";
+        assert nombre2 != null && !nombre2.isEmpty() : "El nombre del segundo entrenador no puede ser nulo o vacío";
+        assert arena != null : "La arena no puede ser nula";
+        Entrenador e1 = this.getEntrenador(nombre1);
+        Entrenador e2 = this.getEntrenador(nombre2);
 
-            Entrenador e1 = this.getEntrenador(nombre1);
-            Entrenador e2 = this.getEntrenador(nombre2);
-
-            return new Duelo(e1, e2, arena);
-  
+        return new Duelo(e1, e2, arena);
     }
 
     @Override
