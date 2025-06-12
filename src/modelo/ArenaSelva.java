@@ -1,16 +1,21 @@
 package modelo;
 
 import java.io.Serializable;
+import interfaces.IArena;
 
-public class ArenaSelva extends ArenaLogica implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class ArenaSelva implements Serializable, IArena {
+    private static final long serialVersionUID = 1L;
+
+    @Override
     public String getNombre() {
-    	return "Selva"; 
+        return "Selva"; 
     }
+    @Override
     public String getDetalle() {
-    	return "Arena de Selva"; 
+        return "Arena de Selva"; 
     }
+    @Override
     public int getPremio() {
-    	return 800; 
+        return 800; 
     }
-} 
+}

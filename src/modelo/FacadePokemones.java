@@ -1,5 +1,6 @@
 package modelo;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -13,6 +14,8 @@ import excepciones.NombreUtilizadoException;
 import excepciones.PokemonNoExisteException;
 import excepciones.PokemonNoPuedeUsarArmaE;
 import excepciones.TipoDesconocidoException;
+import interfaces.IArena;
+import persistencia.GimnasioManager;
 import pokemones.Pokemon;
 import pokemones.PokemonFactory;
 
@@ -24,6 +27,8 @@ public class FacadePokemones {
 	private ArmaFactory armFac;
 	private int numArenas;
 	private EtapaTorneo etapa;
+	private GimnasioManager manager = new GimnasioManager();
+
 	private boolean puedeGuardarEstado;
 
 	private FacadePokemones() {
@@ -61,8 +66,8 @@ public class FacadePokemones {
 
 	public void comprarPokemon(Entrenador entrenador, String tipoPokemon, String nombrePokemon)
 			throws CompraImposibleException, TipoDesconocidoException {
+		
 		this.gimnasio.getTienda().compraPokemon(entrenador, tipoPokemon, nombrePokemon);
-
 	}
 
 	public Entrenador crearEntrenador(String nombreEntrenador, int creditos) {
@@ -76,47 +81,44 @@ public class FacadePokemones {
 		this.gimnasio.putEntrenador(entrenador);
 	}
 
-	public ArenaLogica crearArenaBase(String tipoArena) {
-		ArenaLogica base = null;
-		switch (tipoArena) {
-		case "Bosque":
-			base = new ArenaBosque();
-			break;
-		case "Desierto":
-			base = new ArenaDesierto();
-			break;
-		case "Selva":
-			base = new ArenaSelva();
-			break;
-		}
-		return base;
+	public IArena crearArenaBase(String tipoArena) {
+	    IArena base = null;
+	    switch (tipoArena) {
+	        case "Bosque":
+	            base = new ArenaBosque();
+	            break;
+	        case "Desierto":
+	            base = new ArenaDesierto();
+	            break;
+	        case "Selva":
+	            base = new ArenaSelva();
+	            break;
+	    }
+	    return base;
 	}
 
-	public ArenaLogica crearArenaDecorada(String dificultadArena, ArenaLogica base) {
-		ArenaLogica decorada = null;
-		switch (dificultadArena) {
-		case "Facil":
-			decorada = new ArenaFacil(base);
-			break;
-		case "Media":
-			decorada = new ArenaMedio(base);
-			break;
-		case "Dificil":
-			decorada = new ArenaDificil(base);
-			break;
-		}
-		return decorada;
+	public IArena crearArenaDecorada(String dificultadArena, IArena base) {
+	    IArena decorada = null;
+	    switch (dificultadArena) {
+	        case "Facil":
+	            decorada = new ArenaFacil(base);
+	            break;
+	        case "Media":
+	            decorada = new ArenaMedio(base);
+	            break;
+	        case "Dificil":
+	            decorada = new ArenaDificil(base);
+	            break;
+	    }
+	    return decorada;
 	}
 
-	public void agregarArena(ArenaLogica decorada) {
+	public void agregarArena(IArena decorada) {
 		ArenaFisica a = new ArenaFisica(this.numArenas++, decorada);
 		this.sistemaPelea.getArenas().put(a.getId(), a);
-
 	}
 
-	public void comprarArma(String tipoArma, Entrenador entrenador, String nombrePokemon)
-			throws PokemonNoPuedeUsarArmaE, PokemonNoExisteException, CompraImposibleException,
-			TipoDesconocidoException {
+	public void comprarArma(String tipoArma, Entrenador entrenador, String nombrePokemon)throws PokemonNoPuedeUsarArmaE, PokemonNoExisteException, CompraImposibleException,TipoDesconocidoException {
 		this.gimnasio.getTienda().comprarArma(tipoArma, entrenador, nombrePokemon);
 	}
 
@@ -124,22 +126,15 @@ public class FacadePokemones {
 		return this.pokFac.getPokemon(tipoPokemon, nombrePokemon);
 	}
 
-	public void iniciarTorneo() throws EntrenadorNoExisteException, EntrenadorSinPokemonesException {
-		this.puedeGuardarEstado=false;
-		List<Thread> duelos = this.sistemaPelea.getDuelos();
-		for (Thread hilo : duelos) {
-			hilo.start();
-		}
-		for (Thread hilo : duelos) {
-			try {
-				hilo.join();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		this.puedeGuardarEstado=true;
-	}
+	public void ejecutarRonda() throws EntrenadorNoExisteException, EntrenadorSinPokemonesException, ArenaOcupadaException {
+	    this.puedeGuardarEstado = false;
 
+
+	    this.sistemaPelea.ejecutarRonda();
+
+
+	    this.puedeGuardarEstado = true;
+	}
 	public Duelo crearDuelo(String entrenador1, String entrenador2)
 			throws EntrenadorNoExisteException, EntrenadorSinPokemonesException, ArenaOcupadaException {
 		Entrenador e1 = this.gimnasio.getEntrenador(entrenador1);
@@ -168,4 +163,31 @@ public class FacadePokemones {
 	public boolean puedeGuardarEstado() {
         return puedeGuardarEstado;
     }
+	
+	public void actualizarReferencias() {
+	    this.gimnasio = Gimnasio.getInstancia();
+	    this.sistemaPelea = SistemaPelea.getInstancia();
+	}
+
+
+	public void guardarArch() {
+        this.manager.guardarEstado(this.gimnasio, this.getSistemaPelea(), this.etapa);	
+	}
+
+	public Object cargarEstado() {
+		return this.manager.cargarEstado();
+	}
+
+	public  List<Duelo> getListaDuelosAux() throws EntrenadorNoExisteException, EntrenadorSinPokemonesException, ArenaOcupadaException {
+		return this.sistemaPelea.getListaDuelosAux();
+	}
+	
+	public boolean hayArenas() {
+		return !this.getSistemaPelea().getArenas().isEmpty();
+	}
+	
+	
+	public void setNumArenas() {
+		this.numArenas = this.getSistemaPelea().getArenas().size();
+	}
 }

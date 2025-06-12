@@ -501,7 +501,7 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 				gbc_lblTipoPokemonTienda.gridy = 3;
 				panelTienda.add(lblTipoPokemonTienda, gbc_lblTipoPokemonTienda);
 		
-				comboTipoPokemonesTienda = new JComboBox<String>(new String[] { "Seleccione un tipo", "Agua (100)", "Hielo (100)", "Fuego (120)", "Piedra (200)" });
+				comboTipoPokemonesTienda = new JComboBox<String>(new String[] { "Seleccione un tipo", "Agua", "Hielo", "Fuego", "Piedra" });
 				GridBagConstraints gbc_comboTipoPokemonesTienda = new GridBagConstraints();
 				gbc_comboTipoPokemonesTienda.insets = new Insets(0, 0, 5, 0);
 				gbc_comboTipoPokemonesTienda.fill = GridBagConstraints.HORIZONTAL;
@@ -545,7 +545,7 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 				panelTienda.add(lblCompraArma, gbc_lblCompraArma);
 				
 						comboComprarArmasTienda = new JComboBox<String>();
-						comboComprarArmasTienda.setModel(new DefaultComboBoxModel<String>(new String[] {"Seleccione un arma", "Espada (50)", "Hacha (80)"}));
+						comboComprarArmasTienda.setModel(new DefaultComboBoxModel<String>(new String[] {"Seleccione un arma", "Espada", "Hacha"}));
 						GridBagConstraints gbc_comboComprarArmasTienda = new GridBagConstraints();
 						gbc_comboComprarArmasTienda.insets = new Insets(0, 0, 5, 0);
 						gbc_comboComprarArmasTienda.fill = GridBagConstraints.HORIZONTAL;
@@ -656,7 +656,7 @@ public class VentanaPokemones extends JFrame implements KeyListener, IVista, Mou
 				// Panel sur con consola
 				JPanel panel_sur = new JPanel();
 				contentPane.add(panel_sur, BorderLayout.SOUTH);
-				panel_sur.setPreferredSize(new Dimension(50, 100));
+				panel_sur.setPreferredSize(new Dimension(50, 150));
 				panel_sur.setLayout(new BorderLayout(0, 0));
 				scrollConsola = new JScrollPane();
 				panel_sur.add(scrollConsola, BorderLayout.CENTER);

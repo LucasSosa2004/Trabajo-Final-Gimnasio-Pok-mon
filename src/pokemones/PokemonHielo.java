@@ -23,12 +23,13 @@ public class PokemonHielo extends Pokemon implements Serializable {
     }
 
     @Override
-    public void atacar(Pokemon adversario) {
-        assert adversario != null : "El adversario no puede ser nulo";
-        adversario.recibeDano(this.fuerza * 0.15);
-        this.fuerza *= 0.95;
-        assert this.fuerza >= 0 : "La fuerza no puede ser negativa";
-    }
+	public void atacar(Pokemon adversario) {
+		assert adversario != null : "El adversario no puede ser nulo";
+		adversario.recibeDano(this.fuerza * 0.15);
+		this.fuerza = Math.max(this.fuerza * 0.95, 5); // mínimo 5 de fuerza
+		assert this.fuerza >= 0 : "La fuerza no puede ser negativa";
+	}
+
 
     @Override
     public void recibeDano(double danoRecibido) {

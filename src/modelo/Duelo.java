@@ -87,7 +87,7 @@ public class Duelo extends Observable implements Runnable, Serializable {
 		boolean turno = true;
 		informacion=("COMIENZA_DUELO: " + e1.getNombre() + " vs " + e2.getNombre());
 		setChanged();
-		notifyObservers();
+		notifyObservers(informacion);
 
 		Pokemon p1 = e1.proximoPokemon();
 		Pokemon p2 = e2.proximoPokemon();
@@ -100,6 +100,8 @@ public class Duelo extends Observable implements Runnable, Serializable {
 		e2.hechizar(p1);
 
 		// Bucle hasta que uno se quede sin Pokémon
+	    
+	    
 		while (p1 != null && p2 != null) {
 			if (turno) {
 				if (p1.getVitalidad() > 0 && p2.getVitalidad() > 0) {
@@ -148,11 +150,6 @@ public class Duelo extends Observable implements Runnable, Serializable {
 		this.ganador.addCreditos(arena.getPremio());
 		this.dueloTerminado = true;
 
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 
 		informacion = "RESULTADO: Ganó " + this.getGanador().getNombre() + "!";
 		setChanged();
@@ -167,6 +164,7 @@ public class Duelo extends Observable implements Runnable, Serializable {
 	public void run() {
 		try {
 			this.arena.ocupar();
+			Thread.sleep(2000);
 			this.iniciarDuelo();
 		} catch (InterruptedException e) {
 			e.printStackTrace();

@@ -17,7 +17,6 @@ public class GimnasioManager {
     private static final String ARCHIVO_ESTADO = "gimnasio.dat";
 
     public GimnasioManager() {
-        // Constructor vacÃ­o
     }
 
     /**
@@ -26,7 +25,7 @@ public class GimnasioManager {
      */
     public void guardarEstado(Gimnasio gimnasio, SistemaPelea sistemaPelea, EtapaTorneo etapa) {
         if (!FacadePokemones.getInstancia().puedeGuardarEstado()) {
-            System.err.println("No se puede guardar el estado mientras un torneo estÃ¡ en curso");
+            System.err.println("No se puede guardar el estado mientras un torneo esta en curso");
             return;
         }
         

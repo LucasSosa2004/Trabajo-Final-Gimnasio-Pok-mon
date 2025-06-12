@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.SwingUtilities;
 
 import entrenador.Entrenador;
 import excepciones.ArenaOcupadaException;
@@ -19,10 +20,9 @@ import excepciones.NombreUtilizadoException;
 import excepciones.PokemonNoExisteException;
 import excepciones.PokemonNoPuedeUsarArmaE;
 import excepciones.TipoDesconocidoException;
-import modelo.ArenaLogica;
+import interfaces.IArena;
 import modelo.Duelo;
 import modelo.FacadePokemones;
-import persistencia.GimnasioManager;
 import pokemones.Pokemon;
 import vista.IVista;
 import vista.ObserverVentanaDuelo;
@@ -36,7 +36,6 @@ public class Controlador implements ActionListener {
 	private DefaultComboBoxModel<String> modeloComboPokemones = new DefaultComboBoxModel<>();
 	private List<String> entrenadoresEnDuelos = new ArrayList<>();
 	private boolean hayArena;
-	private GimnasioManager manager = new GimnasioManager();
 
 	public IVista getVista() {
 		return vista;
@@ -116,52 +115,136 @@ public class Controlador implements ActionListener {
 	}
 
 	private void GUARDAR() {
-		 if (facade.puedeGuardarEstado()) {
-	            manager.guardarEstado(facade.getGimnasio(), facade.getSistemaPelea(), facade.getEtapa());
-	            vista.setTextConsola("Estado guardado exitosamente");
-	        } else {
-	            vista.setTextConsola("No se puede guardar el estado mientras un torneo esta en curso");
-	        }
-	    }
+		if (facade.puedeGuardarEstado()) {
+			facade.guardarArch();
+			vista.setTextConsola("Estado guardado exitosamente");
+		} else {
+			vista.setTextConsola("No se puede guardar el estado mientras un torneo esta en curso");
+		}
+	}
 
 	private void EMPEZAR_DE_ARCHIVO() {
-        try {
-            // Intentar cargar el estado
-            var etapa = manager.cargarEstado();
-            if (etapa != null) {
-                // Actualizar la vista con los datos cargados
-                modeloListaEntrenadores.clear();
-                for (var entrenador : facade.getGimnasio().getEntrenadores().values()) {
-                    modeloListaEntrenadores.addElement(entrenador);
-                }
-                vista.actualizarListaEntrenadores(modeloListaEntrenadores);
-                vista.setTextConsola("Estado cargado exitosamente");
-            } else {
-                vista.setTextConsola("No hay estado guardado para cargar");
-            }
-        } catch (Exception ex) {
-            vista.setTextConsola("Error al cargar el estado: " + ex.getMessage());
-        }
-    }
+		try {
+			// Intentar cargar el estado
+			var etapa = facade.cargarEstado();
+
+			if (etapa != null) {
+				// Actualizar la vista con los datos cargados
+				modeloListaDuelos.clear();
+				modeloListaEntrenadores.clear();
+				facade.actualizarReferencias();
+				for (var entrenador : facade.getGimnasio().getEntrenadores().values()) {
+					modeloListaEntrenadores.addElement(entrenador);
+				}
+				this.facade.setNumArenas();
+				this.hayArena = facade.hayArenas();
+				if (this.modeloListaEntrenadores.getSize() > 1 && hayArena) {
+					vista.encenderBotonDuelo();
+				}
+				if (this.modeloListaDuelos.getSize() == 4)
+					vista.encenderBotonTorneo();
+					
+				vista.mostrarPanel("VACIO");
+				vista.actualizarListaDuelo(modeloListaDuelos);
+				vista.actualizarListaEntrenadores(modeloListaEntrenadores);
+				vista.setTextConsola("Estado cargado exitosamente");
+			} else {
+				vista.setTextConsola("No hay estado guardado para cargar");
+			}
+		} catch (Exception ex) {
+			vista.setTextConsola("Error al cargar el estado: " + ex.getMessage());
+		}
+	}
 
 	private void INICIAR_TORNEO() {
-		try {
-			facade.iniciarTorneo();
-			this.entrenadoresEnDuelos.clear();
-			this.modeloListaDuelos.clear();
-			vista.actualizarListaDuelo(modeloListaDuelos);
-			vista.apagarBotonIniciarTorneo();
-			
-		} catch (EntrenadorNoExisteException | EntrenadorSinPokemonesException e) {
-			vista.setTextConsola(e.getMessage());
-		}
+	    new Thread(() -> {
+	        Entrenador ganador1;
+	        Entrenador ganador2;
+	        Duelo duelo;
+	        try {
+
+                // CUARTOS
+                SwingUtilities.invokeLater(() -> vista.setTextConsola("INICIO CUARTOS"));
+                facade.ejecutarRonda();
+                SwingUtilities.invokeLater(() -> vista.setTextConsola("FIN DE CUARTOS"));
+
+                // Limpio lista
+                SwingUtilities.invokeLater(() -> {
+                    modeloListaDuelos.clear();
+                    vista.actualizarListaDuelo(modeloListaDuelos);
+                });
+
+                // GENERO SEMIS
+                for (int i = 0; i < 4; i += 2) {
+                    ganador1 = facade.getListaDuelosAux().get(i).getGanador();
+                    ganador2 = facade.getListaDuelosAux().get(i + 1).getGanador();
+                    duelo = facade.crearDuelo(ganador1.getNombre(), ganador2.getNombre());
+
+                    ObserverVentanaDuelo v1 = new ObserverVentanaDuelo(duelo, vista);
+                    facade.agregarDuelo(duelo);
+
+                    String texto = ganador1.getNombre() + " VS " + ganador2.getNombre();
+                    SwingUtilities.invokeLater(() -> {
+                        modeloListaDuelos.addElement(texto);
+                        vista.actualizarListaDuelo(modeloListaDuelos);
+                    });
+                }
+	            
+
+                // SEMIS
+                SwingUtilities.invokeLater(() -> vista.setTextConsola("INICIO SEMIS"));
+                facade.ejecutarRonda();
+                SwingUtilities.invokeLater(() -> vista.setTextConsola("FIN DE SEMIS"));
+
+                SwingUtilities.invokeLater(() -> {
+                    modeloListaDuelos.clear();
+                    vista.actualizarListaDuelo(modeloListaDuelos);
+                });
+
+                ganador1 = facade.getListaDuelosAux().get(0).getGanador();
+                ganador2 = facade.getListaDuelosAux().get(1).getGanador();
+                duelo = facade.crearDuelo(ganador1.getNombre(), ganador2.getNombre());
+
+                ObserverVentanaDuelo v1 = new ObserverVentanaDuelo(duelo, vista);
+                facade.agregarDuelo(duelo);
+
+                String textoFinal = ganador1.getNombre() + " VS " + ganador2.getNombre();
+                SwingUtilities.invokeLater(() -> {
+                    modeloListaDuelos.addElement(textoFinal);
+                    vista.actualizarListaDuelo(modeloListaDuelos);
+                });
+	            
+
+	            // FINAL
+	            SwingUtilities.invokeLater(() -> vista.setTextConsola("INICIO FINAL"));
+	            facade.ejecutarRonda();
+	            SwingUtilities.invokeLater(() -> vista.setTextConsola("FIN DEL TORNEO"));
+
+	            // Mostrar campeón
+	            Duelo finalDuelo = facade.getListaDuelosAux().get(0);
+	            Entrenador campeon = finalDuelo.getGanador();
+	            SwingUtilities.invokeLater(() -> {
+	                vista.setTextConsola("CAMPEÓN DEL TORNEO: " + campeon.getNombre());
+	                vista.apagarBotonIniciarTorneo();
+	                modeloListaDuelos.clear();
+	                vista.actualizarListaDuelo(modeloListaDuelos);
+	            });
+
+	            entrenadoresEnDuelos.clear();
+
+	        } catch (EntrenadorNoExisteException | EntrenadorSinPokemonesException e) {
+	            SwingUtilities.invokeLater(() -> vista.setTextConsola(e.getMessage()));
+	        } catch (ArenaOcupadaException e) {
+	            e.printStackTrace(); // Podés también mostrar esto por consola si querés
+	        }
+	    }).start();
 	}
 
 	private void AGREGAR_ARENA() {
 		String tipoArena;
 		String dificultadArena;
-		ArenaLogica base;
-		ArenaLogica decorada;
+		IArena base;
+		IArena decorada;
 		
 		tipoArena=vista.getTipoArena();
 		dificultadArena=vista.getDificultadArena();
@@ -185,11 +268,11 @@ public class Controlador implements ActionListener {
 		entrenador = vista.getEntrenador2();
 		if (this.entrenadoresEnDuelos.contains(entrenador)) {
 			vista.setTextConsola("El entrenador " + entrenador + " ya participa de un duelo, seleccione otro.");
-		}else {
-		
-		vista.encenderBotonAgregarDuelo();
-		vista.apagarBotonAgregarE2();
-		vista.setTextConsola(vista.getEntrenador2() + " aregado al duelo.");
+		} else {
+
+			vista.encenderBotonAgregarDuelo();
+			vista.apagarBotonAgregarE2();
+			vista.setTextConsola(vista.getEntrenador2() + " aregado al duelo.");
 		}
 	}
 
@@ -210,19 +293,19 @@ public class Controlador implements ActionListener {
 	private void AGREGAR_DUELO() {
 		String entrenador1;
 		String entrenador2;
+
 		entrenador1 = vista.getEntrenador1();
 		entrenador2 = vista.getEntrenador2();
-		
+
 		vista.resetZonaDuelo();
 		try {
-
 			Duelo duelo = facade.crearDuelo(entrenador1, entrenador2);
-			
-			ObserverVentanaDuelo v1=new ObserverVentanaDuelo(duelo,this.vista);
-					
+
+			ObserverVentanaDuelo v1 = new ObserverVentanaDuelo(duelo, this.vista);
+
 			facade.agregarDuelo(duelo);
 
-			modeloListaDuelos.addElement(entrenador1 + " VS "+ entrenador2);
+			modeloListaDuelos.addElement(entrenador1 + " VS " + entrenador2);
 			vista.actualizarListaDuelo(modeloListaDuelos);
 			vista.setTextConsola("Duelo creado.");
 			this.entrenadoresEnDuelos.add(entrenador1);
@@ -234,14 +317,13 @@ public class Controlador implements ActionListener {
 		} catch (EntrenadorNoExisteException e) {
 			vista.setTextConsola("Nombre de entrenador " + e.getNombre() + " no existe.");
 		} catch (IllegalArgumentException | IllegalStateException e) {
-			vista.setTextConsola( e.getMessage());
-	    }catch (EntrenadorSinPokemonesException e) {
-			this.vista.setTextConsola(e.getMessage());;
-		} catch (ArenaOcupadaException e) {}
-		
+			vista.setTextConsola(e.getMessage());
+		} catch (EntrenadorSinPokemonesException e) {
+			this.vista.setTextConsola(e.getMessage());
+			;
+		} catch (ArenaOcupadaException e) {
+		}
 
-
-	
 	}
 
 	private void COMPRAR_ARMA() {
@@ -278,13 +360,15 @@ public class Controlador implements ActionListener {
 		tipoPokemon = vista.getTipoPokemonTienda();
 		entrenador = vista.getEntrenador();
 		try {
+
 			facade.comprarPokemon(entrenador, tipoPokemon, nombrePokemon);
 			vista.actualizarComboListaPokemones(modeloComboPokemones);
 			vista.vaciarTextPokemonTienda();
 			vista.setTextEntrenador(entrenador.getNombre() + " Cred: " + entrenador.getCreditos());
 			modeloComboPokemones.addElement(nombrePokemon);
 			vista.actualizarComboListaPokemones(modeloComboPokemones);
-			vista.setTextConsola("Pokemon " + nombrePokemon + " adquirido, añadido al equipo de " + entrenador.getNombre());
+			vista.setTextConsola(
+					"Pokemon " + nombrePokemon + " adquirido, añadido al equipo de " + entrenador.getNombre());
 		} catch (CompraImposibleException e) {
 			vista.setTextConsola(
 					"Dinero insuficiente. Dinero actual: " + e.getCreditos() + ". Dinero necesario: " + e.getCosto());
@@ -302,7 +386,7 @@ public class Controlador implements ActionListener {
 		try {
 			entrenador.buscaPokemon(nombrePokemon).recargar();
 			vista.setTextConsola("Pokemon " + nombrePokemon + " del " + entrenador.getNombre() + " recargado.");
-			 vista.actualizarListaEntrenadores(modeloListaEntrenadores);
+			vista.actualizarListaEntrenadores(modeloListaEntrenadores);
 
 		} catch (PokemonNoExisteException e) {
 
@@ -331,8 +415,6 @@ public class Controlador implements ActionListener {
 
 		}
 
-
-
 	}
 
 	void CREAR_POKEMON() {
@@ -347,7 +429,8 @@ public class Controlador implements ActionListener {
 			pokemon = facade.crearPokemon(tipoPokemon, nombrePokemon);
 			entrenador.putPokemon(pokemon);
 			modeloComboPokemones.addElement(nombrePokemon);
-			vista.setTextConsola("Pokemon " + nombrePokemon + " se añadio a la lista de pokemones de " + entrenador.getNombre() + ".");
+			vista.setTextConsola("Pokemon " + nombrePokemon + " se añadio a la lista de pokemones de "
+					+ entrenador.getNombre() + ".");
 			vista.actualizarComboListaPokemones(modeloComboPokemones);
 			vista.vaciarTextPokemonCreado();
 		} catch (TipoDesconocidoException e1) {
@@ -366,8 +449,9 @@ public class Controlador implements ActionListener {
 		entrenador = vista.getEntrenador();
 		try {
 			entrenador.agregarPokemonEquipo(nombrePokemon);
-			vista.setTextConsola("Pokemon " + nombrePokemon + " añadido al equipo de combate de " + entrenador.getNombre() + ".");
-			 vista.actualizarListaEntrenadores(modeloListaEntrenadores);
+			vista.setTextConsola(
+					"Pokemon " + nombrePokemon + " añadido al equipo de combate de " + entrenador.getNombre() + ".");
+			vista.actualizarListaEntrenadores(modeloListaEntrenadores);
 		} catch (EquipoLlenoException e1) {
 			vista.setTextConsola("El equipo esta lleno, no se pueden agregar mas pokemones.");
 		}

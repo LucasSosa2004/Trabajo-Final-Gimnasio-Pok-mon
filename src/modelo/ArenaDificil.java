@@ -1,25 +1,26 @@
 package modelo;
 
 import java.io.Serializable;
+import interfaces.IArena;
 
 public class ArenaDificil extends ArenaDificultadDecorator implements Serializable {
-	private static final long serialVersionUID = 1L;
-    public ArenaDificil(ArenaLogica base) {
+    private static final long serialVersionUID = 1L;
+    public ArenaDificil(IArena base) {
         super(base);
     }
 
     @Override
     public String getNombre() {
-        return base.getNombre() + " (Difícil)";
+        return super.getNombre() + " (DifÃ­cil)";
     }
 
     @Override
     public String getDetalle() {
-        return base.getDetalle();
+        return super.getDetalle();
     }
 
     @Override
     public int getPremio() {
-        return (int)(base.getPremio() * 1.5);
+        return (int)(super.getPremio() * 1.5);
     }
 }

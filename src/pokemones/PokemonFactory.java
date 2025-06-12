@@ -11,6 +11,8 @@ public class PokemonFactory {
         assert nombre != null && !nombre.isEmpty() : "El nombre no puede ser nulo o vacio";
         tipo = tipo.toUpperCase();
         nombre = nombre.toUpperCase();
+    	
+
         switch (tipo) {
             case "AGUA":
                 return new PokemonAgua(nombre);
